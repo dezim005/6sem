@@ -1,0 +1,5 @@
+# Ferramentas de avaliação por agente de IA (uso local do professor apenas).
+# Não devem ser versionadas neste template nem herdadas pelos repositórios
+# criados a partir dele — apenas os documentos de conteúdo são propagados.
+/ai/
+/.claude/
