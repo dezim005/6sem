@@ -10,16 +10,16 @@ Descrever resumidamente, em um ou dois parágrafos, o projeto que está sendo de
 
 ## Integrantes
 
-* [Nome completo do aluno 1](docs/atas/aluno1.md)
-* [Nome completo do aluno 2](docs/atas/aluno2.md)
-* [Nome completo do aluno 3](docs/atas/aluno3.md)
-* [Nome completo do aluno 4](docs/atas/aluno4.md)
-* [Nome completo do aluno 5](docs/atas/aluno5.md)
-* [Nome completo do aluno 6](docs/atas/aluno6.md)
+* [Allan dos Anjos Viana](docs/atas/aluno1.md)
+* [Andre de Sousa Lopes](docs/atas/aluno2.md)
+* [Giovanny Lisboa](docs/atas/aluno3.md)
+* [Gustavo Veloso de Castro Monteiro Pinto](docs/atas/aluno4.md)
+* [Pedro Henrique Correia Cassimiro](docs/atas/aluno5.md)
+* [Roberta Alves Lima](docs/atas/aluno6.md)
 
 ## Orientador
 
-* Nome completo do professor 1
+* Kleber Jacques Ferreira de Souza
 
 # Planejamento
 
