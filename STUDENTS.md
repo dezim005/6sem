@@ -12,12 +12,12 @@ Esses dados servem como chave primária para realizar o acompanhamento do reposi
 
 | Aluno | Nome Completo | GitHub Username | Função Principal Pretendida |
 | :---: | :--- | :--- | :--- |
-| **Aluno 1** | [Insira Nome Completo] | `username_github_1` | [Ex: APIs Backend / DevOps] |
-| **Aluno 2** | [Insira Nome Completo] | `username_github_2` | [Ex: Designer / Frontend Web] |
-| **Aluno 3** | [Insira Nome Completo] | `username_github_3` | [Ex: Frontend Web / Testes] |
-| **Aluno 4** | [Insira Nome Completo] | `username_github_4` | [Ex: APIs Backend / Banco de Dados] |
-| **Aluno 5** | [Insira Nome Completo] | `username_github_5` | [Ex: Frontend Mobile] |
-| **Aluno 6** | [Insira Nome Completo] | `username_github_6` | [Ex: Designer / Frontend Mobile] |
+| **Aluno 1** | [Allan dos Anjos Viana] | `AllanAviana` | [Ex: APIs Backend / DevOps] |
+| **Aluno 2** | [Andre de Sousa Lopes] | `dezim005` | [Ex: Designer / Frontend Web] |
+| **Aluno 3** | [Giovanny Lisboa] | `glisboapuc` | [Ex: Frontend Web / Testes] |
+| **Aluno 4** | [Gustavo Veloso de Castro Monteiro Pinto] | `Gust2003` | [Ex: APIs Backend / Banco de Dados] |
+| **Aluno 5** | [Pedro Henrique Correia Cassimiro] | `username_github_5` | [Ex: Frontend Mobile] |
+| **Aluno 6** | [Roberta Alves Lima] | `username_github_6` | [Ex: Designer / Frontend Mobile] |
 
 ---
 
