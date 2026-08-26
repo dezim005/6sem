@@ -65,8 +65,8 @@ Esta tabela é a referência única de planejamento semanal do projeto, usada po
 | **H35a** | `T1.5` | `ATV1.2` | Diagrama de Componentes Físico e Lógico da Solução | Gustavo | `username4` | `⌛ Não Iniciado` | [Seção 4.1](#41-diagrama-de-arquitetura) | [ ] |
 | **H35a** | `T1.6` | `ATV1.2` | Definição das Tecnologias Distribuídas e Hospedagem | Pedro | `username5` | `⌛ Não Iniciado` | [Seção 4.2](#42-tecnologias-e-hospedagem) | [ ] |
 | **H36a** | `T1.7` | `ATV1.2` | Especificação de Contratos de API (Endpoints/Verbos) | Giovanny | `username6` | `⌛ Não Iniciado` | [Seção 5.0](#-especificacao-de-contratos-de-apis) | [ ] |
-| **H37a** | `T1.8` | `ATV1.2` | Wireframes do Frontend Web e Fluxograma de Navegação | André | `username3` | `⌛ Não Iniciado` | [Seção 6.0](#-projeto-do-frontend-web) | [ ] |
-| **H38a** | `T1.9` | `ATV1.2` | Wireframes do Frontend Móvel e Fluxo de Gestos | André | `username2` | `⌛ Não Iniciado` | [Seção 7.0](#-projeto-do-frontend-movel) | [ ] |
+| **H37a** | `T1.8` | `ATV1.2` | Wireframes do Frontend Web e Fluxograma de Navegação | André | `dezim005` | `📝 Em Progresso` | [Seção 6.0](#-projeto-do-frontend-web) | [ ] |
+| **H38a** | `T1.9` | `ATV1.2` | Wireframes do Frontend Móvel e Fluxo de Gestos | André | `dezim005` | `📝 Em Progresso` | [Seção 7.0](#-projeto-do-frontend-movel) | [ ] |
 
 ---
 
