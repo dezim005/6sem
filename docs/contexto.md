@@ -58,15 +58,15 @@ Esta tabela é a referência única de planejamento semanal do projeto, usada po
 
 | Rubrica Curricular | ID Tarefa | Atividade Semanal | Descrição Detalhada da Tarefa | Estudante Responsável | GitHub Username | Status de Entrega | Evidência/Seção Temática | Autoria Git |
 | :---: | :---: | :---: | :--- | :--- | :---: | :---: | :--- | :---: |
-| **H34a** | `T1.1` | `ATV1.1` | Definição do Problema, Objetivos e Justificativa | [Nome do Aluno 1] | `username1` | `⌛ Não Iniciado` | [Seção 1](#11-problema-objetivos-e-justificativa) | [ ] |
-| **H34a** | `T1.2` | `ATV1.1` | Descrição das Personas e Mapa de Stakeholders | [Nome do Aluno 2] | `username2` | `⌛ Não Iniciado` | [Seção 1.2](#12-personas-e-stakeholders) | [ ] |
-| **H34a** | `T1.3` | `ATV1.1` | Definição de Requisitos Funcionais e Priorização | [Nome do Aluno 3] | `username3` | `⌛ Não Iniciado` | [Seção 2.1](#21-requisitos-funcionais-e-não-funcionais) | [ ] |
-| **H34a** | `T1.4` | `ATV1.1` | Catálogo de Serviços Web e Acordos de SLA | [Nome do Aluno 1] | `username1` | `⌛ Não Iniciado` | [Seção 3.0](#-catalogo-de-servicos-web) | [ ] |
-| **H35a** | `T1.5` | `ATV1.2` | Diagrama de Componentes Físico e Lógico da Solução | [Nome do Aluno 4] | `username4` | `⌛ Não Iniciado` | [Seção 4.1](#41-diagrama-de-arquitetura) | [ ] |
-| **H35a** | `T1.6` | `ATV1.2` | Definição das Tecnologias Distribuídas e Hospedagem | [Nome do Aluno 5] | `username5` | `⌛ Não Iniciado` | [Seção 4.2](#42-tecnologias-e-hospedagem) | [ ] |
-| **H36a** | `T1.7` | `ATV1.2` | Especificação de Contratos de API (Endpoints/Verbos) | [Nome do Aluno 6] | `username6` | `⌛ Não Iniciado` | [Seção 5.0](#-especificacao-de-contratos-de-apis) | [ ] |
-| **H37a** | `T1.8` | `ATV1.2` | Wireframes do Frontend Web e Fluxograma de Navegação | [Nome do Aluno 3] | `username3` | `⌛ Não Iniciado` | [Seção 6.0](#-projeto-do-frontend-web) | [ ] |
-| **H38a** | `T1.9` | `ATV1.2` | Wireframes do Frontend Móvel e Fluxo de Gestos | [Nome do Aluno 2] | `username2` | `⌛ Não Iniciado` | [Seção 7.0](#-projeto-do-frontend-movel) | [ ] |
+| **H34a** | `T1.1` | `ATV1.1` | Definição do Problema, Objetivos e Justificativa | Allan | `username1` | `⌛ Não Iniciado` | [Seção 1](#11-problema-objetivos-e-justificativa) | [ ] |
+| **H34a** | `T1.2` | `ATV1.1` | Descrição das Personas e Mapa de Stakeholders | Roberta | `username2` | `⌛ Não Iniciado` | [Seção 1.2](#12-personas-e-stakeholders) | [ ] |
+| **H34a** | `T1.3` | `ATV1.1` | Definição de Requisitos Funcionais e Priorização | Giovanny | `username3` | `⌛ Não Iniciado` | [Seção 2.1](#21-requisitos-funcionais-e-não-funcionais) | [ ] |
+| **H34a** | `T1.4` | `ATV1.1` | Catálogo de Serviços Web e Acordos de SLA | Allan | `username1` | `⌛ Não Iniciado` | [Seção 3.0](#-catalogo-de-servicos-web) | [ ] |
+| **H35a** | `T1.5` | `ATV1.2` | Diagrama de Componentes Físico e Lógico da Solução | Gustavo | `username4` | `⌛ Não Iniciado` | [Seção 4.1](#41-diagrama-de-arquitetura) | [ ] |
+| **H35a** | `T1.6` | `ATV1.2` | Definição das Tecnologias Distribuídas e Hospedagem | Pedro | `username5` | `⌛ Não Iniciado` | [Seção 4.2](#42-tecnologias-e-hospedagem) | [ ] |
+| **H36a** | `T1.7` | `ATV1.2` | Especificação de Contratos de API (Endpoints/Verbos) | Giovanny | `username6` | `⌛ Não Iniciado` | [Seção 5.0](#-especificacao-de-contratos-de-apis) | [ ] |
+| **H37a** | `T1.8` | `ATV1.2` | Wireframes do Frontend Web e Fluxograma de Navegação | André | `username3` | `⌛ Não Iniciado` | [Seção 6.0](#-projeto-do-frontend-web) | [ ] |
+| **H38a** | `T1.9` | `ATV1.2` | Wireframes do Frontend Móvel e Fluxo de Gestos | André | `username2` | `⌛ Não Iniciado` | [Seção 7.0](#-projeto-do-frontend-movel) | [ ] |
 
 ---
 
