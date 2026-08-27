@@ -242,14 +242,38 @@ Descreva e justifique as escolhas da pilha de desenvolvimento distribuída:
 
 *(Esta seção atende diretamente à rubrica **H37a**)*
 
-[Aqui o grupo deve descrever as interações que o usuário do canal Web executará de forma responsiva.]
+O frontend web do sistema VagaLivre foi projetado utilizando o framework Next.js, estilizado com Tailwind CSS e componentes acessíveis do shadcn/ui, aproveitando a estrutura base do repositório *studio*. Esta interface é dedicada aos administradores (síndicos) e portaria, priorizando a densidade de informações em telas maiores (Desktop/Tablet) e garantindo total responsividade.
 
-### 6.1. Relação de Telas do Sistema Web:
-- **Tela 1: Dashboard Administrativo**: [Descreva que informações e gráficos estarão expostos na console]
-- **Tela 2: Cadastro de Entidades**: ...
+### 6.1. Relação de Telas do Sistema Web e Integração
 
-### 6.2. Wireframes Web:
-[Insira aqui os esboços que demonstram visualmente os layouts desktop, explicando onde haverá consumo assíncrono das APIs mapeadas]
+#### Tela 1: Dashboard / Histórico de Locações
+- **O que exibe:** Um painel de controle listando todas as reservas passadas e ativas do condomínio.
+- **Integração API:** Consumirá o endpoint de histórico (método `GET`) para gerar métricas de ocupação e faturamento de forma dinâmica.
+
+- <img width="1792" height="1120" alt="tela 1" src="https://github.com/user-attachments/assets/3da4468b-f008-45b8-934c-e5b7ff186340" />
+**Legenda:** *Interface do Histórico de Locações. Atualmente populada via `localStorage`, esta tela será refatorada para consumir os dados transacionais do PostgreSQL via chamadas assíncronas à API central.*
+
+#### Tela 2: Cadastro de Condomínios
+- **O que exibe:** Formulário para registro da entidade condominial, regras de acesso e limites físicos.
+- **Integração API:** Envia o payload via `POST` para o serviço de autenticação e perfis no backend central.
+
+- <img width="1904" height="1202" alt="tela 2" src="https://github.com/user-attachments/assets/4804807a-2b91-4cc1-8546-49fe9459283f" />
+**Legenda:** *Formulário de cadastro. O envio submeterá um payload JSON validado ao API Gateway, substituindo o armazenamento de estado local.*
+
+#### Tela 3: Gestão de Minhas Vagas
+- **O que exibe:** Listagem das vagas do usuário logado e o formulário (`spot-registration-form`) para cadastrar novos espaços, definindo preço, tipo de veículo e horários.  
+- **Integração API:** Consumo assíncrono para listar, editar (`PUT`) ou deletar (`DELETE`) a disponibilidade da vaga no banco de dados.
+
+- <img width="1904" height="1202" alt="tela 4" src="https://github.com/user-attachments/assets/59d5fcf2-017c-4df4-bd90-a05975d88817" />
+- <img width="1904" height="1202" alt="tela 4 1" src="https://github.com/user-attachments/assets/f847e323-6a46-4f38-bdfc-4fc15afe4ca6" />
+**Legenda:** *Painel de Gestão de Vagas. A interface permite ao usuário administrar a disponibilidade de seus espaços. Na nova arquitetura, o cadastro de uma nova vaga não ficará mais restrito ao estado local, submetendo um payload estruturado via `POST` diretamente para a API REST.*
+
+#### Tela 4: Calendário de Disponibilidade
+- **O que exibe:** Um componente visual e interativo demonstrando os dias e horários em que a vaga está livre ou reservada.
+- **Integração API:** Fará chamadas assíncronas para atualizar a visão mensal/semanal, consumindo os dados diretamente do Cache (Redis) para garantir que a interface seja atualizada quase em tempo real.
+
+- <img width="1904" height="1202" alt="tela 5" src="https://github.com/user-attachments/assets/bdcfe0c5-ccd2-4924-b1e2-5bebeb3e1b68" />
+**Legenda:** *Componente dinâmico de disponibilidade. Consumirá a camada de Cache (Redis) do backend para refletir o status da vaga em milissegundos, bloqueando a UI instantaneamente caso outro usuário reserve a vaga simultaneamente.*
 
 ---
 
