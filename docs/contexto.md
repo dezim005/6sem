@@ -275,6 +275,25 @@ O frontend web do sistema VagaLivre foi projetado utilizando o framework Next.js
 - <img width="1904" height="1202" alt="tela 5" src="https://github.com/user-attachments/assets/bdcfe0c5-ccd2-4924-b1e2-5bebeb3e1b68" />
 **Legenda:** *Componente dinâmico de disponibilidade. Consumirá a camada de Cache (Redis) do backend para refletir o status da vaga em milissegundos, bloqueando a UI instantaneamente caso outro usuário reserve a vaga simultaneamente.*
 
+### 6.2. Wireframes Web
+
+A arquitetura de componentes do Next.js permite que as telas realizem a transição do armazenamento síncrono local (localStorage) para chamadas assíncronas de rede (fetch/axios), consumindo os contratos da API descritos na Seção 5.
+
+#### Esboço do Layout Desktop (Wireframe Estrutural)
+As telas seguem ja na seção 6.1, onde foi detalhadas a função de cada uma delas.
+
+#### Migração de localStorage para Consumo Assíncrono de APIs
+
+Atualmente, o protótipo consome os dados salvos no navegador. Na Etapa 2, os dados serão gerenciados de forma distribuída. Abaixo está detalhado como as telas web consumirão assincronamente a API REST:
+
+##### Carregamento de Dados (Querying):
+- Como ocorre: Ao carregar a tela de Dashboard, a aplicação disparará uma requisição assíncrona HTTP GET.
+- Estado da Interface: Enquanto a API processa a resposta, o NextJS exibirá estados de carregamento visuais (Skeletons do shadcn/ui). Assim que a resposta JSON retornar da API, o estado do React será atualizado e o grid de vagas será renderizado de forma reativa na tela.
+
+##### Sincronização de Cadastros (Mutations):
+- Como ocorre: Ao preencher o formulário de um novo condomínio (Tela 2) e clicar em "Cadastrar", a aplicação web fará um disparo assíncrona do tipo POST enviando os dados em formato JSON.
+- Retorno: A API processará a inserção de forma transacional no PostgreSQL. Retornando o status 201 Created, a tabela web será recarregada automaticamente (invalidação de cache) e um alerta de sucesso (toast notification) será renderizado para o síndico.
+
 ---
 
 # 7. Projeto do Frontend Móvel
