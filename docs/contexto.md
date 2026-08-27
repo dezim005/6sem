@@ -77,21 +77,24 @@ Esta tabela é a referência única de planejamento semanal do projeto, usada po
 ## 1.1. Problema, Objetivos e Justificativa
 
 * **O Problema**:
-  [Descreva a dor específica do mercado que gerou a necessidade deste sistema. Não fale sobre as soluções tecnológicas aqui; foque na atividade humana ou do negócio que está sofrendo a ineficiência.]
-  
-  *Exemplo de Orientação:* Para uma plataforma de logística urbana, o problema reside na latência de roteamento de pacotes pequenos e na falta de visibilidade em tempo real para os destinatários.
+  Em condomínios residenciais, a gestão de vagas de estacionamento é **manual e descentralizada**. Moradores com vagas ociosas não possuem um canal formal para disponibilizá-las; quem precisa de vaga recorre a combinações informais — grupos de mensagem, avisos na portaria ou acordos verbais — **sem registro confiável** de quem utiliza a vaga, por quanto tempo ou com qual autorização.
+
+  Essa ineficiência gera três consequências diretas: (1) **subutilização do recurso** — vagas ociosas enquanto existe demanda no mesmo condomínio; (2) **conflitos entre moradores** — disputas por uso indevido ou falta de vaga, com mediação recorrente do síndico; (3) **sobrecarga administrativa** — portaria e síndico atuam de forma reativa, sem histórico auditável de ocupação.
+
+  Segundo o IBGE (Censo Demográfico 2022), mais de **47 milhões de domicílios** estão em condomínios no Brasil. Em edifícios com poucas vagas por unidade, a disputa por espaço é recorrente. Métodos informais (planilhas, mensagens) **não escalam** e **não permitem auditoria** do uso compartilhado.
 
 * **Objetivo Geral**:
-  [O objetivo geral deve começar com um verbo no infinitivo (ex: Desenvolver, Implementar, Criar) e refletir a solução global do problema.]
+  **Desenvolver** uma solução para **cadastrar, consultar, reservar e gerenciar vagas de estacionamento compartilhadas** em condomínios, partindo do protótipo web **Vaga Livre** e evoluindo para uma arquitetura distribuída com backend, interface web e aplicativo móvel.
 
-* **Objetivos Críticos Específicos (Mínimo de 3)**:
-  1. [Objetivo técnico focado em interoperabilidade/API distribuída]
-  2. [Objetivo operacional focado na experiência web ou móvel]
-  3. [Objetivo de infraestrutura focado em tolerância a falhas ou performance]
+* **Objetivos Críticos Específicos**:
+  1. [Interoperabilidade / API distribuída] Implementar uma API REST centralizada para autenticação, gestão de vagas, reservas e aprovação de moradores, garantindo que web e mobile consumam as mesmas regras de negócio.
+  2. [Experiência web ou móvel] Oferecer painel web ao síndico para aprovações, histórico e gestão administrativa, e aplicativo móvel ao morador para consulta e reserva no dia a dia.
+  3. [Infraestrutura — tolerância a falhas / performance] Adotar persistência gerenciada em nuvem, cache para consultas frequentes e monitoração contínua, com metas de disponibilidade e tempo de resposta acordadas.
 
 * **Justificativa**:
-  [Por que este projeto é relevante sob o ponto de vista prático, social, ambiental, ou de otimização de TI? Use números, estatísticas ou justificativas de mercado.]
+  O projeto é relevante sob o ponto de vista **prático**, pois condomínios já utilizam aplicativos para portaria e reserva de áreas comuns; a gestão de vagas é extensão natural desse ecossistema, com demanda recorrente em áreas urbanas densas (contexto reforçado pelos dados do IBGE sobre domicílios em condomínios).
 
+  Sob o ponto de vista **social**, reduz conflitos entre moradores e diminui a carga operacional sobre síndico e portaria. Sob o ponto de vista **ambiental**, o melhor aproveitamento de vagas já existentes pode reduzir o tempo de busca por estacionamento na via pública — benefício potencial a ser validado em uso real. Sob o ponto de vista de **otimização de TI**, centralizar dados e regras em um backend substitui a persistência local isolada do protótipo atual, permitindo que múltiplos usuários compartilhem a mesma base de informações de forma segura e consistente.
 ---
 
 ## 1.2. Personas e Stakeholders
