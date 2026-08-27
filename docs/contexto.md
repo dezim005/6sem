@@ -58,15 +58,15 @@ Esta tabela é a referência única de planejamento semanal do projeto, usada po
 
 | Rubrica Curricular | ID Tarefa | Atividade Semanal | Descrição Detalhada da Tarefa | Estudante Responsável | GitHub Username | Status de Entrega | Evidência/Seção Temática | Autoria Git |
 | :---: | :---: | :---: | :--- | :--- | :---: | :---: | :--- | :---: |
-| **H34a** | `T1.1` | `ATV1.1` | Definição do Problema, Objetivos e Justificativa | Allan | `username1` | `⌛ Não Iniciado` | [Seção 1](#11-problema-objetivos-e-justificativa) | [ ] |
-| **H34a** | `T1.2` | `ATV1.1` | Descrição das Personas e Mapa de Stakeholders | Roberta | `username2` | `⌛ Não Iniciado` | [Seção 1.2](#12-personas-e-stakeholders) | [ ] |
-| **H34a** | `T1.3` | `ATV1.1` | Definição de Requisitos Funcionais e Priorização | Giovanny | `username3` | `⌛ Não Iniciado` | [Seção 2.1](#21-requisitos-funcionais-e-não-funcionais) | [ ] |
-| **H34a** | `T1.4` | `ATV1.1` | Catálogo de Serviços Web e Acordos de SLA | Allan | `username1` | `⌛ Não Iniciado` | [Seção 3.0](#-catalogo-de-servicos-web) | [ ] |
-| **H35a** | `T1.5` | `ATV1.2` | Diagrama de Componentes Físico e Lógico da Solução | Gustavo | `username4` | `⌛ Não Iniciado` | [Seção 4.1](#41-diagrama-de-arquitetura) | [ ] |
-| **H35a** | `T1.6` | `ATV1.2` | Definição das Tecnologias Distribuídas e Hospedagem | Pedro | `username5` | `⌛ Não Iniciado` | [Seção 4.2](#42-tecnologias-e-hospedagem) | [ ] |
-| **H36a** | `T1.7` | `ATV1.2` | Especificação de Contratos de API (Endpoints/Verbos) | Giovanny | `username6` | `⌛ Não Iniciado` | [Seção 5.0](#-especificacao-de-contratos-de-apis) | [ ] |
-| **H37a** | `T1.8` | `ATV1.2` | Wireframes do Frontend Web e Fluxograma de Navegação | André | `dezim005` | `📝 Em Progresso` | [Seção 6.0](#-projeto-do-frontend-web) | [ ] |
-| **H38a** | `T1.9` | `ATV1.2` | Wireframes do Frontend Móvel e Fluxo de Gestos | André | `dezim005` | `📝 Em Progresso` | [Seção 7.0](#-projeto-do-frontend-movel) | [ ] |
+| **H34a** | `T1.1` | `ATV1.1` | Definição do Problema, Objetivos e Justificativa | Allan | `AllanAviana` | `✔️ Entregue` | [Seção 1](#11-problema-objetivos-e-justificativa) | [ ] |
+| **H34a** | `T1.2` | `ATV1.1` | Descrição das Personas e Mapa de Stakeholders | Roberta | `username2` | `📝 Em Progresso` | [Seção 1.2](#12-personas-e-stakeholders) | [ ] |
+| **H34a** | `T1.3` | `ATV1.1` | Definição de Requisitos Funcionais e Priorização | Giovanny | `glisboapuc` | `📝 Em Progresso` | [Seção 2.1](#21-requisitos-funcionais-e-não-funcionais) | [ ] |
+| **H34a** | `T1.4` | `ATV1.1` | Catálogo de Serviços Web e Acordos de SLA | Allan | `AllanAviana` | `📝 Em Progresso` | [Seção 3.0](#-catalogo-de-servicos-web) | [ ] |
+| **H35a** | `T1.5` | `ATV1.2` | Diagrama de Componentes Físico e Lógico da Solução | Gustavo | `Gust2003` | `📝 Em Progresso` | [Seção 4.1](#41-diagrama-de-arquitetura) | [ ] |
+| **H35a** | `T1.6` | `ATV1.2` | Definição das Tecnologias Distribuídas e Hospedagem | Pedro | `username5` | `📝 Em Progresso` | [Seção 4.2](#42-tecnologias-e-hospedagem) | [ ] |
+| **H36a** | `T1.7` | `ATV1.2` | Especificação de Contratos de API (Endpoints/Verbos) | Giovanny | `glisboapuc` | `📝 Em Progresso` | [Seção 5.0](#-especificacao-de-contratos-de-apis) | [ ] |
+| **H37a** | `T1.8` | `ATV1.2` | Wireframes do Frontend Web e Fluxograma de Navegação | André | `dezim005` | `✔️ Entregue` | [Seção 6.0](#-projeto-do-frontend-web) | [ ] |
+| **H38a** | `T1.9` | `ATV1.2` | Wireframes do Frontend Móvel e Fluxo de Gestos | André | `dezim005` | `✔️ Entregue` | [Seção 7.0](#-projeto-do-frontend-movel) | [ ] |
 
 ---
 
@@ -280,7 +280,7 @@ O frontend web do sistema VagaLivre foi projetado utilizando o framework Next.js
 A arquitetura de componentes do Next.js permite que as telas realizem a transição do armazenamento síncrono local (localStorage) para chamadas assíncronas de rede (fetch/axios), consumindo os contratos da API descritos na Seção 5.
 
 #### Esboço do Layout Desktop (Wireframe Estrutural)
-As telas seguem ja na seção 6.1, onde foi detalhadas a função de cada uma delas.
+As telas ja seguem na seção 6.1, onde foi detalhadas a função de cada uma delas.
 
 #### Migração de localStorage para Consumo Assíncrono de APIs
 
@@ -300,14 +300,42 @@ Atualmente, o protótipo consome os dados salvos no navegador. Na Etapa 2, os da
 
 *(Esta seção atende diretamente à rubrica **H38a**)*
 
-[Aqui deve ser demonstrada a preocupação espacial e gestual exclusiva do ecossistema móvel.]
+O Front-end Móvel (que será construído em React Native) herdará a identidade visual do atual sistema web responsivo, mas com adaptações ergonômicas focadas na usabilidade com uma mão (one-handed use) e transições gestuais nativas. O foco principal deste canal é o motorista/locatário, que precisa de agilidade na rua.
 
 ### 7.1. Fluxograma de Navegação (Navegabilidade):
-- **Tela 1: Tela de Entrada e Login**: [Explique o formulário nativo]
-- **Tela 2: Tela Principal com Mapa / Listagem Interativa**: ...
 
-### 7.2. Wireframes Móveis:
-[Insira aqui o link ou imagens dos wireframes desenhados para telefones. Demonstre usabilidade focada em uma mão, menus hamburguer, navegação por guias (tabs) e comportamentos de transição de tela.]
+#### Tela 1: Tela de Entrada e Login
+- Formulário otimizado para o teclado virtual do smartphone. Utilizará os recursos nativos do aparelho para autocompletar e-mails e senhas, reduzindo o tempo de digitação na rua.****
+- <img width="436" height="900" alt="Captura de Tela 2026-08-27 às 19 03 54" src="https://github.com/user-attachments/assets/4a62a99a-46f3-4314-843e-6ccfa336ebd1" /> <img width="426" height="894" alt="Captura de Tela 2026-08-27 às 19 04 03" src="https://github.com/user-attachments/assets/263f7532-fe9b-4030-8c2a-a6201d73a0f2" />
+**Legenda:** *Visão Mobile do Login. Inputs grandes e espaçados para evitar toques acidentais, garantindo uma entrada rápida e fluida no ecossistema da aplicação.*
+
+#### Tela 2: Busca e Listagem de Vagas
+- A tela principal (Home). Exibe as vagas disponíveis em formato de lista vertical ou cards interativos. Possui filtros rápidos na parte superior (ex: alternar rapidamente a busca para vagas exclusivas de motocicletas).
+- <img width="427" height="897" alt="Captura de Tela 2026-08-27 às 19 04 37" src="https://github.com/user-attachments/assets/3c423bf4-fbc1-4ef5-98d8-6f05ee842f8a" />
+**Legenda:** *Listagem de vagas otimizada para scroll vertical infinito. No aplicativo nativo, esta lista será alimentada de forma assíncrona pela API, exibindo as opções em tempo real.*
+
+#### Tela 3: Detalhes e Ação de Reserva
+- Ao tocar em uma vaga, os detalhes abrem em um formato centralizado na tela. Isso garante que o botão de "Confirmar Reserva" fique na Thumb Zone (zona de alcance do polegar), facilitando a conversão sem que o usuário precise esticar os dedos até o topo da tela.
+- <img width="425" height="897" alt="Captura de Tela 2026-08-27 às 19 06 09" src="https://github.com/user-attachments/assets/03720a2f-4767-49af-8dae-94ca6ae12945" />
+**Legenda:** *Modal de reserva simulando o comportamento centralizado nativo. Elementos de decisão, como a confirmação de horário e botão de pagamento, estão centralizados na parte central da tela para respeitar a ergonomia do uso com apenas uma mão.*
+
+#### Tela 4: Minhas Reservas
+- A tela "Histórico de Reservas" (Vaga Livre) lista o histórico de locações de vagas de estacionamento. A interface inclui um botão de ação proeminente "Cancelar Reserva", permitindo que o usuário gerencie facilmente as reservas agendadas.
+- <img width="431" height="893" alt="Captura de Tela 2026-08-27 às 19 07 39" src="https://github.com/user-attachments/assets/b2a097ca-6344-4260-9755-9f92b6d849cf" />
+**Legenda:** *Interface de reservas ativas. Componentes em formato de 'Card' para fácil leitura do status da reserva e apresentação rápida na portaria do condomínio.*
+
+
+
+### 7.2. Wireframes Móveis
+Para garantir uma excelente experiência no celular, o projeto do frontend móvel obedece a regras consolidadas de ergonomia móvel:
+
+#### Esboço do Layout Mobile e Zona do Polegar (Thumb Zone)
+As telas ja seguem na seção 7.1, onde foi detalhadas a função de cada uma delas.
+
+#### Diretrizes de Gestos e Transições Nativas:
+- Navegação por Guias (Bottom Tabs): O menu lateral (sidebar), utilizado na atual versão web, será substituído por uma barra de navegação persistente no rodapé da tela do aplicativo. Isso permitirá que o usuário alterne entre a Home (vagas), suas Reservas Ativas e as Configurações de Perfil com um único toque do polegar.
+- Gesto de Puxar para Atualizar (Pull-to-Refresh): Planejamos implementar essa funcionalidade na listagem de vagas, permitindo que o morador atualize de forma reativa e intuitiva o status das vagas disponíveis em tempo real.
+- Transições de Tela Suaves: A futura arquitetura mobile utilizará um Stack Navigator. Diferente do carregamento de páginas da web, ao entrar em fluxos profundos (como o histórico detalhado), as telas terão transições nativas e fluidas (efeito de deslizamento lateral no iOS e elevação de baixo para cima no Android), garantindo a sensação tátil de um aplicativo real.
 
 ---
 
