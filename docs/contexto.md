@@ -81,7 +81,7 @@ Esta tabela é a referência única de planejamento semanal do projeto, usada po
 
   Essa ineficiência gera três consequências diretas: (1) **subutilização do recurso** — vagas ociosas enquanto existe demanda no mesmo condomínio; (2) **conflitos entre moradores** — disputas por uso indevido ou falta de vaga, com mediação recorrente do síndico; (3) **sobrecarga administrativa** — portaria e síndico atuam de forma reativa, sem histórico auditável de ocupação.
 
-  Segundo o IBGE (Censo Demográfico 2022), mais de **47 milhões de domicílios** estão em condomínios no Brasil. Em edifícios com poucas vagas por unidade, a disputa por espaço é recorrente. Métodos informais (planilhas, mensagens) **não escalam** e **não permitem auditoria** do uso compartilhado.
+  Segundo o IBGE, mais de **13 milhões de domicílios** estão em condomínios no Brasil. Em edifícios com poucas vagas por unidade, a disputa por espaço é recorrente. Métodos informais (planilhas, mensagens) **não escalam** e **não permitem auditoria** do uso compartilhado.
 
 * **Objetivo Geral**:
   **Desenvolver** uma solução para **cadastrar, consultar, reservar e gerenciar vagas de estacionamento compartilhadas** em condomínios, partindo do protótipo web **Vaga Livre** e evoluindo para uma arquitetura distribuída com backend, interface web e aplicativo móvel.
