@@ -1,4 +1,4 @@
-# TÍTULO DO PROJETO
+# Vaga Livre
 
 `CURSO: Sistemas de Informação`
 
