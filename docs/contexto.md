@@ -211,11 +211,11 @@ graph TD
 
 Descreva e justifique as escolhas da pilha de desenvolvimento distribuída:
 
-* **Backend / API**: [Ex: Node.js (TypeScript) ou .NET 8 (C#) ou Spring Boot (Java)]. *Justificativa técnica baseada em performance concorrente.*
-* **Frontend Web**: [Ex: React ou Angular]. *Justificativa com foco no dinamismo e Single Page Application.*
-* **Frontend Móvel**: [Ex: React Native via Expo]. *Enquadramento das características nativas necessárias (câmera, sensores, offline).*
-* **Banco de Dados**: [Ex: PostgreSQL e Redis]. *Papel de persistência relacional ácida e cache em memória distributed.*
-* **Hospedagem em Nuvem**: [Ex: AWS para API e Banco de Dados, Vercel para interface Web, e Expo Go / APK para Mobile].
+* **Backend / API**: [Node.js com TypeScript e NestJS]. *A escolha se justifica pela boa capacidade de lidar com múltiplas requisições simultâneas, facilidade de desenvolvimento de APIs REST escaláveis e integração natural com o ecossistema JavaScript já adotado no projeto. O uso de TypeScript melhora a organização, a tipagem e a manutenção do código, enquanto o NestJS oferece uma arquitetura modular adequada para sistemas distribuídos.*
+* **Frontend Web**: [Next.js com TypeScript, Tailwind CSS e shadcn/ui]. *A escolha se justifica pela criação de interfaces dinâmicas, reativas e responsivas, com ótima organização para aplicações web modernas no modelo Single Page Application. Além disso, o Next.js se integra bem ao React e facilita a evolução do protótipo atual para consumo assíncrono da API.*
+* **Frontend Móvel**: [React Native com Expo e TypeScript]. *A escolha se justifica pela possibilidade de desenvolvimento multiplataforma para Android e iOS com uma única base de código, além da boa integração com recursos nativos do dispositivo móvel. O Expo facilita testes, emulação e distribuição inicial do aplicativo, atendendo bem às necessidades do projeto.*
+* **Banco de Dados**: [PostgreSQL e Redis]. *O PostgreSQL será utilizado como banco de dados relacional principal, garantindo consistência, integridade e suporte transacional para entidades como usuários, vagas e reservas. Já o Redis atuará como cache em memória distribuído, acelerando consultas frequentes, especialmente relacionadas à disponibilidade das vagas, melhorando o desempenho geral do sistema.*
+* **Hospedagem em Nuvem**: [Vercel para o Frontend Web, Render para a API Backend, Neon para o PostgreSQL e Upstash para o Redis, além de Expo Go / APK para o Mobile] *A escolha se justifica pela simplicidade de implantação, integração com GitHub, disponibilidade de planos acessíveis para projetos acadêmicos e separação dos componentes em serviços independentes, reforçando a proposta de arquitetura distribuída do VagaLivre.*.
 
 ---
 
