@@ -59,7 +59,7 @@ Esta tabela é a referência única de planejamento semanal do projeto, usada po
 | Rubrica Curricular | ID Tarefa | Atividade Semanal | Descrição Detalhada da Tarefa | Estudante Responsável | GitHub Username | Status de Entrega | Evidência/Seção Temática | Autoria Git |
 | :---: | :---: | :---: | :--- | :--- | :---: | :---: | :--- | :---: |
 | **H34a** | `T1.1` | `ATV1.1` | Definição do Problema, Objetivos e Justificativa | Allan | `AllanAviana` | `✔️ Entregue` | [Seção 1](#11-problema-objetivos-e-justificativa) | [ ] |
-| **H34a** | `T1.2` | `ATV1.1` | Descrição das Personas e Mapa de Stakeholders | Roberta | `username2` |  `✔️ Entregue` | [Seção 1.2](#12-personas-e-stakeholders) | [ ] |
+| **H34a** | `T1.2` | `ATV1.1` | Descrição das Personas e Mapa de Stakeholders | Roberta | `RobertaAlvesLima` |  `✔️ Entregue` | [Seção 1.2](#12-personas-e-stakeholders) | [ ] |
 | **H34a** | `T1.3` | `ATV1.1` | Definição de Requisitos Funcionais e Priorização | Giovanny | `glisboapuc` | `📝 Em Progresso` | [Seção 2.1](#21-requisitos-funcionais-e-não-funcionais) | [ ] |
 | **H34a** | `T1.4` | `ATV1.1` | Catálogo de Serviços Web e Acordos de SLA | Allan | `AllanAviana` | `📝 Em Progresso` | [Seção 3.0](#-catalogo-de-servicos-web) | [ ] |
 | **H35a** | `T1.5` | `ATV1.2` | Diagrama de Componentes Físico e Lógico da Solução | Gustavo | `Gust2003` | `📝 Em Progresso` | [Seção 4.1](#41-diagrama-de-arquitetura) | [ ] |
