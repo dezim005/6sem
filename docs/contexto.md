@@ -101,20 +101,31 @@ Esta tabela é a referência única de planejamento semanal do projeto, usada po
 
 [As personas e stakeholders ajudam a desenhar as interfaces de usuário da aplicação distribuída (Web e Mobile).]
 
-### Persona 1: [Nome Fictício]
-- **Perfil e Atitude**: [Idade, profissão, nível de familiaridade com tecnologia e ferramentas móveis/web]
-- **Frustração com o Modelo Atual**: [O que o irrita no problema que estamos resolvendo?]
-- **Como a Solução o Ajuda**: [Qual software/aplicativo ele usará e qual o valor que extrai de maneira direta]
+### Persona 1: Renata Almeida
+- **Perfil e Atitude**: Renata tem 27 anos, é empreendedora digital e trabalha com influências digitais e freelancing. Possui boa habilidade com tecnologia, redes sociais e plataformas digitais de gestão.
+- **Frustração com o Modelo Atual**: Falta de controle e organização com as reservas de vagas entre vizinhos e dificuldade de divulgar sua vaga.
+- **Como a Solução o Ajuda**: Sua rotina é flexível, mas cheia de compromissos, por isso ela valoriza a praticidade e o controle. Utilizar o VagaLivre lhe ajudará a reservar vagas da garagem, quando necessário, com facilidade e rapidez, além de poder divulgar sua vaga para gerar uma renda extra.
 
-### Persona 2: [Nome Fictício]
-- **Perfil e Atitude**: [Ex: Gerente de Operações, Motorista parceiro, etc.]
-- **Frustração**: ...
-- **Como a Solução o Ajuda**: ...
+### Persona 2: Pedro Souza
+- **Perfil e Atitude**: Pedro tem 68 anos e está aposentado. Não tem experiência com novas tecnologias, atualmente utiliza apenas grupos de mensagens entre amigos e familiares e, eventualmente, navega em sites de notícias pelo celular.
+- **Frustração**: Pedro não dirige no momento e está sem carro próprio. Sua vaga fica disponível, e alguns vizinhos a pedem emprestado. Pedro gostaria de gerar uma renda extra no aluguel dessa vaga, mas tem muita dificuldade em buscar soluções tecnológicas. 
+- **Como a Solução o Ajuda**: Pedro precisa de uma solução de fácil usabilidade para gerenciar sua vaga de garagem. O VagaLivre se apresenta como uma solução simples, sem funcionalidades complexas.
+
+### Persona 3: Ana Mendes
+- **Perfil e Atitude**: Ana tem 40 anos, é administradora e síndica de um condomínio.
+- **Frustração**: Ana segue um regimento interno de seu condomínio que não apresenta regras quanto a utilização e empréstimos de vagas de garagem. De maneira informal, através de aplicativos de mensagens, os vizinhos solicitam vagas quando necessitam e os empréstimos ocorrem sem formalização e tempo de utilização. Com isso, ocorrem conflitos entre moradores e não há uma solução para gerenciar essa demanda.
+- **Como a Solução o Ajuda**: Uma solução como o VagaLivre lhe ajudaria na gestão e organização entre as solicitações de vagas. A implementação de uma solução digital para manejo das vagas de garagem irá garantir uma gestão eficiente, maior transparência e otimização da comunicação entre os moradores.
 
 ### Mapa de Interesses dos Stakeholders:
-- **Stakeholders Diretos (Atores principais)**: [Usuários web, usuários móveis]
-- **Stakeholders Indiretos (Quem é alterado pelo sistema)**: [Administradores de infraestrutura, fornecedores]
-
+- **Stakeholders Diretos (Atores principais)**:
+  - Síndico do condomínio: responsável pela administração e controle das vagas.
+  - Moradores/condôminos: usuários que consultarão e utilizarão o sistema para acompanhar informações relacionadas às vagas.
+  - Porteiros/funcionários autorizados: podem utilizar o sistema para consultar e controlar informações sobre a ocupação das vagas.
+    
+- **Stakeholders Indiretos (Quem é alterado pelo sistema)**:
+  - Administradora do condomínio: pode ser beneficiada pela melhoria na organização e no controle das informações.
+  - Conselho do condomínio: interessado na transparência e no cumprimento das regras relacionadas às vagas.
+  - Visitantes: podem ser impactados pelas regras e pela disponibilidade de vagas controladas pelo sistema.
 ---
 
 # 2. Especificações do Projeto
