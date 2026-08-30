@@ -211,41 +211,8 @@ A lógica de TI do **Vaga Livre** será gerenciada por **seis serviços independ
 
 ## 4.1. Diagrama de Arquitetura
 
-[Insira aqui o link ou imagem do Diagrama de Componentes que demonstra fisicamente a distribuição do seu sistema. Mostre o fluxo de chamadas entre as interfaces Web e Mobile passando pelo API Gateway/API Backend, e a consequente comunicação com Bancos de Dados e Serviços de mensageria ou serviços externos.]
+![Diagrama de Arquitetura — Vaga Livre](./img/diagrama-arquitetura.png)
 
-```mermaid
-graph TD
-    subgraph Clientes [Camada de Interface]
-        Web[Interface Web: React/Vue/HTML]
-        Mobile[Interface Móvel: React Native/Flutter]
-    end
-
-    subgraph Roteamente [API Gateway / Roteador]
-        GW[Serviço Gateway / Proxy Reverso]
-    end
-
-    subgraph Backend [Serviços Distribuídos]
-        Auth[Serviço de Autenticação - JWT]
-        Core[API Principal - Lógica de Negócio]
-        Notif[Serviço Assíncrono de Notificação]
-    end
-
-    subgraph Dados [Camada de Dados]
-        DB[Banco de Dados Relacionado: SQL Server/Postgres]
-        NoSQL[Banco Chave-Valor: Redis ou MongoDB]
-    end
-
-    Web -->|HTTPS| GW
-    Mobile -->|HTTPS / WSS| GW
-    GW -->|Internal Route| Auth
-    GW -->|Internal Route| Core
-    Core -->|Event/PubSub| Notif
-    Auth -->|Queries| DB
-    Core -->|Queries| DB
-    Core -->|Caching| NoSQL
-```
-
----
 
 ## 4.2. Tecnologias e Hospedagem
 
