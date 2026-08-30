@@ -16,8 +16,8 @@ Esses dados servem como chave primária para realizar o acompanhamento do reposi
 | **Aluno 2** | [Andre de Sousa Lopes] | `dezim005` | [Ex: Designer / Frontend Web] |
 | **Aluno 3** | [Giovanny Lisboa] | `glisboapuc` | [Ex: Frontend Web / Testes] |
 | **Aluno 4** | [Gustavo Veloso de Castro Monteiro Pinto] | `Gust2003` | [Ex: APIs Backend / Banco de Dados] |
-| **Aluno 5** | [Pedro Henrique Correia Cassimiro] | `username_github_5` | [Ex: Frontend Mobile] |
-| **Aluno 6** | [Roberta Alves Lima] | `username_github_6` | [Ex: Designer / Frontend Mobile] |
+| **Aluno 5** | [Pedro Henrique Correia Cassimiro] | `pedroh-corr` | [Ex: Frontend Mobile] |
+| **Aluno 6** | [Roberta Alves Lima] | `RobertaAlvesLima` | [Ex: Designer / Frontend Mobile] |
 
 ---
 
