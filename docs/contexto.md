@@ -192,17 +192,16 @@ Essa organização permite que o desenvolvimento seja realizado de maneira incre
 
 # 3. Catálogo de Serviços Web
 
-*(Esta seção atende diretamente à rubrica **H34a**)*
-
-[Análise técnica de como a lógica de TI será gerenciada. No contexto de Aplicações Distribuídas, descreva quais serviços do sistema são executados como processos independentes ou acoplados].
-
-Use a tabela abaixo para mapear a Gestão de Serviços de TI que o grupo irá disponibilizar:
+A lógica de TI do **Vaga Livre** será gerenciada por **seis serviços independentes**, comunicando-se via **HTTPS/JSON** (REST). Clientes Web e Mobile consomem a mesma API. Cada serviço roda como processo separado; o serviço de notificações opera de forma **síncrona**, enviando e-mail ou push na mesma requisição em que ocorre a aprovação ou a reserva.
 
 | Serviço de TI | Canal de Comunicação | Nível de Serviço (SLA) Esperado | Mecanismo de Monitoração | Responsável |
 | :--- | :---: | :---: | :--- | :---: |
-| **Serviço de Autenticação Centralizado (Identity)** | JSON / HTTPS | 99.9% de uptime / Up em < 2s pós queda | LOGs de Auditoria / Middleware de telemetria | [Nome do Aluno] |
-| **Serviço de Processamento de Pagamento** | Mensageria / AMQP | Processamento em no máximo 10 segundos | Fila Morta (Dead Letter Queues) | [Nome do Aluno] |
-| **Serviço de Geolocalização em Tempo Real** | WebSockets | Latência máxima de sincronismo < 300ms | Heartbeats a cada 5 segundos | [Nome do Aluno] |
+| **Serviço de Autenticação (Identity)** | JSON / HTTPS | 99,9% de uptime / Up em < 2 min pós queda | Logs de auditoria / Middleware de telemetria | Pedro |
+| **Serviço de Usuários e Condomínios** | JSON / HTTPS | 99,5% de uptime / aprovação persistida em < 3 s | Logs estruturados / Middleware de telemetria | Roberta |
+| **Serviço de Vagas de Estacionamento** | JSON / HTTPS | 99,5% de uptime / listagem < 1,5 s | Métricas por endpoint / Middleware de telemetria | Giovanny |
+| **Serviço de Disponibilidade de Vagas** | JSON / HTTPS | 99,5% de uptime / consulta de slots < 1,5 s | Logs de alteração de slots / Middleware de telemetria | Allan |
+| **Serviço de Reservas** | JSON / HTTPS | 99,9% de uptime / reserva persistida em < 2 s | Logs de conflito / Middleware de telemetria | Gustavo |
+| **Serviço de Notificações** | JSON / HTTPS | 99,5% de uptime / envio em no máximo 5 s | Logs de envio / Middleware de telemetria | André |
 
 ---
 
