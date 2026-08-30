@@ -132,20 +132,61 @@ Esta tabela é a referência única de planejamento semanal do projeto, usada po
 
 ## 2.1. Requisitos Funcionais e Não Funcionais
 
+Os requisitos do sistema **VagaLivre** foram definidos a partir do problema identificado, das necessidades das personas e dos fluxos previstos para as aplicações Web e Móvel.
+
+Para a priorização dos requisitos funcionais, foram considerados três níveis:
+
+- **Alta:** funcionalidade indispensável para o funcionamento do fluxo principal da solução. Sua ausência impede ou compromete diretamente o uso do sistema.
+- **Média:** funcionalidade importante para administração, acompanhamento ou melhoria da experiência, mas que não impede a execução do fluxo principal.
+- **Baixa:** funcionalidade complementar, que pode ser implementada posteriormente sem comprometer a operação essencial da solução.
+
+O fluxo principal considerado para o MVP é: **autenticar usuário → disponibilizar vaga → consultar disponibilidade → realizar reserva → acompanhar ou cancelar reserva**, mantendo as informações centralizadas e disponíveis para moradores e administração do condomínio.
+
 ### Requisitos Funcionais (RF)
 
 | ID | Descrição do Requisito | Canal Prático (Onde ocorre?) | Prioridade | Rubrica Associada |
 | :---: | :--- | :---: | :---: | :---: |
-| `RF-101` | [Ex: Permitir que o gestor despache uma frota de entregadores] | Web | Alta | `H37a` |
-| `RF-102` | [Ex: Permitir que o entregador de campo aceite a corrida] | Móvel | Alta | `H38a` |
-| `RF-103` | [Ex: Expor serviços de geolocalização sincronizados] | API / Backend | Alta | `H36a` |
+| `RF-101` | Permitir que usuários autentiquem-se no sistema utilizando suas credenciais, identificando seu perfil e suas permissões de acesso. | Web / Móvel | Alta | `H36a`, `H37a`, `H38a` |
+| `RF-102` | Permitir o cadastro ou solicitação de acesso de moradores vinculados a um condomínio. | Móvel / API | Alta | `H36a`, `H38a` |
+| `RF-103` | Permitir que o síndico aprove ou rejeite solicitações de acesso de moradores ao condomínio. | Web | Alta | `H36a`, `H37a` |
+| `RF-104` | Permitir que usuários administrativos cadastrem e mantenham os dados do condomínio no sistema. | Web | Alta | `H36a`, `H37a` |
+| `RF-105` | Permitir que o proprietário cadastre, consulte, edite e remova suas vagas, informando características como identificação, tipo de veículo permitido, valor e disponibilidade. | Web | Alta | `H36a`, `H37a` |
+| `RF-106` | Permitir que o proprietário defina os dias e horários em que sua vaga estará disponível para utilização por outros moradores. | Web | Alta | `H36a`, `H37a` |
+| `RF-107` | Permitir que moradores consultem as vagas disponíveis no condomínio para determinado período. | Móvel | Alta | `H36a`, `H38a` |
+| `RF-108` | Permitir a aplicação de filtros na consulta de vagas, incluindo critérios como tipo de veículo e disponibilidade. | Móvel | Média | `H36a`, `H38a` |
+| `RF-109` | Permitir que o morador visualize os detalhes de uma vaga antes de efetuar uma reserva, incluindo disponibilidade, período permitido, tipo de veículo e demais informações cadastradas. | Móvel | Alta | `H36a`, `H38a` |
+| `RF-110` | Permitir que o morador reserve uma vaga disponível para um período específico. | Móvel | Alta | `H36a`, `H38a` |
+| `RF-111` | Impedir que uma mesma vaga possua reservas conflitantes ou simultâneas para o mesmo período. | API / Backend | Alta | `H36a` |
+| `RF-112` | Permitir que o morador consulte suas reservas ativas e seu histórico de reservas. | Móvel | Alta | `H36a`, `H38a` |
+| `RF-113` | Permitir que o morador cancele uma reserva ativa, respeitando as regras definidas pelo sistema. | Móvel | Alta | `H36a`, `H38a` |
+| `RF-114` | Registrar de forma persistente o histórico das reservas, relacionando usuário, vaga, condomínio, período e situação da reserva. | API / Backend | Alta | `H36a` |
+| `RF-115` | Permitir que síndico e usuários administrativos consultem o histórico de reservas e ocupação das vagas do condomínio. | Web | Média | `H36a`, `H37a` |
+| `RF-116` | Apresentar ao síndico informações consolidadas sobre utilização das vagas, permitindo acompanhar ocupação e histórico de locações. | Web | Média | `H36a`, `H37a` |
+| `RF-117` | Permitir que porteiros ou funcionários autorizados consultem informações sobre reservas e ocupação das vagas, de acordo com suas permissões de acesso. | Web | Média | `H36a`, `H37a` |
 
 ### Requisitos Não Funcionais (RNF)
 
+Os requisitos não funcionais representam características técnicas necessárias para que a solução distribuída opere de forma segura, consistente e adequada às necessidades identificadas.
+
 | ID | Descrição do Requisito Técnico | Categoria | Prioridade | Rubrica Associada |
 | :---: | :--- | :---: | :---: | :---: |
-| `RNF-201` | [Ex: Sincronização offline-first das corridas no cliente móvel] | Disponibilidade | Alta | `H38a`, `H35a` |
-| `RNF-202` | [Ex: Tempo de resposta para requisições de leitura menor que 1.5s] | Desempenho | Alta | `H36a`, `H35a` |
+| `RNF-201` | A aplicação Web e o aplicativo Móvel deverão utilizar uma API REST centralizada como meio de acesso às regras de negócio e aos dados persistidos. | Arquitetura / Interoperabilidade | Alta | `H35a`, `H36a` |
+| `RNF-202` | Os dados de usuários, condomínios, vagas e reservas deverão ser armazenados de forma centralizada em banco de dados relacional, garantindo consistência entre os diferentes clientes da aplicação. | Persistência / Consistência | Alta | `H35a`, `H36a` |
+| `RNF-203` | As comunicações entre clientes e API deverão utilizar HTTPS e mecanismos de autenticação baseados em token, com autorização de acordo com o perfil do usuário. | Segurança | Alta | `H35a`, `H36a` |
+| `RNF-204` | Requisições comuns de leitura da API deverão apresentar tempo de resposta de até 2 segundos em condições normais de utilização. | Desempenho | Alta | `H35a`, `H36a` |
+| `RNF-205` | Consultas frequentes de disponibilidade de vagas poderão utilizar mecanismo de cache para reduzir a latência e a carga sobre o banco de dados principal. | Desempenho | Média | `H35a`, `H36a` |
+| `RNF-206` | Alterações relacionadas a reservas e autenticação deverão possuir registros que permitam rastrear as principais operações realizadas no sistema. | Auditoria / Confiabilidade | Alta | `H34a`, `H36a` |
+| `RNF-207` | A solução deverá possuir mecanismos de monitoração que permitam identificar indisponibilidade ou falhas nos serviços centrais da aplicação. | Disponibilidade / Monitoramento | Média | `H34a`, `H35a` |
+
+### Justificativa da Priorização
+
+A priorização concentra o desenvolvimento inicial nas funcionalidades que resolvem diretamente o problema identificado no projeto.
+
+Os requisitos classificados como **Alta prioridade** formam o fluxo mínimo necessário para funcionamento do VagaLivre: identificação dos usuários, administração dos acessos, cadastramento e disponibilização das vagas, consulta da disponibilidade, realização e gerenciamento das reservas e persistência centralizada das informações.
+
+Os requisitos classificados como **Média prioridade** complementam o fluxo principal, oferecendo recursos de filtragem, acompanhamento administrativo, indicadores e consultas destinadas à gestão do condomínio.
+
+Essa organização permite que o desenvolvimento seja realizado de maneira incremental. Inicialmente, a API poderá atender ao fluxo essencial de vagas e reservas; posteriormente, as interfaces Web e Móvel poderão consumir esses mesmos serviços e incorporar as funcionalidades administrativas e de experiência previstas para cada canal.
 
 ---
 
@@ -225,31 +266,577 @@ Descreva e justifique as escolhas da pilha de desenvolvimento distribuída:
 
 # 5. Especificação de Contratos de APIs
 
-*(Esta seção atende diretamente à rubrica **H36a**)*
+Esta seção define os principais contratos da API REST do sistema **VagaLivre**. A API será responsável pela comunicação entre as aplicações Web e Móvel e a camada central de regras de negócio e persistência.
 
-[Definição formal dos endpoints chaves de comunicação que servirão para o desenvolvimento na Etapa 2.]
+Os endpoints foram definidos a partir dos requisitos funcionais apresentados na Seção 2.1, priorizando as operações necessárias para autenticação, gerenciamento de moradores, condomínios, vagas, disponibilidade e reservas.
 
-### Endpoint Exemplo 1: Autenticação de Usuários (`/api/v1/auth/login`)
-- **Método**: `POST`
-- **Payload de Requisição**:
-  ```json
-  {
-    "email": "user@pucminas.br",
-    "password": "hashed_password"
+A API utilizará dados no formato **JSON** e comunicação através do protocolo **HTTPS**.
+
+Como convenção, os endpoints protegidos deverão receber o token de autenticação no cabeçalho HTTP:
+
+```http
+Authorization: Bearer <token>
+Content-Type: application/json
+```
+
+A versão inicial da API utilizará o prefixo:
+
+```text
+/api/v1
+```
+
+---
+
+## 5.1. Autenticação de Usuários
+
+**Requisito relacionado:** `RF-101`
+
+### Endpoint: `/api/v1/auth/login`
+
+Realiza a autenticação do usuário e retorna um token que será utilizado nas demais requisições protegidas da API.
+
+- **Método:** `POST`
+- **Autenticação:** Não requerida
+
+### Payload de Requisição
+
+```json
+{
+  "email": "renata@email.com",
+  "password": "senha_do_usuario"
+}
+```
+
+### Resposta de Sucesso (`200 OK`)
+
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiJ9...",
+  "expiresIn": 3600,
+  "user": {
+    "id": 123,
+    "name": "Renata Almeida",
+    "email": "renata@email.com",
+    "role": "resident"
   }
-  ```
-- **Resposta Sucesso (`200 OK`)**:
-  ```json
-  {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "expiresIn": 3600,
-    "user": { "id": 123, "nome": "Aluno Exemplar", "funcao": "admin" }
-  }
-  ```
+}
+```
 
-### Endpoint Exemplo 2: Recuperação de Dados do Usuário (`/api/v1/users/{id}`)
-- **Método**: `GET`
-- ...
+### Resposta de Erro (`401 Unauthorized`)
+
+```json
+{
+  "error": "INVALID_CREDENTIALS",
+  "message": "E-mail ou senha inválidos."
+}
+```
+
+---
+
+## 5.2. Solicitação de Acesso de Morador
+
+**Requisito relacionado:** `RF-102`
+
+### Endpoint: `/api/v1/residents`
+
+Permite que um morador solicite seu vínculo a determinado condomínio.
+
+- **Método:** `POST`
+- **Autenticação:** Requerida
+
+### Payload de Requisição
+
+```json
+{
+  "condominiumId": 10,
+  "apartment": "82",
+  "block": "B"
+}
+```
+
+### Resposta de Sucesso (`201 Created`)
+
+```json
+{
+  "id": 45,
+  "userId": 123,
+  "condominiumId": 10,
+  "apartment": "82",
+  "block": "B",
+  "status": "pending"
+}
+```
+
+### Resposta de Erro (`409 Conflict`)
+
+```json
+{
+  "error": "REQUEST_ALREADY_EXISTS",
+  "message": "Já existe uma solicitação de acesso para este usuário."
+}
+```
+
+---
+
+## 5.3. Aprovação de Morador
+
+**Requisito relacionado:** `RF-103`
+
+### Endpoint: `/api/v1/residents/{id}/status`
+
+Permite que o síndico aprove ou rejeite uma solicitação de acesso ao condomínio.
+
+- **Método:** `PATCH`
+- **Autenticação:** Requerida
+- **Perfil autorizado:** Síndico/Administrador
+
+### Payload de Requisição
+
+```json
+{
+  "status": "approved"
+}
+```
+
+Também poderá ser utilizado:
+
+```json
+{
+  "status": "rejected"
+}
+```
+
+### Resposta de Sucesso (`200 OK`)
+
+```json
+{
+  "id": 45,
+  "userId": 123,
+  "condominiumId": 10,
+  "status": "approved"
+}
+```
+
+### Resposta de Erro (`403 Forbidden`)
+
+```json
+{
+  "error": "FORBIDDEN",
+  "message": "O usuário não possui permissão para realizar esta operação."
+}
+```
+
+---
+
+## 5.4. Cadastro de Condomínio
+
+**Requisito relacionado:** `RF-104`
+
+### Endpoint: `/api/v1/condominiums`
+
+Permite cadastrar um condomínio que será gerenciado pelo sistema.
+
+- **Método:** `POST`
+- **Autenticação:** Requerida
+- **Perfil autorizado:** Administrador
+
+### Payload de Requisição
+
+```json
+{
+  "name": "Residencial Parque Central",
+  "address": {
+    "street": "Rua das Flores",
+    "number": "120",
+    "city": "Belo Horizonte",
+    "state": "MG",
+    "zipCode": "30100-000"
+  }
+}
+```
+
+### Resposta de Sucesso (`201 Created`)
+
+```json
+{
+  "id": 10,
+  "name": "Residencial Parque Central",
+  "address": {
+    "street": "Rua das Flores",
+    "number": "120",
+    "city": "Belo Horizonte",
+    "state": "MG",
+    "zipCode": "30100-000"
+  },
+  "createdAt": "2026-08-30T10:30:00Z"
+}
+```
+
+---
+
+## 5.5. Cadastro de Vaga
+
+**Requisito relacionado:** `RF-105`
+
+### Endpoint: `/api/v1/spots`
+
+Permite que um morador proprietário cadastre uma vaga de estacionamento.
+
+- **Método:** `POST`
+- **Autenticação:** Requerida
+
+### Payload de Requisição
+
+```json
+{
+  "condominiumId": 10,
+  "identifier": "Vaga 82",
+  "vehicleType": "car",
+  "price": 25.00
+}
+```
+
+### Resposta de Sucesso (`201 Created`)
+
+```json
+{
+  "id": 230,
+  "ownerId": 123,
+  "condominiumId": 10,
+  "identifier": "Vaga 82",
+  "vehicleType": "car",
+  "price": 25.00,
+  "status": "active"
+}
+```
+
+### Resposta de Erro (`422 Unprocessable Entity`)
+
+```json
+{
+  "error": "VALIDATION_ERROR",
+  "message": "Os dados enviados são inválidos."
+}
+```
+
+---
+
+## 5.6. Definição de Disponibilidade da Vaga
+
+**Requisito relacionado:** `RF-106`
+
+### Endpoint: `/api/v1/spots/{id}/availability`
+
+Define um período no qual determinada vaga poderá ser reservada.
+
+- **Método:** `POST`
+- **Autenticação:** Requerida
+
+### Payload de Requisição
+
+```json
+{
+  "startAt": "2026-09-01T08:00:00-03:00",
+  "endAt": "2026-09-01T18:00:00-03:00"
+}
+```
+
+### Resposta de Sucesso (`201 Created`)
+
+```json
+{
+  "id": 501,
+  "spotId": 230,
+  "startAt": "2026-09-01T08:00:00-03:00",
+  "endAt": "2026-09-01T18:00:00-03:00",
+  "status": "available"
+}
+```
+
+---
+
+## 5.7. Consulta de Vagas Disponíveis
+
+**Requisitos relacionados:** `RF-107` e `RF-108`
+
+### Endpoint: `/api/v1/spots`
+
+Retorna as vagas disponíveis para reserva de acordo com os filtros informados.
+
+- **Método:** `GET`
+- **Autenticação:** Requerida
+
+### Parâmetros de Consulta
+
+Exemplo:
+
+```text
+/api/v1/spots?date=2026-09-01&vehicleType=car
+```
+
+Parâmetros:
+
+| Parâmetro | Obrigatório | Descrição |
+|---|:---:|---|
+| `date` | Não | Data desejada para utilização |
+| `vehicleType` | Não | Tipo de veículo aceito pela vaga |
+
+### Resposta de Sucesso (`200 OK`)
+
+```json
+{
+  "data": [
+    {
+      "id": 230,
+      "identifier": "Vaga 82",
+      "vehicleType": "car",
+      "price": 25.00,
+      "available": true
+    },
+    {
+      "id": 245,
+      "identifier": "Vaga 15",
+      "vehicleType": "car",
+      "price": 20.00,
+      "available": true
+    }
+  ]
+}
+```
+
+---
+
+## 5.8. Recuperação dos Detalhes de uma Vaga
+
+**Requisito relacionado:** `RF-109`
+
+### Endpoint: `/api/v1/spots/{id}`
+
+Retorna todas as informações necessárias para que o morador avalie uma vaga antes de reservá-la.
+
+- **Método:** `GET`
+- **Autenticação:** Requerida
+
+### Exemplo de Requisição
+
+```text
+GET /api/v1/spots/230
+```
+
+### Resposta de Sucesso (`200 OK`)
+
+```json
+{
+  "id": 230,
+  "identifier": "Vaga 82",
+  "vehicleType": "car",
+  "price": 25.00,
+  "owner": {
+    "id": 123,
+    "name": "Renata Almeida"
+  },
+  "availability": [
+    {
+      "startAt": "2026-09-01T08:00:00-03:00",
+      "endAt": "2026-09-01T18:00:00-03:00"
+    }
+  ]
+}
+```
+
+### Resposta de Erro (`404 Not Found`)
+
+```json
+{
+  "error": "SPOT_NOT_FOUND",
+  "message": "Vaga não encontrada."
+}
+```
+
+---
+
+## 5.9. Reserva de uma Vaga
+
+**Requisitos relacionados:** `RF-110` e `RF-111`
+
+### Endpoint: `/api/v1/reservations`
+
+Permite que um morador efetue a reserva de uma vaga disponível.
+
+- **Método:** `POST`
+- **Autenticação:** Requerida
+
+### Payload de Requisição
+
+```json
+{
+  "spotId": 230,
+  "startAt": "2026-09-01T10:00:00-03:00",
+  "endAt": "2026-09-01T14:00:00-03:00"
+}
+```
+
+### Resposta de Sucesso (`201 Created`)
+
+```json
+{
+  "id": 980,
+  "spotId": 230,
+  "userId": 321,
+  "startAt": "2026-09-01T10:00:00-03:00",
+  "endAt": "2026-09-01T14:00:00-03:00",
+  "status": "confirmed"
+}
+```
+
+### Reserva Conflitante (`409 Conflict`)
+
+Caso outro usuário tenha reservado a vaga no mesmo período, a API deverá rejeitar a operação.
+
+```json
+{
+  "error": "SPOT_NOT_AVAILABLE",
+  "message": "A vaga não está disponível para o período solicitado."
+}
+```
+
+---
+
+## 5.10. Consulta das Reservas do Usuário
+
+**Requisito relacionado:** `RF-112`
+
+### Endpoint: `/api/v1/reservations`
+
+Retorna as reservas do usuário autenticado.
+
+- **Método:** `GET`
+- **Autenticação:** Requerida
+
+### Exemplo
+
+```text
+GET /api/v1/reservations
+```
+
+### Resposta de Sucesso (`200 OK`)
+
+```json
+{
+  "data": [
+    {
+      "id": 980,
+      "spot": {
+        "id": 230,
+        "identifier": "Vaga 82"
+      },
+      "startAt": "2026-09-01T10:00:00-03:00",
+      "endAt": "2026-09-01T14:00:00-03:00",
+      "status": "confirmed"
+    }
+  ]
+}
+```
+
+---
+
+## 5.11. Cancelamento de Reserva
+
+**Requisito relacionado:** `RF-113`
+
+### Endpoint: `/api/v1/reservations/{id}/cancel`
+
+Permite que o usuário cancele uma reserva realizada anteriormente.
+
+- **Método:** `PATCH`
+- **Autenticação:** Requerida
+
+### Exemplo de Requisição
+
+```text
+PATCH /api/v1/reservations/980/cancel
+```
+
+Não é necessário payload para esta operação.
+
+### Resposta de Sucesso (`200 OK`)
+
+```json
+{
+  "id": 980,
+  "status": "cancelled",
+  "cancelledAt": "2026-08-30T15:42:00Z"
+}
+```
+
+### Resposta de Erro (`403 Forbidden`)
+
+```json
+{
+  "error": "CANNOT_CANCEL_RESERVATION",
+  "message": "Esta reserva não pode ser cancelada pelo usuário."
+}
+```
+
+---
+
+## 5.12. Histórico Administrativo de Reservas
+
+**Requisitos relacionados:** `RF-114`, `RF-115` e `RF-116`
+
+### Endpoint: `/api/v1/admin/reservations`
+
+Permite que o síndico ou administrador consulte as reservas realizadas no condomínio.
+
+- **Método:** `GET`
+- **Autenticação:** Requerida
+- **Perfil autorizado:** Síndico/Administrador
+
+### Exemplo
+
+```text
+GET /api/v1/admin/reservations?status=confirmed
+```
+
+### Resposta de Sucesso (`200 OK`)
+
+```json
+{
+  "data": [
+    {
+      "id": 980,
+      "spot": {
+        "id": 230,
+        "identifier": "Vaga 82"
+      },
+      "resident": {
+        "id": 321,
+        "name": "João Silva"
+      },
+      "startAt": "2026-09-01T10:00:00-03:00",
+      "endAt": "2026-09-01T14:00:00-03:00",
+      "status": "confirmed"
+    }
+  ]
+}
+```
+
+---
+
+## 5.13. Padrão de Códigos HTTP
+
+Para manter os contratos da API consistentes, serão utilizados os seguintes códigos HTTP principais:
+
+| Código | Significado | Utilização |
+|---:|---|---|
+| `200 OK` | Operação realizada | Consultas e atualizações realizadas com sucesso |
+| `201 Created` | Recurso criado | Cadastro de condomínio, vaga, disponibilidade ou reserva |
+| `400 Bad Request` | Requisição inválida | Estrutura da requisição incorreta |
+| `401 Unauthorized` | Não autenticado | Token inexistente, inválido ou credenciais incorretas |
+| `403 Forbidden` | Sem autorização | Usuário autenticado sem permissão para a operação |
+| `404 Not Found` | Recurso inexistente | Vaga, reserva, usuário ou condomínio não encontrado |
+| `409 Conflict` | Conflito de estado | Tentativa de reservar uma vaga indisponível |
+| `422 Unprocessable Entity` | Erro de validação | Campos obrigatórios ausentes ou inválidos |
 
 ---
 
