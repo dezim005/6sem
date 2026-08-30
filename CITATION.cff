@@ -1,29 +1,30 @@
 cff-version: 1.0.1
 message: Please cite this software using these metadata.
-title:
+title: VagaLivre
 authors:
-  - family-names:
-    given-names:
-  - family-names:
-    given-names:
-  - family-names:
-    given-names:
-  - family-names:
-    given-names:
-  - family-names:
-    given-names:
-  - family-names:
-    given-names:
-  - family-names:
-    given-names:
-  - name-suffix: Professor XXXX
+  - family-names: dos Anjos Viana
+    given-names: Allan
+  - family-names: de Sousa Lopes
+    given-names: Andre
+  - family-names: Lisboa
+    given-names: Giovanny
+  - family-names: Veloso de Castro Monteiro Pinto
+    given-names: Gustavo
+  - family-names: Henrique Correia Cassimiro
+    given-names: Pedro
+  - family-names: Alves Lima
+    given-names: Roberta
+  - name-suffix: Professor Kleber
     affiliation: PUC Minas
-    family-names:
-    given-names:
+    family-names: Jacques Ferreira de Souza
+    given-names: Kleber
 keywords:
-  -
-  -
-repository-code:
+  - Gestão de Vagas
+  - Estacionamento
+  - Condomínios residenciais
+  - Economia compartilhada
+  - Sistemas Distribuídos
+repository-code: https://github.com/ICEI-PUC-Minas-PMV-SI/pmv-si-2026-2-pe6-t2-g09
 license: CC-BY-4.0
 version: 1.0.0
-date-released: 2023-06-30
+date-released: 2026-08-30
