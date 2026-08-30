@@ -6,7 +6,8 @@
 
 `SEMESTRE: 6º`
 
-Descrever resumidamente, em um ou dois parágrafos, o projeto que está sendo desenvolvido.
+Este projeto busca evidenciar quais são os efeitos de um sistema de informação sobre a organização, rastreabilidade e segurança das reservas de vagas de garagem dentro de um condomínio, quando comparado ao método de reservas via WhatsApp.
+
 
 ## Integrantes
 
