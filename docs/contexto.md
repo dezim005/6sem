@@ -63,7 +63,7 @@ Esta tabela é a referência única de planejamento semanal do projeto, usada po
 | **H34a** | `T1.3` | `ATV1.1` | Definição de Requisitos Funcionais e Priorização | Giovanny | `glisboapuc` | `✔️ Entregue` | [Seção 2.1](#21-requisitos-funcionais-e-não-funcionais) | [ ] |
 | **H34a** | `T1.4` | `ATV1.1` | Catálogo de Serviços Web e Acordos de SLA | Allan | `AllanAviana` | `✔️ Entregue` | [Seção 3.0](#-catalogo-de-servicos-web) | [ ] |
 | **H35a** | `T1.5` | `ATV1.2` | Diagrama de Componentes Físico e Lógico da Solução | Gustavo | `Gust2003` | `✔️ Entregue` | [Seção 4.1](#41-diagrama-de-arquitetura) | [ ] |
-| **H35a** | `T1.6` | `ATV1.2` | Definição das Tecnologias Distribuídas e Hospedagem | Pedro | `username5` | `📝 Em Progresso` | [Seção 4.2](#42-tecnologias-e-hospedagem) | [ ] |
+| **H35a** | `T1.6` | `ATV1.2` | Definição das Tecnologias Distribuídas e Hospedagem | Pedro | `pedroh-corr` | `✔️ Entregue` | [Seção 4.2](#42-tecnologias-e-hospedagem) | [ ] |
 | **H36a** | `T1.7` | `ATV1.2` | Especificação de Contratos de API (Endpoints/Verbos) | Giovanny | `glisboapuc` | `✔️ Entregue` | [Seção 5.0](#-especificacao-de-contratos-de-apis) | [ ] |
 | **H37a** | `T1.8` | `ATV1.2` | Wireframes do Frontend Web e Fluxograma de Navegação | André | `dezim005` | `✔️ Entregue` | [Seção 6.0](#-projeto-do-frontend-web) | [ ] |
 | **H38a** | `T1.9` | `ATV1.2` | Wireframes do Frontend Móvel e Fluxo de Gestos | André | `dezim005` | `✔️ Entregue` | [Seção 7.0](#-projeto-do-frontend-movel) | [ ] |
