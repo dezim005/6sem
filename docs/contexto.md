@@ -909,8 +909,38 @@ As telas ja seguem na seção 7.1, onde foi detalhadas a função de cada uma de
 
 # 8. Referências Acadêmicas e de Engenharia
 
-[Utilize literatura formal para dar suporte técnico ao seu planejamento.]
+[1] COOPER, A., REIMANN, R., CRONIN, D., NOESSEL, C. About Face: The Essentials of Interaction Design. 4. ed. Indianápolis: John Wiley & Sons, 2014.
 
-1. **SOMMERVILLE, Ian**. *Engenharia de Software*. 10. ed. São Paulo: Pearson, 2011.
-2. **COULOURIS, George et al**. *Sistemas Distribuídos: conceitos e projeto*. 5. ed. Porto Alegre: Bookman, 2013.
-3. **FIELDING, Roy Thomas**. *Architectural Styles and the Design of Network-based Software Architectures*. Dissertação (Doutorado) - University of California, Irvine, 2000.
+[2] PRESSMAN, R. S., MAXIM, B. R. Engenharia de Software: uma abordagem profissional. 8. ed. Porto Alegre: AMGH, 2016.
+
+[3] SOMMERVILLE, I. Engenharia de Software. 10. ed. São Paulo: Pearson Education do Brasil, 2011.
+
+[4] COULOURIS, G., DOLLIMORE, J., KINDBERG, T., BLAIR, G. Sistemas Distribuídos: conceitos e projeto. 5. ed. Porto Alegre: Bookman, 2013.
+
+[5] FIELDING, R. T. Architectural Styles and the Design of Network-based Software Architectures. Tese (Doutorado em Ciência da Computação) – University of California, Irvine, 2000.
+
+[6] NEWMAN, S. Building Microservices: Designing Fine-Grained Systems. 2. ed. Sebastopol: O'Reilly Media, 2021.
+
+[7] TANENBAUM, A. S., VAN STEEN, M. Sistemas Distribuídos: princípios e paradigmas. 2. ed. São Paulo: Pearson Prentice Hall, 2007.
+
+[8] ELMASRI, R., NAVATHE, S. B. Sistemas de Banco de Dados. 6. ed. São Paulo: Pearson Addison Wesley, 2011.
+
+[9] SANFILIPPO, S. Redis: in-memory data store. Disponível em: https://redis.io/docs/. Acesso em: 30 ago. 2026.
+
+[10] SILBERSCHATZ, A., KORTH, H. F., SUDARSHAN, S. Sistema de Banco de Dados. 6. ed. Rio de Janeiro: Elsevier, 2012.
+
+[11] HOOBER, S. How Do Users Really Hold Mobile Devices? UXmatters, 2013. Disponível em: https://www.uxmatters.com/mt/archives/2013/02/how-do-users-really-hold-mobile-devices.php. Acesso em: 30 ago. 2026.
+
+[12] MARCOTTE, E. Responsive Web Design. New York: A Book Apart, 2011.
+
+[13] NIELSEN, J., BUDIU, R. Usabilidade Móvel. Rio de Janeiro: Elsevier, 2014.
+
+[14] WROBLEWSKI, L. Mobile First. New York: A Book Apart, 2011.
+
+[15] EXPO DOCUMENTATION. Expo Documentation: Universal React Applications. Disponível em: https://docs.expo.dev/. Acesso em: 30 ago. 2026.
+
+[16] IBGE. Censo Demográfico: Características dos Domicílios. Rio de Janeiro: IBGE, 2022. Disponível em: https://www.ibge.gov.br/. Acesso em: 30 ago. 2026.
+
+[17] NESTJS DOCUMENTATION. NestJS: A progressive Node.js framework. Disponível em: https://docs.nestjs.com/. Acesso em: 30 ago. 2026.
+
+[18] VERCEL. Next.js Documentation. Disponível em: https://nextjs.org/docs. Acesso em: 30 ago. 2026.
