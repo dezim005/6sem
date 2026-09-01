@@ -1,106 +1,77 @@
-# 📊 Painel de Avaliação e Feedback Contínuo: Etapa 1
+# 📊 Feedback da Etapa 1: Contexto e Planejamento da Solução Distribuída
 
-Este documento serve como painel de monitoramento do progresso individual e coletivo da equipe referente às competências e rubricas da **Etapa 1: Contexto e Planejamento**.
-
----
-
-## 📅 Histórico de Avaliações
-- **Última Execução**: *Aguardando primeira verificação e consolidação do painel de notas*
-- **Avaliador**: Coordenação Acadêmica / Mecanismos de Feedback
-- **Submissão Atual**: `Versão de Inicialização de Planejamento (Template)`
+- **Última Avaliação**: `2026-09-01`
 
 ---
 
-## 📊 PAINEL GERAL DE PARTICIPAÇÃO E RUBRICAS (ETAPA 1)
+## 🌟 Pontos Fortes da Equipe
+- Documento de contexto (`docs/contexto.md`) completo, cobrindo problema, personas, requisitos, arquitetura, contratos de API e wireframes de Web e Mobile — todas as tarefas do quadro de contribuição foram entregues por algum autor identificável.
+- Especificação de contratos de API (H36a) com nível técnico acima da média: 13 endpoints documentados com payloads, respostas de sucesso/erro e códigos HTTP, já alinhados aos requisitos funcionais.
+- Wireframes Web e Mobile ilustrados com capturas de tela reais de um protótipo funcional (Vaga Livre), e não apenas esboços, o que facilita a transição para a Etapa 2.
+- Autoria dos commits condiz, de forma geral, com o quadro de contribuição declarado em `docs/contexto.md` — não foram encontradas divergências relevantes entre responsável declarado e autor real do conteúdo.
 
-Análise estruturada de entregas, autoria das seções nos documentos de planejamento e engajamento prático nas atividades da Etapa 1, calculando os percentuais de 0% a 100%:
-
-| Estudante Avaliado | Nota Contribuição Real | H34a (Serviços TI) | H35a (Arq Distr) | H36a (APIs Plan) | H37a (Web Plan) | H38a (Mobile Plan) | Status Global da Etapa |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Aluno 1** | `0%` | `0%` | `0%` | `0%` | `0%` | `0%` | ❌ Pendente |
-| **Aluno 2** | `0%` | `0%` | `0%` | `0%` | `0%` | `0%` | ❌ Pendente |
-| **Aluno 3** | `0%` | `0%` | `0%` | `0%` | `0%` | `0%` | ❌ Pendente |
-| **Aluno 4** | `0%` | `0%` | `0%` | `0%` | `0%` | `0%` | ❌ Pendente |
-| **Aluno 5** | `0%` | `0%` | `0%` | `0%` | `0%` | `0%` | ❌ Pendente |
-| **Aluno 6** | `0%` | `0%` | `0%` | `0%` | `0%` | `0%` | ❌ Pendente |
-
-*Legenda de Status*: `❌ Pendente (<50%)` | `⚠️ Atenção (51% a 89%)` | `✔️ Concluído (>=90%)`
+## ⚠️ Oportunidades de Melhoria
+- O diagrama de arquitetura (H35a) foi entregue apenas como imagem, sem descrição textual dos componentes e fluxos — a rubrica pede documentação clara, não somente a figura.
+- Participação desigual entre os membros: um estudante concentra praticamente 1/3 dos commits da equipe, enquanto outros três (Allan, Roberta, Pedro) têm participação pontual, restrita a poucos dias e sem envolvimento em outras seções do documento.
+- Nenhum código-fonte real foi iniciado em `src/` (apenas READMEs de template) — aceitável para a Etapa 1, mas a equipe deve iniciar a implementação já no começo da Etapa 2 para não acumular atraso.
+- O campo "Função Principal Pretendida" em `STUDENTS.md` não foi preenchido por nenhum integrante (mantido o texto de exemplo) — recomenda-se definir papéis reais o quanto antes, já que isso orienta a divisão de trabalho nas próximas etapas (backend, web, mobile).
 
 ---
 
-## 🔍 MAPEAMENTO DETALHADO POR ESTUDANTE (ENTREGUE vs. LACUNAS)
+## 👥 Quadro de Notas e Participação
 
-O quadro abaixo descreve a constatação física das entregas substanciais e lacunas de desenvolvimento planejadas para cada estudante, fornecendo um roteiro de ação individualizado:
+| Aluno | Nome | GitHub | Commits | Nota | Status |
+| :---: | :--- | :--- | :---: | :---: | :---: |
+| Aluno 1 | Allan dos Anjos Viana | `AllanAviana` | `3` | `75%` | ⚠️ Atenção |
+| Aluno 2 | Andre de Sousa Lopes | `dezim005` | `11` | `84%` | ⚠️ Atenção |
+| Aluno 3 | Giovanny Lisboa | `glisboapuc` | `4` | `88%` | ⚠️ Atenção |
+| Aluno 4 | Gustavo Veloso de Castro Monteiro Pinto | `Gust2003` | `5` | `46%` | ❌ Pendente |
+| Aluno 5 | Pedro Henrique Correia Cassimiro | `pedroh-corr` | `4` | `69%` | ⚠️ Atenção |
+| Aluno 6 | Roberta Alves Lima | `RobertaAlvesLima` | `3` | `62%` | ⚠️ Atenção |
 
-### 👤 Aluno 1: [Nome do Aluno 1]
-- **Tarefas Associadas**: `T1.1` (Contexto/Objetivos) e `T1.4` (Catálogo de Serviços)
-- **✔️ O que foi entregue (Sinal de Contribuição Real)**:
-  - *Evidência*: Nenhum texto autoral detectado além do template padrão.
-- **❌ Lacunas Identificadas (O que falta fazer)**:
-  - Definir o problema prático e os objetivos em [docs/contexto.md](docs/contexto.md).
-  - Criar o catálogo contendo as especificações de SLA nos serviços do sistema.
-  - Atualizar o status físico das tarefas no Portal de Acompanhamento [docs/atas/aluno1.md](docs/atas/aluno1.md).
-
----
-
-### 👤 Aluno 2: [Nome do Aluno 2]
-- **Tarefas Associadas**: `T1.2` (Personas/Stakeholders) e `T1.9` (Wireframes Mobile)
-- **✔️ O que foi entregue (Sinal de Contribuição Real)**:
-  - *Evidência*: Nenhuma alteração substantiva encontrada.
-- **❌ Lacunas Identificadas (O que falta fazer)**:
-  - Desenhar as personas do público-alvo com suas aspirações e dores.
-  - Criar e referenciar as imagens de wireframes para smartphones em `docs/img/` e lincá-los na Seção 7 de [docs/contexto.md](docs/contexto.md).
-  - Atualizar o status físico das tarefas no Portal de Acompanhamento [docs/atas/aluno2.md](docs/atas/aluno2.md).
+*Legenda*: `❌ Pendente (<50%)` | `⚠️ Atenção (51% a 89%)` | `✔️ Concluído (>=90%)`
 
 ---
 
-### 👤 Aluno 3: [Nome do Aluno 3]
-- **Tarefas Associadas**: `T1.3` (Requisitos/Priorização) e `T1.8` (Wireframes Web)
-- **✔️ O que foi entregue (Sinal de Contribuição Real)**:
-  - *Evidência*: Nenhuma alteração substantiva encontrada.
-- **❌ Lacunas Identificadas (O que falta fazer)**:
-  - Preencher a listagem de requisitos funcionais mínimos com canais específicos.
-  - Adicionar o fluxo navegacional e wireframes responsivos para microcomputadores em [docs/contexto.md](docs/contexto.md).
-  - Atualizar o status físico das tarefas no Portal de Acompanhamento [docs/atas/aluno3.md](docs/atas/aluno3.md).
+## 🔍 Avaliação Individual por Atividades Entregues
+
+### 👤 Aluno 1: Allan dos Anjos Viana
+- **✔️ Entregue**: Definição do Problema, Objetivos e Justificativa (T1.1, H34a); Catálogo de Serviços Web e SLAs (T1.4, H34a).
+- **❌ Pendente/Incompleto**: Nenhuma tarefa designada pendente; participação restrita às tarefas individuais.
+- **Parecer**: Entregas de boa qualidade e bem fundamentadas, mas com baixa frequência de commits e nenhuma colaboração fora do escopo próprio.
 
 ---
 
-### 👤 Aluno 4: [Nome do Aluno 4]
-- **Tarefas Associadas**: `T1.5` (Diagrama de Componentes Físico/Lógico)
-- **✔️ O que foi entregue (Sinal de Contribuição Real)**:
-  - *Evidência*: Nenhuma alteração substantiva encontrada.
-- **❌ Lacunas Identificadas (O que falta fazer)**:
-  - Atualizar o diagrama Mermaid ou de imagem estrutural que retrate um sistema distribuído realizado em grupo.
-  - Atualizar o status físico das tarefas no Portal de Acompanhamento [docs/atas/aluno4.md](docs/atas/aluno4.md).
+### 👤 Aluno 2: Andre de Sousa Lopes
+- **✔️ Entregue**: Wireframes do Frontend Web (T1.8, H37a); Wireframes do Frontend Móvel (T1.9, H38a); além de README, CITATION.cff, STUDENTS.md e referências acadêmicas.
+- **❌ Pendente/Incompleto**: Nenhuma tarefa designada pendente.
+- **Parecer**: Maior volume e regularidade de participação do grupo, com entregas visuais bem documentadas; direcionar esse ritmo também para o código a partir da Etapa 2.
 
 ---
 
-### 👤 Aluno 5: [Nome do Aluno 5]
-- **Tarefas Associadas**: `T1.6` (Tecnologias Distribuídas e Hospedagem)
-- **✔️ O que foi entregue (Sinal de Contribuição Real)**:
-  - *Evidência*: Nenhuma alteração de texto autoral detectada.
-- **❌ Lacunas Identificadas (O que falta fazer)**:
-  - Justificar e catalogar as escolhas da pilha distribuída (Database, Gateways, Containers, API, etc).
-  - Descrever de que forma estes canais de software serão hospedados paralelamente em nuvem.
-  - Atualizar o status físico das tarefas no Portal de Acompanhamento [docs/atas/aluno5.md](docs/atas/aluno5.md).
+### 👤 Aluno 3: Giovanny Lisboa
+- **✔️ Entregue**: Requisitos Funcionais e Não Funcionais (T1.3, H34a); Especificação de Contratos de API (T1.7, H36a).
+- **❌ Pendente/Incompleto**: Nenhuma tarefa designada pendente.
+- **Parecer**: Entrega tecnicamente a mais completa da equipe; recomenda-se fracionar o trabalho em commits menores e mais frequentes.
 
 ---
 
-### 👤 Aluno 6: [Nome do Aluno 6]
-- **Tarefas Associadas**: `T1.7` (Especificação de Contratos de API)
-- **✔️ O que foi entregue (Sinal de Contribuição Real)**:
-  - *Evidência*: Nenhuma alteração de texto autoral detectada.
-- **❌ Lacunas Identificadas (O que falta fazer)**:
-  - Especificar os endpoints base com payloads estruturados em formato JSON e códigos de retorno HTTP sem usar as estruturas de exemplo pré-definidas.
-  - Atualizar o status físico das tarefas no Portal de Acompanhamento [docs/atas/aluno6.md](docs/atas/aluno6.md).
+### 👤 Aluno 4: Gustavo Veloso de Castro Monteiro Pinto
+- **✔️ Entregue**: Diagrama de Componentes (T1.5, H35a) — apenas a imagem.
+- **❌ Pendente/Incompleto**: Falta descrição textual do diagrama (componentes, fluxos entre Web/Mobile/API/bancos de dados).
+- **Parecer**: Entrega rasa e concentrada em um único dia, com retrabalho desorganizado (upload/remoção repetida do mesmo arquivo); necessário complementar com texto explicativo.
 
 ---
 
-## 🛠️ DIRETRIZES DE AVALIAÇÃO DO PROJETO
+### 👤 Aluno 5: Pedro Henrique Correia Cassimiro
+- **✔️ Entregue**: Definição das Tecnologias Distribuídas e Hospedagem (T1.6, H35a).
+- **❌ Pendente/Incompleto**: Nenhuma tarefa designada pendente.
+- **Parecer**: Justificativas tecnológicas objetivas e completas; participação concentrada em um único dia, sem colaboração em outras seções.
 
-Este painel se baseia em critérios objetivos para certificar o progresso da equipe:
+---
 
-1. **Parâmetros de Validação**: O avaliador faz a correspondência dos arquivos modificados de design ou seções temáticas, verificando se os placeholders originais foram substituídos por evidências reais e completas do projeto corporativo.
-2. **Modularização e Coerência**: Avalia se os artefatos de wireframes desenhados, fluxo de dados e design condizem mutuamente, certificando de que a distribuição tecnológica planejada é justificada com base em volume e arquitetura distribuída.
-3. **Cruzamento de Commits**: Confirmação da autoria das modificações de texto e códigos associados aos usernames vinculados no quadro de contribuição.
+### 👤 Aluno 6: Roberta Alves Lima
+- **✔️ Entregue**: Personas e Mapa de Stakeholders (T1.2, H34a).
+- **❌ Pendente/Incompleto**: Nenhuma tarefa designada pendente.
+- **Parecer**: Boa qualidade narrativa nas personas; participação restrita a um único dia e à tarefa individual, sem outras contribuições ao documento.
 

@@ -1,83 +1,28 @@
 # 📊 Portal de Acompanhamento e Avaliação: Aluno 2
 
-Este portal registra a participação real do estudante, seu progresso em cada rubrica do projeto e os pareceres de feedback estruturados de acordo com as entregas planejadas.
-
-- **Nome Completo**: *Aguardando preenchimento em STUDENTS.md*
-- **Usuário do GitHub**: *Aguardando preenchimento em STUDENTS.md*
-
----
-
-## 📈 Painel Consolidado de Notas e Rubricas
-
-O progresso é atualizado estruturadamente pelo avaliador de acordo com a integralização das tarefas por etapa.
-
-| Rubrica Curricular | Descrição da Rubrica | % Progresso | Evidência Física Coletada | Status |
-| :--- | :--- | :---: | :--- | :---: |
-| **H34a** | Gerenciar e documentar serviços de TI | `0%` | - | ❌ Pendente |
-| **H35a** | Planejar e documentar Arq. Distribuída | `0%` | - | ❌ Pendente |
-| **H35b** | Desenvolver Arq. Distribuída | `0%` | - | ❌ Pendente |
-| **H35c** | Gerenciar Arq. (Testes/Deploy) | `0%` | - | ❌ Pendente |
-| **H36a** | Planejar APIs e Web Services | `0%` | - | ❌ Pendente |
-| **H36b** | Desenvolver APIs e Web Services | `0%` | - | ❌ Pendente |
-| **H36c** | Gerenciar APIs (Testes/Deploy) | `0%` | - | ❌ Pendente |
-| **H37a** | Planejar Aplicação Web | `0%` | - | ❌ Pendente |
-| **H37b** | Desenvolver Aplicação Web | `0%` | - | ❌ Pendente |
-| **H37c** | Gerenciar Aplicação Web (Testes/Deploy) | `0%` | - | ❌ Pendente |
-| **H38a** | Planejar Aplicação Móvel | `0%` | - | ❌ Pendente |
-| **H38b** | Desenvolver Aplicação Móvel | `0%` | - | ❌ Pendente |
-| **H38c** | Gerenciar Aplicação Móvel (Testes/Deploy) | `0%` | - | ❌ Pendente |
-
-*Status sugeridos:* `❌ Pendente` (0-49%), `⚠️ Parcial` (50-89%), `✔️ Concluído` (90-100%).
+- **Nome Completo**: Andre de Sousa Lopes
+- **Usuário do GitHub**: `dezim005`
+- **Função Pretendida**: Não informada (campo mantido com o texto de exemplo em `STUDENTS.md`)
 
 ---
 
-## 🔍 Feedback de Desempenho por Etapas / Rubricas / Atividades
+## 📈 Histórico de Notas por Etapa
 
-Espaço de controle onde constam as atividades de cada etapa, as rubricas associadas a cada ação sob a responsabilidade do estudante e a respectiva devolutiva pedagógica de andamento e conclusão do processo de aprendizagem.
-
-### 🏗️ ETAPA 1 - Contexto, Planejamento e Design da Solução
-*   **Atividade 1.2: Descrição das Personas e Mapa de Stakeholders** (Rubrica **H34a**)
-    *   *Percentual de Conclusão*: `0%`
-    *   *Evidência*: (Ex: Preenchimento da seção 1.2 de docs/contexto.md)
-    *   *Feedback*: Aguardando a postagem do perfil psicológico das personas do sistema.
-*   **Atividade 1.9: Design Visual e Wireframes do Frontend Móvel** (Rubrica **H38a**)
-    *   *Percentual de Conclusão*: `0%`
-    *   *Evidência*: (Ex: Inclusão dos diagramas e fluxos táteis na seção 7.0 de docs/contexto.md)
-    *   *Feedback*: Aguardando a inclusão de rascunhos de telas e fluxos de gestos no mobile.
+| Etapa | Nota de Contribuição Real | Status | Commits |
+| :---: | :---: | :---: | :---: |
+| Etapa 1 | `84%` | ⚠️ Atenção | `11` |
 
 ---
 
-### ⚙️ ETAPA 2 - Desenvolvimento de APIs e Persistência Backend
-*   **Atividade 2.2: Modelagem de Dados e Persistência Relacional / Schemas** (Rubrica **H36b**)
-    *   *Percentual de Conclusão*: `0%`
-    *   *Evidência*: (Ex: Instanciação das classes do ORM, tabelas, diagramas lógicos ou migrações SQL)
-    *   *Feedback*: Aguardando a codificação dos esquemas lógicos e conexão de banco de dados.
+## 🔍 Avaliação por Etapa
 
----
-
-### 💻 ETAPA 3 - Interface Web Responsiva e Integração de APIs
-*   **Atividade 3.2: Estilização Global, Configuração de Temas e CSS** (Rubrica **H37b**)
-    *   *Percentual de Conclusão*: `0%`
-    *   *Evidência*: (Ex: Codificação dos temas centralizados, classes de estilização globals em src/frontend/)
-    *   *Feedback*: Aguardando a estruturação do layout CSS ou Styled Components da página Web.
-
----
-
-### 📱 ETAPA 4 - Interface Móvel e Integração de Recursos Físicos
-*   **Atividade 4.2: Desenvolvimento da Navegação Nativa Móvel (Tabs, Stack)** (Rubrica **H38b**)
-    *   *Percentual de Conclusão*: `0%`
-    *   *Evidência*: (Ex: Codificação dos fluxos de navegação e guias rotas em src/mobile/)
-    *   *Feedback*: Aguardando o encadeamento e interconectividade física de telas nativas no celular.
-
----
-
-### 🏁 ETAPA 5 - Consolidação e Apresentação da Solução
-*   **Atividade 5.1: Fechamento Final e Revisão de SLAs** (Rubrica **H34a**)
-    *   *Percentual de Conclusão*: `0%`
-    *   *Evidência*: (Ex: Relatório de fechamento final em presentation/README.md)
-    *   *Feedback*: Aguardando consolidação operacional de serviços.
-*   **Atividade 5.2: Vídeo de Demonstração e MVP Integrado** (Rubricas **H35b**, **H37b**, **H38b**)
-    *   *Percentual de Conclusão*: `0%`
-    *   *Evidência*: (Ex: Link para vídeo público de demonstração do aplicativo web e mobile integrados)
-    *   *Feedback*: Aguardando upload do vídeo expositivo.
+### 🏗️ ETAPA 1 - Contexto e Planejamento da Solução Distribuída
+*   **Status**: `⚠️ Atenção` — Nota: `84%` — Commits: `11`
+*   **Atividades Entregues**:
+    - Wireframes do Frontend Web e Fluxograma de Navegação (H37a): seção 6 com 4 telas descritas, prints reais de um protótipo funcional (Dashboard, Cadastro de Condomínios, Gestão de Vagas, Calendário) e explicação da migração de `localStorage` para consumo assíncrono de API. Autoria confirmada nos commits `fe2353f` e `6f296dd`.
+    - Wireframes do Frontend Móvel e Fluxo de Gestos (H38a): seção 7 com 4 telas, prints do app e diretrizes de navegação por abas, pull-to-refresh e transições nativas.
+    - Contribuições adicionais de organização do repositório: atualização de `README.md`, `CITATION.cff`, `STUDENTS.md` (usernames da equipe) e inclusão das referências acadêmicas do documento.
+*   **Atividades Pendentes/Incompletas**:
+    - Nenhuma das duas tarefas sob sua responsabilidade ficou pendente.
+*   **Parecer do Professor**: Foi o estudante com maior volume e regularidade de commits da equipe, entregando as duas tarefas de planejamento de interface com evidências visuais reais e bem documentadas, além de assumir tarefas de organização geral do repositório. Como ponto de atenção, boa parte dos commits é de ajuste incremental (README, usernames, status); para a próxima etapa, mantenha esse ritmo de participação também na implementação do código em `src/`.
 
