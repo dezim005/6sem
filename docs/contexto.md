@@ -213,6 +213,34 @@ A lógica de TI do **Vaga Livre** será gerenciada por **seis serviços independ
 
 ![Diagrama de Arquitetura — Vaga Livre](./img/diagrama-arquitetura.png)
 
+O sistema é dividido em três partes principais: os clientes, o API Gateway e os serviços, que conversam com um banco de dados central.
+Na ponta dos clientes, temos duas interfaces: um site voltado para o síndico e moderadores, e um app para os moradores. Os dois permitem fazer coisas como consultar vagas, reservar e ver informações do condomínio.
+Todas as requisições dessas interfaces passam por um único ponto de entrada, o API Gateway. Ele funciona como um porteiro: recebe o pedido, identifica o que precisa ser feito e encaminha para o serviço certo. Assim, os clientes não precisam saber qual serviço existe por trás.
+
+A partir do API Gateway, as requisições são distribuídas entre os serviços responsáveis por cada funcionalidade:
+
+•	Autenticação – cuida do login e da validação dos usuários, controlando o acesso.
+
+•	Usuários e Condomínio – gerencia os dados dos moradores, usuários e informações do prédio.
+
+•	Vagas – faz o cadastro, consulta e gerenciamento das vagas.
+
+•	Reserva – processa os pedidos de reserva feitos pelos moradores.
+
+•	Disponibilidade – verifica se uma vaga está livre antes da reserva ser concluída.
+
+•	Notificação – envia avisos e alertas sobre reservas, mudanças e outras ações.
+
+Depois que o serviço recebe a requisição, ele faz o processamento necessário e grava ou consulta as informações no banco de dados. O banco é a camada onde tudo fica guardado e persistido.
+
+O caminho de uma operação segue mais ou menos assim: Cliente → API Gateway → Serviço → Banco de Dados, e depois o retorno pelo mesmo caminho. Por exemplo, quando um morador quer reservar uma vaga pelo app, ele envia a solicitação. O API Gateway identifica que é uma reserva e manda para o serviço de Reserva. Esse serviço pode consultar o de Disponibilidade para confirmar que a vaga está livre. Se estiver, salva a reserva no banco. 
+
+Depois a resposta volta até o app, passando novamente pelo API Gateway. O fluxo completo fica: Morador → Mobile → API Gateway → Reserva → Disponibilidade → Banco de Dados → API Gateway → Mobile → Morador.
+Para o síndico ou moderador, o processo é o mesmo, só começa pelo site em vez do app.
+
+Essa divisão ajuda bastante: cada serviço tem uma função bem específica, o API Gateway concentra o acesso e fica muito mais fácil dar manutenção, escalar ou adicionar novas funcionalidades sem precisar mexer nos aplicativos ou no site.
+
+
 
 ## 4.2. Tecnologias e Hospedagem
 
