@@ -45,6 +45,30 @@ Ao final desta Etapa, cada aluno será avaliado individualmente nestas 6 compet�
 
 O ecossistema de back-end do VagaLivre constitui o núcleo transacional e a única fonte de verdade da solução distribuída. Ele é responsável por orquestrar de forma centralizada e segura o fluxo de informações consumido pelas duas interfaces clientes: o Painel Administrativo Web (Next.js) e o Aplicativo do Morador (React Native). O principal objetivo técnico do back-end é expor uma API RESTful de alto desempenho, segura e resiliente, capaz de arbitrar o compartilhamento concorrente de recursos físicos escassos (vagas de garagem) sem falhas de integridade ou atrasos operacionais.
 
+## 1.1. Organização em Módulos Lógicos
+
+Para viabilizar uma manutenção sustentável e permitir que diferentes integrantes do grupo programem de forma paralela, a API adota uma arquitetura de monólito modular organizada em três grandes módulos de responsabilidade:
+
+- Módulo de Identidade e Acesso (Identity): Centraliza os processos de segurança da aplicação. É responsável pelo cadastro de usuários, criptografia de senhas, validação de perfis (síndico, portaria e morador) e emissão de tokens de acesso JWT (JSON Web Token) assinados com expiração programada.
+- Módulo de Gestão de Vagas e Reservas (Booking & Parking Core): Abriga as regras de negócio mais críticas do sistema. Ele gerencia o ciclo de vida do mapeamento físico das vagas, coordena as solicitações de reservas temporárias, controla o pool de vagas ociosas compartilhadas por moradores e arbitra o acesso concorrente aos dados das vagas físicas.
+- Módulo de Tarefas Assíncronas e Mensagens (Notification Queue): Desacoplado do fluxo síncrono principal da API, este módulo é responsável por enfileirar e despachar tarefas que não devem onerar a latência de rede direta da requisição, como o processamento de regras temporais em segundo plano e o disparo de notificações push para os telefones celulares dos moradores.
+
+## 1.2. Justificativa da Pilha de Desenvolvimento
+
+As escolhas das tecnologias de desenvolvimento para o back-end foram planejadas estrategicamente para maximizar a sinergia técnica com o histórico do código pré-existente e garantir robustez sob carga:
+
+- Pilha de Programação: Node.js (TypeScript) utilizando o framework NestJS. O Node.js oferece alta escalabilidade graças ao seu mecanismo de E/S assíncrono e não-bloqueante orientado a eventos (Single-Threaded Event Loop), garantindo que requisições paralelas rápidas (leitura do mapa de vagas) sejam processadas com latência mínima. O NestJS introduz um padrão de organização modular robusto inspirado em Clean Architecture, utilizando inversão de controle e injeção de dependências, o que mitiga o acoplamento de código.
+- Gerenciador de Banco de Dados (SGBD): PostgreSQL com a camada de abstração de dados do Prisma ORM. O PostgreSQL foi eleito por seu estrito cumprimento das propriedades ACID (Atomicidade, Consistência, Isolamento e Durabilidade). Em sistemas de reservas de vagas, onde múltiplos usuários podem disputar o mesmo espaço no mesmo segundo, o controle transacional do PostgreSQL impede inconsistências lógicas de persistência concorrente. O Prisma ORM garante a consistência de tipagem de dados de ponta a ponta em TypeScript entre o banco de dados e as rotas da API.
+- Armazenamento de Alta Velocidade e Filas: Redis. Atua como banco de dados chave-valor em memória para gerenciar a blacklist de tokens JWT revogados, realizar cache de dados estáticos de baixa mutabilidade e hospedar a infraestrutura de filas distribuídas por meio da biblioteca BullMQ, garantindo que o disparo de e-mails ou alertas móveis não consuma threads de CPU do servidor principal da API REST.
+
+## 1.3. Volumetria e Capacidade Transacional Esperada
+
+O dimensionamento técnico do backend do VagaLivre foi modelado para atender com folga às demandas de um condomínio residencial de médio a grande porte:
+
+- Escopo de Entidades: O banco de dados é projetado para suportar até 1.000 usuários ativos, 1.500 veículos registrados e 500 vagas de garagem simuladas.
+- Latência de Resposta: Estabelece-se a meta de tempo de resposta HTTP inferior a 150ms para consultas de leitura (visualizar vagas disponíveis) e inferior a 250ms para solicitações de escrita (realizar uma reserva com lock transacional).
+- Tratamento de Concorrência Extrema: A capacidade transacional exige zero anomalias de double-booking em testes de estresse de gravação paralela (múltiplas chamadas de reserva enviadas à mesma vaga no mesmo milissegundo), garantindo que o PostgreSQL aborte as requisições excedentes de forma controlada através de exceções semânticas de concorrência.
+
 ---
 
 # 2. Modelagem da Aplicação e Arquitetura de Dados
