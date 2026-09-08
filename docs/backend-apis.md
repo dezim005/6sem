@@ -31,7 +31,7 @@ Ao final desta Etapa, cada aluno será avaliado individualmente nestas 6 compet�
 | Rubrica Curricular | ID Tarefa | Atividade Semanal | Descrição Detalhada da Tarefa | Estudante Responsável | GitHub Username | Status de Entrega | Evidência/Seção Temática | Autoria Git |
 | :---: | :---: | :---: | :--- | :--- | :---: | :---: | :--- | :---: |
 | **H36b** | `T2.1` | `ATV2.1` | Configuração do Boilerplate da API, Roteamento e Inicialização | [Nome do Aluno 1] | `username1` | `⌛ Não Iniciado` | [Instalação/README](src/backend/README.md) | [ ] |
-| **H36b** | `T2.2` | `ATV2.1` | Modelagem e Persistência de Dados (Conexão DB, ORM, Schemas) | Andre Lopes | `dezim005` | `📝 Em Progresso` | [Seção 2.1](#21-schema-e-diagrama-entidade-relacionamento) | [ ] |
+| **H36b** | `T2.2` | `ATV2.1` | Modelagem e Persistência de Dados (Conexão DB, ORM, Schemas) | Andre Lopes | `dezim005` | `✔️ Entregue` | [Seção 2.1](#21-schema-e-diagrama-entidade-relacionamento) | [ ] |
 | **H36b** | `T2.3` | `ATV2.1` | Implementação de Endpoints CRUD e Lógica de Negócios Principal | Giovanny Lisboa | `glisboapuc` | `⌛ Não Iniciado` | [Seção 3.0](#3-especificacao-avancada-de-endpoints) | [ ] |
 | **H36b** | `T2.4` | `ATV2.1` | Mecanismo de Segurança da API (Autenticação/Autorização JWT) | [Nome do Aluno 4] | `username4` | `⌛ Não Iniciado` | [Seção 3.3](#33-seguranca-e-autorizacao) | [ ] |
 | **H35b** | `T2.5` | `ATV2.1` | Gateway, Integração de Serviços Web e Clientes HTTP Externos | [Nome do Aluno 5] | `username5` | `⌛ Não Iniciado` | [Seção 2.2](#22-integracao-e-infraestrutura-distribuida) | [ ] |
@@ -151,7 +151,32 @@ O modelo de dados está definido no arquivo [schema.prisma](https://github.com/I
 
 ## 2.2. Integração e Infraestrutura Distribuída
 
-[Descreva como a sua arquitetura backend gerencia concorrência e escalabilidade física. Por exemplo: pool de conexões com banco de dados, divisão em microsserviços, tratamento de chamadas síncronas/assíncronas ou persistências distribuídas (como cache Redis, clusterização, mensageria via RabbitMQ).]
+O controle e a escalabilidade de uma solução distribuída para condomínios exigem que a arquitetura do backend mitigue gargalos comuns de concorrência física e acessos simultâneos de rede.
+
+### Controle Avançado de Concorrência (Prevenção de Reserva Dupla)
+Para impedir que dois moradores reservem a mesma vaga no mesmo intervalo de tempo, o backend utiliza um mecanismo de bloqueio transacional de concorrência.
+
+- Ao receber uma solicitação de agendamento, o NestJS inicia uma transação ACID isolada no PostgreSQL (prisma.$transaction).
+- O sistema verifica se existe alguma reserva conflitante para aquela vaga e período usando uma estratégia de bloqueio de linha para escrita (pessimistic lock / SELECT FOR UPDATE).
+- Se nenhuma colisão for encontrada, a reserva é persistida e o status da vaga é alterado para OCUPADA (ou RESERVADA), liberando a trava e confirmando a operação de forma segura. Caso contrário, ocorre um rollback automático e a API retorna imediatamente o código de erro 409 Conflict.
+
+### Pool de Conexões com Banco de Dados (Connection Pooling)
+Uma das principais causas de lentidão em backend Node.js integrado a bancos relacionais é o esgotamento de conexões disponíveis. Para otimizar o uso de recursos de infraestrutura:
+
+- O backend utiliza o gerenciador de conexões embutido no Prisma Client, configurado com um limite dinâmico de conexões simultâneas (connection_limit=10 por instância de container).
+- Se o sistema for hospedado em arquitetura serverless ou escalado horizontalmente em múltiplos containers, a API integrará um PgBouncer (proxy de pool de conexões para PostgreSQL), aglutinando as requisições de maneira eficiente sem sobrecarregar as portas físicas do SGBD.
+
+### Cache Distribuído com Redis
+Para reduzir a carga de processamento de consultas repetitivas que demandam computação onerosa, o Redis é acoplado como um banco de dados chave-valor em memória:
+
+- Cache de Leituras: O mapa dinâmico de vagas e a listagem de garagens livres são cacheados no Redis com um Tempo de Vida curto (TTL de 30 segundos). Isso garante que, se dezenas de moradores abrirem o aplicativo móvel simultaneamente na portaria, a API responderá instantaneamente a partir da memória Ram (latência < 15ms) sem precisar realizar varreduras (table scans) repetitivas no banco PostgreSQL.
+- Invalidação Reativa de Cache: Assim que uma reserva é criada ou cancelada com sucesso no PostgreSQL, um gatilho (trigger) de código invalida imediatamente a chave correspondente às vagas no Redis, forçando o sistema a atualizar as informações na próxima requisição de leitura de forma consistente.
+
+### Processamento Assíncrono e Mensageria (Redis + BullMQ)
+Para evitar que tarefas de processamento demorado (como o envio de e-mails, alertas push ou a atualização periódica do status de reservas finalizadas) travem a linha de execução primária da API (Event Loop do Node.js), adota-se um fluxo assíncrono baseado em filas:
+
+- O NestJS utiliza a biblioteca BullMQ sobre a infraestrutura do Redis para enfileirar as tarefas geradas.
+- Quando a reserva do Carlos é confirmada, a API responde imediatamente com o código de sucesso 201 Created para o celular dele. Em segundo plano, um processo trabalhador (Worker) consome a fila de mensagens e realiza a chamada assíncrona para o serviço externo Expo Push Notification Service, notificando o morador sobre os detalhes da vaga sem atrasar seu fluxo de uso no aplicativo.
 
 ---
 
