@@ -75,13 +75,79 @@ O dimensionamento técnico do backend do VagaLivre foi modelado para atender com
 
 *(Esta seção atende diretamente à rubrica **H35b**)*
 
+Esta seção detalha a estrutura lógica e física de persistência do ecossistema distribuído do VagaLivre, apresentando a modelagem das entidades, os seus relacionamentos e o plano de infraestrutura para garantir a integridade dos dados e o alto desempenho em cenários de uso concorrente.
+
 ## 2.1. Schema e Diagrama Entidade-Relacionamento
 
-[Insira aqui o detalhamento lógico de banco de dados por meio de tabelas, relacionamentos, chaves primárias e estrangeiras. Também deve ser incluído o DER (Diagrama Entidade-Relacionamento) ou script de migração schema DDls.]
+Para garantir consistência estática e tipagem forte em todo o fluxo de dados (do banco de dados até as rotas da API), a persistência é gerenciada utilizando o Prisma ORM integrado a um banco de dados relacional PostgreSQL.
 
+**Diagrama Entidade-Relacionamento (DER)**
+
+O relacionamento entre as tabelas do sistema distribuído está mapeado no diagrama abaixo, estruturado para suportar o cadastro de moradores, o controle de seus veículos, o mapeamento físico das vagas e as operações de compartilhamento e reserva.
+
+```mermaid
+erDiagram
+    USUARIO {
+        String id PK
+        String nome
+        String email UK
+        String senha
+        String perfil "ADMIN | SINDICO | MORADOR"
+        String apartamento
+        String bloco
+        String celular
+        DateTime createdAt
+    }
+    VEICULO {
+        String id PK
+        String marca
+        String modelo
+        String cor
+        String placa UK
+        String proprietarioId FK
+        DateTime createdAt
+    }
+    VAGA {
+        String id PK
+        Int numero UK
+        String tipo "COBERTA | DESCOBERTA"
+        String status "LIVRE | OCUPADA | COMPARTILHADA"
+        String proprietarioId FK "NULL para Rotativa"
+    }
+    COMPARTILHAMENTO {
+        String id PK
+        String vagaId FK
+        String proprietarioId FK
+        DateTime dataInicio
+        DateTime dataFim
+        String status "ATIVO | FINALIZADO"
+    }
+    RESERVA {
+        String id PK
+        String vagaId FK
+        String moradorId FK
+        String veiculoId FK
+        DateTime dataInicio
+        DateTime dataFim
+        String status "CONFIRMADA | CANCELADA | FINALIZADA"
+        DateTime createdAt
+    }
+
+    USUARIO ||--o{ VEICULO : "possui"
+    USUARIO ||--o{ VAGA : "sendo dono de"
+    USUARIO ||--o{ COMPARTILHAMENTO : "disponibiliza"
+    USUARIO ||--o{ RESERVA : "realiza"
+    
+    VAGA ||--o{ COMPARTILHAMENTO : "possui registros de"
+    VAGA ||--o{ RESERVA : "recebe"
+    
+    VEICULO ||--o{ RESERVA : "eh utilizado na"
 ```
-[Insira o Diagrama de Classes, DER ou representação lógica das entidades aqui]
-```
+**Script de Migração Schema (Prisma Schema DDL)**
+
+O código abaixo representa a especificação mestre de modelagem física que gera as tabelas, as chaves primárias (PK), as chaves estrangeiras (FK) e os índices únicos (UK) no PostgreSQL.
+
+O modelo de dados está definido no arquivo [schema.prisma](https://github.com/ICEI-PUC-Minas-PMV-SI/pmv-si-2026-2-pe6-t2-g09/blob/main/src/backend/schema.prisma)
 
 ## 2.2. Integração e Infraestrutura Distribuída
 
