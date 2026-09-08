@@ -211,7 +211,51 @@ A lógica de TI do **Vaga Livre** será gerenciada por **seis serviços independ
 
 ## 4.1. Diagrama de Arquitetura
 
-![Diagrama de Arquitetura — Vaga Livre](./img/diagrama-arquitetura.png)
+```mermaid
+graph TD
+    subgraph Clientes [Camada de Interface]
+        Web["Web - Síndico e moderador"]
+        Mobile["Mobile - morador"]
+    end
+
+    subgraph Roteamento [API Gateway / Roteador]
+        GW["API Gateway<br/>(Ponto único de entrada para as requisições.<br/>Recebe, valida e encaminha para os serviços responsáveis)"]
+    end
+
+    subgraph Backend [Serviços Distribuídos]
+        Auth["Autenticação<br/>(Responsável pelo login, controle de<br/>acesso e validação de usuários)"]
+        Users["Usuários e condomínio<br/>(Gerencia informações de usuários,<br/>moradores e dados do condomínio)"]
+        Vagas["Vagas<br/>(Cadastro, consulta e<br/>gerenciamento das vagas)"]
+        Reserva["Reserva<br/>(Processa as solicitações de<br/>reserva realizadas pelos usuários)"]
+        Disp["Disponibilidade<br/>(Verifica e controla a disponibilidade<br/>das vagas antes da reserva)"]
+        Notif["Notificação<br/>(Envia notificações e avisos sobre<br/>reservas, alterações e outras ações)"]
+    end
+
+    subgraph Dados [Camada de Dados]
+        DB[("Banco de dados<br/>(Armazena e fornece os dados<br/>utilizados pelos serviços)")]
+    end
+
+    %% Rotas dos Clientes para o Gateway
+    Web --> GW
+    Mobile --> GW
+
+    %% Roteamento Interno do Gateway para os Serviços
+    GW --> Auth
+    GW --> Users
+    GW --> Vagas
+    GW --> Reserva
+    GW --> Disp
+    GW --> Notif
+
+    %% Conexões dos Serviços com o Banco de Dados
+    Auth --> DB
+    Users --> DB
+    Vagas --> DB
+    Reserva --> DB
+    Disp --> DB
+    Notif --> DB
+``` 
+A imagem do Diagrama de Arquitetura se encontra nos img [diagrama-arquitetura.png](https://github.com/ICEI-PUC-Minas-PMV-SI/pmv-si-2026-2-pe6-t2-g09/blob/main/docs/img/diagrama-arquitetura.png)
 
 O sistema é dividido em três partes principais: os clientes, o API Gateway e os serviços, que conversam com um banco de dados central.
 Na ponta dos clientes, temos duas interfaces: um site voltado para o síndico e moderadores, e um app para os moradores. Os dois permitem fazer coisas como consultar vagas, reservar e ver informações do condomínio.
@@ -219,17 +263,17 @@ Todas as requisições dessas interfaces passam por um único ponto de entrada, 
 
 A partir do API Gateway, as requisições são distribuídas entre os serviços responsáveis por cada funcionalidade:
 
-•	Autenticação – cuida do login e da validação dos usuários, controlando o acesso.
+- Autenticação – cuida do login e da validação dos usuários, controlando o acesso.
 
-•	Usuários e Condomínio – gerencia os dados dos moradores, usuários e informações do prédio.
+-	Usuários e Condomínio – gerencia os dados dos moradores, usuários e informações do prédio.
 
-•	Vagas – faz o cadastro, consulta e gerenciamento das vagas.
+-	Vagas – faz o cadastro, consulta e gerenciamento das vagas.
 
-•	Reserva – processa os pedidos de reserva feitos pelos moradores.
+-	Reserva – processa os pedidos de reserva feitos pelos moradores.
 
-•	Disponibilidade – verifica se uma vaga está livre antes da reserva ser concluída.
+-	Disponibilidade – verifica se uma vaga está livre antes da reserva ser concluída.
 
-•	Notificação – envia avisos e alertas sobre reservas, mudanças e outras ações.
+-	Notificação – envia avisos e alertas sobre reservas, mudanças e outras ações.
 
 Depois que o serviço recebe a requisição, ele faz o processamento necessário e grava ou consulta as informações no banco de dados. O banco é a camada onde tudo fica guardado e persistido.
 
