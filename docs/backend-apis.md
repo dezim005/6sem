@@ -31,7 +31,7 @@ Ao final desta Etapa, cada aluno será avaliado individualmente nestas 6 compet�
 | Rubrica Curricular | ID Tarefa | Atividade Semanal | Descrição Detalhada da Tarefa | Estudante Responsável | GitHub Username | Status de Entrega | Evidência/Seção Temática | Autoria Git |
 | :---: | :---: | :---: | :--- | :--- | :---: | :---: | :--- | :---: |
 | **H36b** | `T2.1` | `ATV2.1` | Configuração do Boilerplate da API, Roteamento e Inicialização | [Nome do Aluno 1] | `username1` | `⌛ Não Iniciado` | [Instalação/README](src/backend/README.md) | [ ] |
-| **H36b** | `T2.2` | `ATV2.1` | Modelagem e Persistência de Dados (Conexão DB, ORM, Schemas) | [Nome do Aluno 2] | `dezim005` | `📝 Em Progresso` | [Seção 2.1](#21-schema-e-diagrama-entidade-relacionamento) | [ ] |
+| **H36b** | `T2.2` | `ATV2.1` | Modelagem e Persistência de Dados (Conexão DB, ORM, Schemas) | Andre Lopes | `dezim005` | `📝 Em Progresso` | [Seção 2.1](#21-schema-e-diagrama-entidade-relacionamento) | [ ] |
 | **H36b** | `T2.3` | `ATV2.1` | Implementação de Endpoints CRUD e Lógica de Negócios Principal | Giovanny Lisboa | `glisboapuc` | `⌛ Não Iniciado` | [Seção 3.0](#3-especificacao-avancada-de-endpoints) | [ ] |
 | **H36b** | `T2.4` | `ATV2.1` | Mecanismo de Segurança da API (Autenticação/Autorização JWT) | [Nome do Aluno 4] | `username4` | `⌛ Não Iniciado` | [Seção 3.3](#33-seguranca-e-autorizacao) | [ ] |
 | **H35b** | `T2.5` | `ATV2.1` | Gateway, Integração de Serviços Web e Clientes HTTP Externos | [Nome do Aluno 5] | `username5` | `⌛ Não Iniciado` | [Seção 2.2](#22-integracao-e-infraestrutura-distribuida) | [ ] |
@@ -43,7 +43,7 @@ Ao final desta Etapa, cada aluno será avaliado individualmente nestas 6 compet�
 
 # 1. Escopo e Objetivos do Backend
 
-[Insira aqui uma breve introdução descrevendo o papel e os objetivos técnicos do seu ecossistema de APIs de backend. Esclareça quais microserviços ou módulos compõem a solução, a escolha de tecnologias de desenvolvimento (SGBDs, frameworks) e o que se espera em termos de volumetria e capacidade transacional.]
+O ecossistema de back-end do VagaLivre constitui o núcleo transacional e a única fonte de verdade da solução distribuída. Ele é responsável por orquestrar de forma centralizada e segura o fluxo de informações consumido pelas duas interfaces clientes: o Painel Administrativo Web (Next.js) e o Aplicativo do Morador (React Native). O principal objetivo técnico do back-end é expor uma API RESTful de alto desempenho, segura e resiliente, capaz de arbitrar o compartilhamento concorrente de recursos físicos escassos (vagas de garagem) sem falhas de integridade ou atrasos operacionais.
 
 ---
 
