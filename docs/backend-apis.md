@@ -164,6 +164,8 @@ Para impedir que dois moradores reservem a mesma vaga no mesmo intervalo de temp
 - O sistema verifica se existe alguma reserva conflitante para aquela vaga e período usando uma estratégia de bloqueio de linha para escrita (pessimistic lock / SELECT FOR UPDATE).
 - Se nenhuma colisão for encontrada, a reserva é persistida e o status da vaga é alterado para OCUPADA (ou RESERVADA), liberando a trava e confirmando a operação de forma segura. Caso contrário, ocorre um rollback automático e a API retorna imediatamente o código de erro 409 Conflict.
 
+No arquivo ao lado está o trecho de código do serviço que implementa essa lógica de proteção contra agendamentos duplicados (double-booking) [reserva.service.ts](https://github.com/ICEI-PUC-Minas-PMV-SI/pmv-si-2026-2-pe6-t2-g09/blob/main/src/backend/reserva.service.ts)
+
 ### Pool de Conexões com Banco de Dados (Connection Pooling)
 Uma das principais causas de lentidão em backend Node.js integrado a bancos relacionais é o esgotamento de conexões disponíveis. Para otimizar o uso de recursos de infraestrutura:
 
