@@ -149,6 +149,10 @@ O código abaixo representa a especificação mestre de modelagem física que ge
 
 O modelo de dados está definido no arquivo [schema.prisma](https://github.com/ICEI-PUC-Minas-PMV-SI/pmv-si-2026-2-pe6-t2-g09/blob/main/src/backend/schema.prisma)
 
+**Script de Sementes do Banco de Dados**
+
+Para viabilizar os testes de integração e garantir que o sistema distribuído possua dados básicos de infraestrutura em sua primeira execução (como a conta do administrador/síndico e o mapeamento inicial das vagas físicas), foi concebido o script de população automatizada de dados no arquivo [seed.ts](https://github.com/ICEI-PUC-Minas-PMV-SI/pmv-si-2026-2-pe6-t2-g09/blob/main/src/backend/seed.ts)
+
 ## 2.2. Integração e Infraestrutura Distribuída
 
 O controle e a escalabilidade de uma solução distribuída para condomínios exigem que a arquitetura do backend mitigue gargalos comuns de concorrência física e acessos simultâneos de rede.
