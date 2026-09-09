@@ -172,6 +172,8 @@ Uma das principais causas de lentidão em backend Node.js integrado a bancos rel
 - O backend utiliza o gerenciador de conexões embutido no Prisma Client, configurado com um limite dinâmico de conexões simultâneas (connection_limit=10 por instância de container).
 - Se o sistema for hospedado em arquitetura serverless ou escalado horizontalmente em múltiplos containers, a API integrará um PgBouncer (proxy de pool de conexões para PostgreSQL), aglutinando as requisições de maneira eficiente sem sobrecarregar as portas físicas do SGBD.
 
+A integração segura do Prisma Client ao ciclo de vida do framework NestJS é realizada através do seguinte serviço central de banco de dados no arquivo ao lado [prisma.service.ts](https://github.com/ICEI-PUC-Minas-PMV-SI/pmv-si-2026-2-pe6-t2-g09/blob/main/src/backend/prisma.service.ts)
+
 ### Cache Distribuído com Redis
 Para reduzir a carga de processamento de consultas repetitivas que demandam computação onerosa, o Redis é acoplado como um banco de dados chave-valor em memória:
 
