@@ -1,221 +1,97 @@
 datasource db {
-
-provider = "postgresql"
-
-url = env("DATABASE_URL")
-
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
-
-
 
 generator client {
-
-provider = "prisma-client-js"
-
+  provider = "prisma-client-js"
 }
 
-
-
-enum Perfil {
-
-ADMIN
-
-SINDICO
-
-MORADOR
-
+enum UserRole {
+  resident
+  manager
 }
 
-
-
-enum TipoVaga {
-
-COBERTA
-
-DESCOBERTA
-
+enum UserStatus {
+  pending
+  approved
+  denied
 }
 
-
-
-enum StatusVaga {
-
-LIVRE
-
-OCUPADA
-
-COMPARTILHADA
-
+enum ParkingSpotType {
+  compact
+  standard
+  suv
+  motorcycle
 }
 
+model VagaLivreCondominiums {
+  id      String @id
+  name    String
+  address String
+  users   VagaLivreRegisteredUsers[]
 
-
-enum StatusCompartilhamento {
-
-ATIVO
-
-FINALIZADO
-
+  @@map("vagaLivreCondominiums")
 }
 
+model VagaLivreRegisteredUsers {
+  id               String     @id
+  name             String
+  email            String     @unique
+  password         String?
+  role             UserRole
+  status           UserStatus
+  registrationDate String?
+  avatarUrl        String?
+  dateOfBirth      String?
+  apartment        String?
+  cpf              String?
+  phone            String?
+  description      String?
+  condominiumId    String?
+  condominium      VagaLivreCondominiums? @relation(fields: [condominiumId], references: [id])
+  ownedSpots       VagaLivreParkingSpots[]
+  reservations     VagaLivreReservations[]
 
-
-enum StatusReserva {
-
-CONFIRMADA
-
-CANCELADA
-
-FINALIZADA
-
+  @@map("vagaLivreRegisteredUsers")
 }
 
+model VagaLivreAuth {
+  id              String  @id @default("current")
+  isAuthenticated Boolean
+  user            Json?
 
-
-model Usuario {
-
-id String @id @default(uuid())
-
-nome String
-
-email String @unique
-
-senha String
-
-perfil Perfil @default(MORADOR)
-
-apartamento String
-
-bloco String
-
-celular String
-
-createdAt DateTime @default(now())
-
-updatedAt DateTime @updatedAt
-
-veiculos Veiculo[]
-
-vagasFixas Vaga[] @relation("VagaProprietario")
-
-reservas Reserva[]
-
-compartilhamentos Compartilhamento[]
-
-
-
-@@map("usuarios")
-
+  @@map("vagaLivreAuth")
 }
 
+model VagaLivreParkingSpots {
+  id                   String          @id
+  number               String
+  type                 ParkingSpotType
+  location             String
+  isAvailable          Boolean         @default(true)
+  ownerId              String?
+  ownerName            String?
+  currentReservationId String?         @unique
+  description          String?
+  availability         Json            @default("[]")
+  owner                VagaLivreRegisteredUsers? @relation(fields: [ownerId], references: [id])
+  currentReservation   VagaLivreReservations?    @relation("CurrentReservation", fields: [currentReservationId], references: [id])
+  reservations         VagaLivreReservations[]   @relation("SpotReservations")
 
-
-model Veiculo {
-
-id String @id @default(uuid())
-
-marca String
-
-modelo String
-
-cor String
-
-placa String @unique
-
-proprietarioId String
-
-proprietario Usuario @relation(fields: [proprietarioId], references: [id], onDelete: Cascade)
-
-reservas Reserva[]
-
-createdAt DateTime @default(now())
-
-
-
-@@map("veiculos")
-
+  @@map("vagaLivreParkingSpots")
 }
 
+model VagaLivreReservations {
+  id           String   @id
+  spotId       String
+  userId       String
+  startTime    DateTime @db.Timestamptz
+  endTime      DateTime @db.Timestamptz
+  vehiclePlate String?
+  spot         VagaLivreParkingSpots      @relation("SpotReservations", fields: [spotId], references: [id])
+  user         VagaLivreRegisteredUsers   @relation(fields: [userId], references: [id])
+  currentForSpot VagaLivreParkingSpots?   @relation("CurrentReservation")
 
-
-model Vaga {
-
-id String @id @default(uuid())
-
-numero Int @unique
-
-tipo TipoVaga @default(COBERTA)
-
-status StatusVaga @default(LIVRE)
-
-proprietarioId String?
-
-proprietario Usuario? @relation("VagaProprietario", fields: [proprietarioId], references: [id])
-
-reservas Reserva[]
-
-compartilhados Compartilhamento[]
-
-
-
-@@map("vagas")
-
+  @@map("vagaLivreReservations")
 }
-
-
-
-model Compartilhamento {
-
-id String @id @default(uuid())
-
-vagaId String
-
-vaga Vaga @relation(fields: [vagaId], references: [id], onDelete: Cascade)
-
-proprietarioId String
-
-proprietario Usuario @relation(fields: [proprietarioId], references: [id], onDelete: Cascade)
-
-dataInicio DateTime
-
-dataFim DateTime
-
-status StatusCompartilhamento @default(ATIVO)
-
-
-
-@@map("compartilhamentos")
-
-}
-
-
-
-model Reserva {
-
-id String @id @default(uuid())
-
-vagaId String
-
-vaga Vaga @relation(fields: [vagaId], references: [id], onDelete: Cascade)
-
-moradorId String
-
-morador Usuario @relation(fields: [moradorId], references: [id], onDelete: Cascade)
-
-veiculoId String
-
-veiculo Veiculo @relation(fields: [veiculoId], references: [id], onDelete: Cascade)
-
-dataInicio DateTime
-
-dataFim DateTime
-
-status StatusReserva @default(CONFIRMADA)
-
-createdAt DateTime @default(now())
-
-
-
-@@map("reservas")
-
-} 

@@ -3,3 +3,5 @@
 # criados a partir dele — apenas os documentos de conteúdo são propagados.
 /ai/
 /.claude/
+.env.local
+node_modules/
