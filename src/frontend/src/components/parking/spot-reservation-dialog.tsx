@@ -20,13 +20,18 @@ import { format, startOfDay, endOfDay, eachDayOfInterval, isEqual, isWithinInter
 import { ptBR } from 'date-fns/locale';
 import { useToast } from "@/hooks/use-toast";
 
+// 1. URL da API definida conforme solicitado
+const API_URL = process.env.NEXT_PUBLIC_API_URL || process.env.REACT_APP_API_URL || 'https://vaga-livre-backend.onrender.com';
+
 interface SpotReservationDialogProps {
   spot: ParkingSpot | null;
-  allReservations: Reservation[]; // Todas as reservas do sistema, para verificar conflitos desta vaga
+  allReservations: Reservation[];
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   onConfirmReservation: (spotId: string, dateRange: DateRange) => Promise<void>;
   isSubmitting: boolean;
+  // Prop opcional adicionada para evitar erro de TypeScript com o usuarioLogado
+  usuarioLogado?: { id: string; email: string }; 
 }
 
 export function SpotReservationDialog({
@@ -36,12 +41,12 @@ export function SpotReservationDialog({
   onOpenChange,
   onConfirmReservation,
   isSubmitting,
+  usuarioLogado // Extraindo a prop
 }: SpotReservationDialogProps) {
   const [selectedDateRange, setSelectedDateRange] = React.useState<DateRange | undefined>(undefined);
   const { toast } = useToast();
 
   React.useEffect(() => {
-    // Reset date range when dialog opens for a new spot or closes
     if (isOpen) {
       setSelectedDateRange(undefined);
     }
@@ -67,19 +72,18 @@ export function SpotReservationDialog({
     return availabilitySlots.some(slot => {
       const slotStart = startOfDay(new Date(slot.startTime));
       const slotEnd = endOfDay(new Date(slot.endTime));
-      // O dia deve estar completamente contido no intervalo de disponibilidade
       return targetDayStart >= slotStart && targetDayStart <= slotEnd;
     });
   };
   
   const disabledDaysFunc = (day: Date): boolean => {
-    if (day < startOfDay(new Date())) return true; // Dias passados
-    if (!spot.availability || spot.availability.length === 0) return true; // Sem disponibilidade definida
+    if (day < startOfDay(new Date())) return true; 
+    if (!spot.availability || spot.availability.length === 0) return true; 
 
     const dayIsAvailable = isDayWithinAvailability(day, spot.availability);
-    if (!dayIsAvailable) return true; // Fora dos slots de disponibilidade do proprietário
+    if (!dayIsAvailable) return true; 
     
-    return isDayBooked(day); // Já reservado
+    return isDayBooked(day); 
   };
 
   const handleConfirmClick = async () => {
@@ -91,8 +95,7 @@ export function SpotReservationDialog({
       });
       return;
     }
-    // Validar se todos os dias no intervalo selecionado são realmente reserváveis
-    // (embora o calendário já deva prevenir isso visualmente com `disabledDaysFunc`)
+    
     const range = eachDayOfInterval({
         start: selectedDateRange.from,
         end: selectedDateRange.to || selectedDateRange.from,
@@ -113,27 +116,44 @@ export function SpotReservationDialog({
       // 1. Lógica existente de salvar a reserva no sistema...
       await onConfirmReservation(spot.id, selectedDateRange);
 
-      // 2. ADICIONE AQUI: Chamada para o seu Serviço de Notificações
-      const backendUrl = 'https://vaga-livre-backend-qt70.onrender.com'; // ou 'http://localhost:3000'
-
-      await fetch(`${backendUrl}/notifications`, {
+      // 2. Chamada para o seu Serviço de Notificações no Render
+      const response = await fetch(`${API_URL}/notifications`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userId: usuarioLogado.id,        // ID do usuário logado (Certifique-se de que essa variável existe no seu contexto de autenticação)
-          userEmail: usuarioLogado.email,  // E-mail que receberá a mensagem
+          userId: usuarioLogado?.id || 'usr-123',
+          userEmail: usuarioLogado?.email || 'seu-email-teste@gmail.com',
           title: 'Reserva Confirmada',
-          message: `Sua reserva para a vaga ${spot.number} foi confirmada!`, 
+          message: `Sua reserva para a vaga ${spot.number} foi confirmada com sucesso!`, 
           type: 'RESERVA_CONFIRMADA',
         }),
       });
 
-      alert('Reserva efetuada e e-mail de confirmação enviado com sucesso!');
+      if (response.ok) {
+        // Substituído o alert() pelo toast() para manter a consistência visual
+        toast({
+          title: "Reserva Confirmada!",
+          description: "Sua vaga foi reservada com sucesso e a notificação foi enviada.",
+        });
+      } else {
+        const errorData = await response.json();
+        console.error('Erro na API de Notificações:', errorData);
+        toast({
+          title: "Aviso",
+          description: "Reserva efetuada, mas ocorreu um erro ao enviar a notificação.",
+          variant: "destructive",
+        });
+      }
 
     } catch (error) {
-      console.error('Erro ao processar reserva/notificação:', error);
+      console.error('Erro ao conectar com o backend:', error);
+      toast({
+          title: "Aviso",
+          description: "Reserva efetuada, mas não foi possível conectar ao serviço de notificações.",
+          variant: "destructive",
+      });
     }
   };
 
@@ -177,9 +197,9 @@ export function SpotReservationDialog({
                         onSelect={setSelectedDateRange}
                         disabled={disabledDaysFunc}
                         locale={ptBR}
-                        numberOfMonths={typeof window !== 'undefined' && window.innerWidth >= 768 ? 2 : 1} // 2 meses em telas maiores
+                        numberOfMonths={typeof window !== 'undefined' && window.innerWidth >= 768 ? 2 : 1}
                         className="rounded-md border"
-                        fromDate={startOfDay(new Date())} // Não mostrar dias anteriores ao atual no início
+                        fromDate={startOfDay(new Date())}
                      />
                      {selectedDateRange?.from && (
                         <p className="mt-3 text-sm text-muted-foreground">
