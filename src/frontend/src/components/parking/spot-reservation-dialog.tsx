@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -110,7 +109,32 @@ export function SpotReservationDialog({
         }
     }
     
-    await onConfirmReservation(spot.id, selectedDateRange);
+    try {
+      // 1. Lógica existente de salvar a reserva no sistema...
+      await onConfirmReservation(spot.id, selectedDateRange);
+
+      // 2. ADICIONE AQUI: Chamada para o seu Serviço de Notificações
+      const backendUrl = 'https://vaga-livre-backend-qt70.onrender.com'; // ou 'http://localhost:3000'
+
+      await fetch(`${backendUrl}/notifications`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: usuarioLogado.id,        // ID do usuário logado (Certifique-se de que essa variável existe no seu contexto de autenticação)
+          userEmail: usuarioLogado.email,  // E-mail que receberá a mensagem
+          title: 'Reserva Confirmada',
+          message: `Sua reserva para a vaga ${spot.number} foi confirmada!`, 
+          type: 'RESERVA_CONFIRMADA',
+        }),
+      });
+
+      alert('Reserva efetuada e e-mail de confirmação enviado com sucesso!');
+
+    } catch (error) {
+      console.error('Erro ao processar reserva/notificação:', error);
+    }
   };
 
   const spotTypeTranslations: Record<ParkingSpot['type'], string> = {
