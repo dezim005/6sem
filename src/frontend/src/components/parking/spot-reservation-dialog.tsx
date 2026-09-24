@@ -115,7 +115,7 @@ export function SpotReservationDialog({
       const usuarioLogado = storedUser ? JSON.parse(storedUser) : null;
 
       // 2. Fallback: se houver usuário logado usa o e-mail dele, senão usa o seu e-mail real para testes
-      const userEmail = usuarioLogado?.email || 'dedebrgames@gmail.com'; // 👈 Substitua pelo seu e-mail real aqui!
+      const userEmail = usuarioLogado?.email || 'andre.lopes.1521271@sga.pucminas.br'; // 👈 Substitua pelo seu e-mail real aqui!
       const userId = usuarioLogado?.id || 'usr-001';
 
       // Salva a reserva no sistema (mantendo a lógica do componente)
