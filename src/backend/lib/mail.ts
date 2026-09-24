@@ -1,10 +1,14 @@
-import nodemailer from 'nodemailer';
+import nodemailer from 'nodemailer'; 
 
-// Configuração do transportador SMTP (Exemplo usando Gmail ou serviço SMTP)
-export const transporter = nodemailer.createTransport({
-  service: 'gmail', // ou host/port customizado
-  auth: {
-    user: process.env.EMAIL_USER, // Seu e-mail no .env
-    pass: process.env.EMAIL_PASS, // Sua senha de aplicativo no .env
-  },
+export const transporter = nodemailer.createTransport({ 
+  host: 'smtp.gmail.com', 
+  port: 587, 
+  secure: false, // Define uso de STARTTLS na porta 587 (liberada no Render) 
+  auth: { 
+    user: process.env.EMAIL_USER, 
+    pass: process.env.EMAIL_PASS, 
+  }, 
+  tls: { 
+    rejectUnauthorized: false, // Evita bloqueio por certificados intermediários 
+  }, 
 });
