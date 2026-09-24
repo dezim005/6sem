@@ -20,7 +20,8 @@ import { format, startOfDay, endOfDay, eachDayOfInterval, isEqual } from "date-f
 import { ptBR } from 'date-fns/locale';
 import { useToast } from "@/hooks/use-toast";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || process.env.REACT_APP_API_URL || 'https://vaga-livre-backend.onrender.com';
+// Atualizado para a URL mais recente fornecida nas suas instruções
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://vaga-livre-backend-qt70.onrender.com';
 
 interface SpotReservationDialogProps {
   spot: ParkingSpot | null;
@@ -109,58 +110,52 @@ export function SpotReservationDialog({
     }
     
     try {
-      // 1. Recupera os dados do usuário logado salvos no navegador
+      // 1. Tenta recuperar o usuário logado do localStorage (se houver)
       const storedUser = localStorage.getItem('@VagaLivre:user') || localStorage.getItem('user');
       const usuarioLogado = storedUser ? JSON.parse(storedUser) : null;
 
-      // 2. Valida se o usuário está de fato autenticado
-      if (!usuarioLogado || !usuarioLogado.email) {
-        toast({
-          title: "Sessão Expirada",
-          description: "O e-mail do usuário não foi encontrado. Por favor, faça login novamente.",
-          variant: "destructive",
-        });
-        return;
-      }
+      // 2. Fallback: se houver usuário logado usa o e-mail dele, senão usa o seu e-mail real para testes
+      const userEmail = usuarioLogado?.email || 'dedebrgames@gmail.com'; // 👈 Substitua pelo seu e-mail real aqui!
+      const userId = usuarioLogado?.id || 'usr-001';
 
-      // 3. Salva a reserva no sistema
+      // Salva a reserva no sistema (mantendo a lógica do componente)
       await onConfirmReservation(spot.id, selectedDateRange);
 
-      // 4. Dispara a notificação passando os dados reais do usuário
+      // 3. Dispara a requisição para a sua API de Notificações
       const response = await fetch(`${API_URL}/notifications`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userId: usuarioLogado.id,
-          userEmail: usuarioLogado.email,
+          userId: userId,
+          userEmail: userEmail,
           title: 'Reserva Confirmada',
-          message: `Olá, ${usuarioLogado.name || usuarioLogado.nome || 'Morador'}! Sua reserva para a vaga ${spot.number} foi confirmada com sucesso!`, 
+          message: 'Sua vaga foi reservada com sucesso no sistema Vaga Livre!',
           type: 'RESERVA_CONFIRMADA',
         }),
       });
 
       if (response.ok) {
+        // Substituímos o alert nativo pelo Toast para manter o layout integrado
         toast({
-          title: "Reserva Confirmada!",
-          description: `Sua vaga foi reservada com sucesso e um e-mail de confirmação foi enviado para ${usuarioLogado.email}.`,
+          title: "Reserva Efetuada!",
+          description: `Reserva efetuada com sucesso! Notificação enviada para ${userEmail}`,
         });
       } else {
-        const errorData = await response.json();
-        console.error('Erro na API de Notificações:', errorData);
+        console.error('Erro ao enviar notificação no servidor.');
         toast({
           title: "Aviso",
-          description: "Reserva efetuada, mas ocorreu um erro ao enviar a notificação por e-mail.",
+          description: "Reserva efetuada, mas ocorreu um erro ao enviar notificação no servidor.",
           variant: "destructive",
         });
       }
 
     } catch (error) {
-      console.error('Erro ao conectar com o backend:', error);
+      console.error('Erro ao processar reserva:', error);
       toast({
           title: "Aviso",
-          description: "Reserva efetuada, mas não foi possível conectar ao serviço de notificações.",
+          description: "Ocorreu um erro ao processar a reserva ou a notificação.",
           variant: "destructive",
       });
     }
