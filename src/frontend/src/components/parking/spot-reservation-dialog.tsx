@@ -13,14 +13,13 @@ import {
   DialogTitle,
   DialogClose,
 } from "@/components/ui/dialog";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, AlertTriangle, CalendarDays, MapPin } from "lucide-react";
+import { Card, CardContent, CardTitle, CardHeader } from "@/components/ui/card";
+import { Loader2, AlertTriangle, MapPin } from "lucide-react";
 import type { DateRange } from "react-day-picker";
-import { format, startOfDay, endOfDay, eachDayOfInterval, isEqual, isWithinInterval } from "date-fns";
+import { format, startOfDay, endOfDay, eachDayOfInterval, isEqual } from "date-fns";
 import { ptBR } from 'date-fns/locale';
 import { useToast } from "@/hooks/use-toast";
 
-// 1. URL da API definida conforme solicitado
 const API_URL = process.env.NEXT_PUBLIC_API_URL || process.env.REACT_APP_API_URL || 'https://vaga-livre-backend.onrender.com';
 
 interface SpotReservationDialogProps {
@@ -30,8 +29,6 @@ interface SpotReservationDialogProps {
   onOpenChange: (open: boolean) => void;
   onConfirmReservation: (spotId: string, dateRange: DateRange) => Promise<void>;
   isSubmitting: boolean;
-  // Prop opcional adicionada para evitar erro de TypeScript com o usuarioLogado
-  usuarioLogado?: { id: string; email: string }; 
 }
 
 export function SpotReservationDialog({
@@ -40,8 +37,7 @@ export function SpotReservationDialog({
   isOpen,
   onOpenChange,
   onConfirmReservation,
-  isSubmitting,
-  usuarioLogado // Extraindo a prop
+  isSubmitting
 }: SpotReservationDialogProps) {
   const [selectedDateRange, setSelectedDateRange] = React.useState<DateRange | undefined>(undefined);
   const { toast } = useToast();
@@ -113,36 +109,49 @@ export function SpotReservationDialog({
     }
     
     try {
-      // 1. Lógica existente de salvar a reserva no sistema...
+      // 1. Recupera os dados do usuário logado salvos no navegador
+      const storedUser = localStorage.getItem('@VagaLivre:user') || localStorage.getItem('user');
+      const usuarioLogado = storedUser ? JSON.parse(storedUser) : null;
+
+      // 2. Valida se o usuário está de fato autenticado
+      if (!usuarioLogado || !usuarioLogado.email) {
+        toast({
+          title: "Sessão Expirada",
+          description: "O e-mail do usuário não foi encontrado. Por favor, faça login novamente.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // 3. Salva a reserva no sistema
       await onConfirmReservation(spot.id, selectedDateRange);
 
-      // 2. Chamada para o seu Serviço de Notificações no Render
+      // 4. Dispara a notificação passando os dados reais do usuário
       const response = await fetch(`${API_URL}/notifications`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userId: usuarioLogado?.id || 'usr-123',
-          userEmail: usuarioLogado?.email || 'seu-email-teste@gmail.com',
+          userId: usuarioLogado.id,
+          userEmail: usuarioLogado.email,
           title: 'Reserva Confirmada',
-          message: `Sua reserva para a vaga ${spot.number} foi confirmada com sucesso!`, 
+          message: `Olá, ${usuarioLogado.name || usuarioLogado.nome || 'Morador'}! Sua reserva para a vaga ${spot.number} foi confirmada com sucesso!`, 
           type: 'RESERVA_CONFIRMADA',
         }),
       });
 
       if (response.ok) {
-        // Substituído o alert() pelo toast() para manter a consistência visual
         toast({
           title: "Reserva Confirmada!",
-          description: "Sua vaga foi reservada com sucesso e a notificação foi enviada.",
+          description: `Sua vaga foi reservada com sucesso e um e-mail de confirmação foi enviado para ${usuarioLogado.email}.`,
         });
       } else {
         const errorData = await response.json();
         console.error('Erro na API de Notificações:', errorData);
         toast({
           title: "Aviso",
-          description: "Reserva efetuada, mas ocorreu um erro ao enviar a notificação.",
+          description: "Reserva efetuada, mas ocorreu um erro ao enviar a notificação por e-mail.",
           variant: "destructive",
         });
       }
