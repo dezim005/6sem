@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
-import { transporter } from '../lib/mail';
+import { resend } from '../lib/mail';
 
 export class NotificationController {
   // CREATE: Criar Notificação e Enviar E-mail
@@ -9,10 +9,10 @@ export class NotificationController {
       const { userId, userEmail, title, message, type } = req.body;
 
       if (!userId || !title || !message) {
-        return res.status(400).json({ error: 'Campos obrigatórios ausentes (userId, title, message).' });
+        return res.status(400).json({ error: 'Campos obrigatórios ausentes.' });
       }
 
-      // 1. Persiste a notificação no banco PostgreSQL (Neon)
+      // 1. Salva a notificação no banco PostgreSQL (Neon)
       const notification = await prisma.notification.create({
         data: {
           userId,
@@ -22,32 +22,32 @@ export class NotificationController {
         },
       });
 
-      // 2. Responde IMEDIATAMENTE para o frontend (Evita timeout no navegador)
+      // 2. Responde imediatamente para o frontend
       res.status(201).json(notification);
 
-      // 3. Dispara o e-mail em SEGUNDO PLANO
-      if (userEmail && process.env.EMAIL_USER) {
-        transporter.sendMail({
-          from: `"Vaga Livre" <${process.env.EMAIL_USER}>`,
+      // 3. Dispara o e-mail via API HTTP (Porta 443 - NUNCA é bloqueada pelo Render)
+      if (userEmail) {
+        resend.emails.send({
+          from: 'Vaga Livre <onboarding@resend.dev>', // Remetente de testes padrão do Resend
           to: userEmail,
           subject: `🚗 Vaga Livre: ${title}`,
           html: `
-            <div>
-              <h2>Reserva Confirmada!</h2>
+            <div style="font-family: Arial, sans-serif; padding: 20px;">
+              <h2 style="color: #2b6cb0;">Reserva Confirmada!</h2>
               <p>${message}</p>
               <hr />
               <p><small>Mensagem automática enviada pelo sistema Vaga Livre.</small></p>
             </div>
           `,
-        }).then(() => {
-          console.log(`E-mail enviado com sucesso para ${userEmail}`);
+        }).then((result) => {
+          console.log(`E-mail enviado com sucesso via Resend:`, result);
         }).catch((mailError) => {
-          console.error('Erro ao enviar e-mail em segundo plano:', mailError);
+          console.error('Erro ao enviar e-mail via Resend:', mailError);
         });
       }
 
     } catch (error) {
-      console.error('Erro ao processar/criar notificação no banco:', error);
+      console.error('Erro ao processar notificação:', error);
       return res.status(500).json({ error: 'Erro ao processar notificação.' });
     }
   }
