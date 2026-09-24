@@ -1,7 +1,11 @@
 import express from 'express';
+import cors from 'cors'; // 1\. Importe o cors
 import { notificationRoutes } from './routes/notification.routes';
 
 const app = express();
+
+// 2. Habilite o CORS antes de registrar as rotas 
+app.use(cors()); 
 
 app.use(express.json());
 
