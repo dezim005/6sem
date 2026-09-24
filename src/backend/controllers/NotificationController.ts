@@ -22,33 +22,35 @@ export class NotificationController {
         },
       });
 
-      // 2. Dispara o e-mail de confirmação se o e-mail for fornecido
-      if (userEmail) {
-        await transporter.sendMail({
+      // 2. Responde IMEDIATAMENTE para o frontend (Evita timeout no navegador)
+      res.status(201).json(notification);
+
+      // 3. Dispara o e-mail em SEGUNDO PLANO
+      if (userEmail && process.env.EMAIL_USER) {
+        transporter.sendMail({
           from: `"Vaga Livre" <${process.env.EMAIL_USER}>`,
           to: userEmail,
           subject: `🚗 Vaga Livre: ${title}`,
-          html: ` 
-            <divstyle="font-family: Arial, sans-serif; padding: 20px; color: #333;"> 
-            <h2>Confirmação de Reserva - Vaga Livre</h2>
-            <p>Olá,</p>
-            <p>Sua reserva foi processada com sucesso!</p>
-            <div style="background-color: #f7fafc; padding: 15px; border-left: 4px solid #2b6cb0; margin: 15px 0;">
-              <strong>Detalhes:</strong> ${message}
-            </div>
-            <p>Obrigado por utilizar o sistema <strong>Vaga Livre</strong>.</p>
+          html: `
+            <div>
+              <h2>Reserva Confirmada!</h2>
+              <p>${message}</p>
+              <hr />
+              <p><small>Mensagem automática enviada pelo sistema Vaga Livre.</small></p>
             </div>
           `,
+        }).then(() => {
+          console.log(`E-mail enviado com sucesso para ${userEmail}`);
+        }).catch((mailError) => {
+          console.error('Erro ao enviar e-mail em segundo plano:', mailError);
         });
       }
 
-      return res.status(201).json(notification);
     } catch (error) {
-      console.error('Erro ao processar notificação:', error);
-      return res.status(500).json({ error: 'Erro ao processar notificação ou enviar e-mail.' });
+      console.error('Erro ao processar/criar notificação no banco:', error);
+      return res.status(500).json({ error: 'Erro ao processar notificação.' });
     }
   }
-
 
   // 2. READ: Listar Notificações do Usuário (GET /notifications/user/:userId)
   async listByUser(req: Request, res: Response) {
