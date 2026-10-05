@@ -1,0 +1,21 @@
+{
+  "name": "vaga-livre-api-roberta",
+  "version": "1.0.0",
+  "private": true,
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "postinstall": "prisma generate --schema=schema.prisma",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.3",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "prisma": "^6.19.3"
+  },
+  "devDependencies": {
+    "supertest": "^7.3.0",
+    "vitest": "^5.0.2"
+  }
+}

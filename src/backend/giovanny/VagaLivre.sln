@@ -1,0 +1,18 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VagaLivre.Api", "src\VagaLivre.Api\VagaLivre.Api.csproj", "{B376B2FB-63BB-49A6-B794-6AC2213613DE}"
+EndProject
+Global
+    GlobalSection(SolutionConfigurationPlatforms) = preSolution
+        Debug|Any CPU = Debug|Any CPU
+        Release|Any CPU = Release|Any CPU
+    EndGlobalSection
+    GlobalSection(ProjectConfigurationPlatforms) = postSolution
+        {B376B2FB-63BB-49A6-B794-6AC2213613DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {B376B2FB-63BB-49A6-B794-6AC2213613DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {B376B2FB-63BB-49A6-B794-6AC2213613DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {B376B2FB-63BB-49A6-B794-6AC2213613DE}.Release|Any CPU.Build.0 = Release|Any CPU
+    EndGlobalSection
+EndGlobal
