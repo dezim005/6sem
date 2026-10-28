@@ -436,7 +436,7 @@ Como **proposta de arquitetura DevOps e integração contínua**, projeta-se a i
 ##### Arquitetura Física em Produção (Implantada)
 ```mermaid
 flowchart TB
-    Dev[Push na Main] --> Render[Render Web Services (Auto-Deploy)]
+    Dev[Push na Main] --> Render["Render Web Services (Auto-Deploy)"]
     Render --> GW[API Gateway]
     Render --> APIs[Microsserviços Node e .NET]
     APIs --> Neon[(Neon PostgreSQL Serverless)]
