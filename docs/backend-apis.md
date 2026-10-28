@@ -76,11 +76,13 @@ A solução foi dimensionada para atender à volumetria típica do cenário cond
 
 # 2. Modelagem da Aplicação e Arquitetura de Dados
 
+*(Esta seção atende diretamente à rubrica **H35b**)*
+
 ## 2.1. Schema e Diagrama Entidade-Relacionamento
 
-O modelo lógico de dados foi projetado para garantir a integridade referencial e o isolamento do domínio de negócios entre os microsserviços. A camada de persistência utiliza o ORM Prisma ([allan/schema.prisma](./allan/schema.prisma) e equivalentes) para mapeamento objeto-relacional nas APIs Node.js, e o Entity Framework Core na API .NET. No banco de dados PostgreSQL (Neon), as tabelas físicas utilizam o prefixo `vagaLivre`, à exceção da tabela de auditoria e notificações.
+O modelo lógico de dados foi projetado para garantir a integridade referencial e o isolamento do domínio de negócios entre os microsserviços. A camada de persistência utiliza o ORM Prisma ([src/backend/allan/schema.prisma](src/backend/allan/schema.prisma) e equivalentes) para mapeamento objeto-relacional nas APIs Node.js, e o Entity Framework Core na API .NET. No banco de dados PostgreSQL (Neon), as tabelas físicas utilizam o prefixo `vagaLivre`, à exceção da tabela de auditoria e notificações.
 
-### Detalhamento do Schema Relacional
+##### Detalhamento do Schema Relacional
 
 | Tabela | Chave Primária (PK) | Relacionamentos / Chaves Estrangeiras (FK) | Descrição / Observação |
 | ------ | ------ | ------ | ------ |
@@ -90,7 +92,7 @@ O modelo lógico de dados foi projetado para garantir a integridade referencial 
 | `vagaLivreReservations` | `id` | N:1 com `vagaLivreParkingSpots`; N:1 com `vagaLivreRegisteredUsers` | Agendamentos de vagas com datas de início/fim (`timestamptz`) e placa do veículo |
 | `notifications` | `id` | N:1 com `vagaLivreRegisteredUsers` | Histórico de avisos transacionais e e-mails disparados |
 
-### Diagrama Entidade-Relacionamento (DER)
+##### Diagrama Entidade-Relacionamento (DER)
 
 ```mermaid
 erDiagram
@@ -140,7 +142,7 @@ erDiagram
     }
 ```
 
-* **Scripts de população e migração:** O script de carga inicial de testes está disponível em [`seed.js`](./seed.js) e a definição da tabela de notificações em [`add-notifications.sql`](./add-notifications.sql).
+* **Scripts de população e migração:** O script de carga inicial de testes está disponível em [`src/backend/seed.js`](src/backend/seed.js) e a definição da tabela de notificações em [`src/backend/andre/add-notifications.sql`](src/backend/andre/add-notifications.sql).
 
 ---
 
@@ -163,14 +165,14 @@ flowchart LR
     Andre --> Neon
 ```
 
-### Estratégias de Concorrência, Comunicação e Resiliência
+##### Estratégias de Concorrência, Comunicação e Resiliência
 
 * **Comunicação Síncrona via Proxy:** O API Gateway (`http-proxy-middleware`) atua de forma síncrona, repassando o caminho da requisição HTTP (`pathname`) e seus parâmetros para o serviço responsável, retornando a resposta diretamente ao cliente.
 * **Gerenciamento de Concorrência e Conexões:** A persistência distribuída utiliza a arquitetura serverless do PostgreSQL na **Neon**, contando com *connection pooling* nativo. O Prisma Client gerencia a otimização de conexões concorrentes por microsserviço sem esgotar o limite do SGBD.
 * **Resiliência e Tolerância a Falhas:** O Gateway está configurado com um tempo limite (*timeout*) de **60 segundos**, mitigando os efeitos do atraso de inicialização (*cold start*) dos serviços na plataforma Render. Caso um microsserviço *upstream* fique indisponível, o Gateway responde com um código de erro apropriado (`HTTP 502 Bad Gateway`).
 * **Processamento Assíncrono Pontual:** A API de Notificações registra o evento de aviso no banco de dados de forma síncrona e realiza o disparo de e-mails transacionais (via provedor Resend) em segundo plano (*background task*), garantindo baixos tempos de resposta ao usuário.
 
-### Roteamento Interno do Gateway (`gateway/server.js`)
+##### Roteamento Interno do Gateway (`src/backend/gateway/server.js`)
 
 | Prefixo do Caminho | Serviço de Destino | Responsável |
 | ------ | ------ | ------ |
@@ -179,7 +181,7 @@ flowchart LR
 | `/api/v1/spots` | API de Disponibilidade de Vagas | Allan |
 | `/api/v1/reservations` | API de Reservas | Gustavo |
 | `/notifications` | API de Notificações | André |
-| `/api/ParkingSpots` | API .NET em ASP.NET Core (quando `GIOVANNY_API` está configurada) | Giovanny |
+| `/api/ParkingSpots` | API .NET em ASP.NET Core | Giovanny |
 
 ---
 
