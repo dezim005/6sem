@@ -28,7 +28,7 @@ Ao final desta Etapa, cada aluno será avaliado individualmente nestas 6 compet�
 | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
 | **H36b** | T2.1 | ATV2.1 | Configuração do Boilerplate da API, Roteamento e Inicialização | Allan Aviana | AllanAviana | ✔️ Entregue | [Instalação/README](src/backend/README.md) | [x] |
 | **H36b** | T2.2 | ATV2.1 | Modelagem e Persistência de Dados (Conexão DB, ORM, Schemas) | Andre Lopes | dezim005 | ✔️ Entregue | [Seção 2.1](#21-schema-e-diagrama-entidade-relacionamento) | [x] |
-| **H36b** | T2.3 | ATV2.1 | Implementação de Endpoints CRUD e Lógica de Negócios Principal | Giovanny Lisboa | glisboapuc | ✔️ Entregue | [Seção 3.0](#3-especificacao-avancada-de-endpoints) | [x] |
+| **H36b** | T2.3 | ATV2.1 | Implementação de Endpoints CRUD e Lógica de Negócios Principal | Giovanny Lisboa | glisboapuc | ✔️ Entregue | [Seção 3.0](#3-especificação-avançada-de-endpoints) | [x] |
 | **H36b** | T2.4 | ATV2.1 | Mecanismo de Segurança da API (Autenticação/Autorização JWT) | Gustavo Veloso | gust_2003 | ✔️ Entregue | [Seção 3.3](#33-seguranca-e-autorizacao) | [x] |
 | **H35b** | T2.5 | ATV2.1 | Gateway, Integração de Serviços Web e Clientes HTTP Externos | Roberta Alves Lima | RobertaAlvesLima | ✔️ Entregue | [Seção 2.2](#22-integracao-e-infraestrutura-distribuida) | [x] |
 | **H36c** | T2.6 | ATV2.2 | Desenvolvimento de Testes Automatizados (Unitários/Integração) | Allan Viana | AllanAviana | ✔️ Entregue | [Seção 4.0](#4-estrategia-e-relatorio-de-testes-automatizados) | [x] |
