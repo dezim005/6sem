@@ -30,274 +30,447 @@ Ao final desta Etapa, cada aluno será avaliado individualmente nestas 6 compet�
 
 | Rubrica Curricular | ID Tarefa | Atividade Semanal | Descrição Detalhada da Tarefa | Estudante Responsável | GitHub Username | Status de Entrega | Evidência/Seção Temática | Autoria Git |
 | :---: | :---: | :---: | :--- | :--- | :---: | :---: | :--- | :---: |
-| **H36b** | `T2.1` | `ATV2.1` | Configuração do Boilerplate da API, Roteamento e Inicialização | [Nome do Aluno 1] | `username1` | `⌛ Não Iniciado` | [Instalação/README](src/backend/README.md) | [ ] |
+| **H36b** | `T2.1` | `ATV2.1` | Configuração do Boilerplate da API, Roteamento e Inicialização | Allan Aviana | `AllanAviana` | `✔️ Entregue` | [Instalação/README](src/backend/README.md) | [ ] |
 | **H36b** | `T2.2` | `ATV2.1` | Modelagem e Persistência de Dados (Conexão DB, ORM, Schemas) | Andre Lopes | `dezim005` | `✔️ Entregue` | [Seção 2.1](#21-schema-e-diagrama-entidade-relacionamento) | [ ] |
-| **H36b** | `T2.3` | `ATV2.1` | Implementação de Endpoints CRUD e Lógica de Negócios Principal | Giovanny Lisboa | `glisboapuc` | `⌛ Não Iniciado` | [Seção 3.0](#3-especificacao-avancada-de-endpoints) | [ ] |
-| **H36b** | `T2.4` | `ATV2.1` | Mecanismo de Segurança da API (Autenticação/Autorização JWT) | Gustavo Veloso | `gust_2003` | `⌛ Não Iniciado` | [Seção 3.3](#33-seguranca-e-autorizacao) | [ ] |
-| **H35b** | `T2.5` | `ATV2.1` | Gateway, Integração de Serviços Web e Clientes HTTP Externos |Roberta Alves Lima | `RobertaAlvesLima` | `⌛ Não Iniciado` | [Seção 2.2](#22-integracao-e-infraestrutura-distribuida) | [ ] |
-| **H36c** | `T2.6` | `ATV2.2` | Desenvolvimento de Testes Automatizados (Unitários/Integração) | Allan Viana | `username6` | `⌛ Não Iniciado` | [Seção 4.0](#4-estrategia-e-relatorio-de-testes-automatizados) | [ ] |
-| **H35c** | `T2.7` | `ATV2.1` | Construção de Dockerfile e Configuração de docker-compose | [Nome do Aluno 1] | `username1` | `⌛ Não Iniciado` | [Seção 5.1](#51-conteinerizacao-de-servicos) | [ ] |
-| **H36c** | `T2.8` | `ATV2.2` | Proposta de Implantação e Pipeline de CI/CD Backend | Pedro Cassimiro | `pedroh-corr` | `⌛ Não Iniciado` | [Seção 5.2](#52-proposta-de-infraestrutura-de-deploy-e-ambiente-em-producao) | [ ] |
+| **H36b** | `T2.3` | `ATV2.1` | Implementação de Endpoints CRUD e Lógica de Negócios Principal | Giovanny Lisboa | `glisboapuc` | `✔️ Entregue` | [Seção 3.0](#3-especificacao-avancada-de-endpoints) | [ ] |
+| **H36b** | `T2.4` | `ATV2.1` | Mecanismo de Segurança da API (Autenticação/Autorização JWT) | Gustavo Veloso | `gust_2003` | `✔️ Entregue` | [Seção 3.3](#33-seguranca-e-autorizacao) | [ ] |
+| **H35b** | `T2.5` | `ATV2.1` | Gateway, Integração de Serviços Web e Clientes HTTP Externos |Roberta Alves Lima | `RobertaAlvesLima` | `✔️ Entregue` | [Seção 2.2](#22-integracao-e-infraestrutura-distribuida) | [ ] |
+| **H36c** | `T2.6` | `ATV2.2` | Desenvolvimento de Testes Automatizados (Unitários/Integração) | Allan Viana | `AllanAviana` | `✔️ Entregue` | [Seção 4.0](#4-estrategia-e-relatorio-de-testes-automatizados) | [ ] |
+| **H35c** | `T2.7` | `ATV2.1` | Construção de Dockerfile e Configuração de docker-compose | Giovanny Lisboa | `glisboapuc` | `✔️ Entregue` | [Seção 5.1](#51-conteinerizacao-de-servicos) | [ ] |
+| **H36c** | `T2.8` | `ATV2.2` | Proposta de Implantação e Pipeline de CI/CD Backend | Pedro Cassimiro | `pedroh-corr` | `✔️ Entregue` | [Seção 5.2](#52-proposta-de-infraestrutura-de-deploy-e-ambiente-em-producao) | [ ] |
 
 ---
 
 # 1. Escopo e Objetivos do Backend
 
-O ecossistema de back-end do VagaLivre constitui o núcleo transacional e a única fonte de verdade da solução distribuída. Ele é responsável por orquestrar de forma centralizada e segura o fluxo de informações consumido pelas duas interfaces clientes: o Painel Administrativo Web (Next.js) e o Aplicativo do Morador (React Native). O principal objetivo técnico do back-end é expor uma API RESTful de alto desempenho, segura e resiliente, capaz de arbitrar o compartilhamento concorrente de recursos físicos escassos (vagas de garagem) sem falhas de integridade ou atrasos operacionais.
+O ecossistema de APIs de backend do **VagaLivre** foi concebido para atuar como a camada central de inteligência e persistência de dados da aplicação, disponibilizando serviços REST desacoplados para viabilizar o compartilhamento e gestão de vagas de garagem em condomínios residenciais. Seus objetivos técnicos englobam o gerenciamento seguro de identidades, autenticação e autorização, controle de usuários e condomínios, consulta de disponibilidade de vagas, orquestração de reservas em tempo real e disparo de notificações transacionais.
 
-## 1.1. Organização em Módulos Lógicos
+Para garantir alta escalabilidade, isolamento de responsabilidades e facilidade de manutenção, a arquitetura foi estruturada em microsserviços e módulos independentes. Em ambiente de produção, os clientes (web e mobile) consomem a solução através de um ponto de entrada único (**API Gateway**), responsável por orquestrar e rotear as requisições HTTP para seus respectivos serviços de destino.
 
-Para viabilizar uma manutenção sustentável e permitir que diferentes integrantes do grupo programem de forma paralela, a API adota uma arquitetura de monólito modular organizada em três grandes módulos de responsabilidade:
+### Microsserviços e Módulos da Solução
+| Serviço | Pasta | Responsável | Função Principal |
+| ------ | ------ | ------ | ------ |
+| Gateway | [gateway/](./gateway/) | Roberta | Porta única de entrada HTTP e roteamento de requisições |
+| Identidade | [pedro/](./pedro/) | Pedro | Autenticação, gestão de tokens HMAC/JWT e validação de sessão (/auth/me) |
+| Usuários e Condomínios | [roberta/](./roberta/) | Roberta | Gestão de cadastros, aprovação de moradores e CRUD de condomínios |
+| Disponibilidade | [allan/](./allan/) | Allan | Listagem, busca e filtros de vagas disponíveis |
+| Reservas | [gustavo/](./gustavo/) | Gustavo | Criação, validação de regras de conflito e cancelamento de reservas |
+| Notificações | [andre/](./andre/) | André | Histórico de avisos e envio de e-mails transacionais |
+| Vagas (.NET) | [giovanny/](./giovanny/) | Giovanny | API em ASP.NET Core para CRUD HATEOAS de vagas de garagem |
 
-- Módulo de Identidade e Acesso (Identity): Centraliza os processos de segurança da aplicação. É responsável pelo cadastro de usuários, criptografia de senhas, validação de perfis (síndico, portaria e morador) e emissão de tokens de acesso JWT (JSON Web Token) assinados com expiração programada.
-- Módulo de Gestão de Vagas e Reservas (Booking & Parking Core): Abriga as regras de negócio mais críticas do sistema. Ele gerencia o ciclo de vida do mapeamento físico das vagas, coordena as solicitações de reservas temporárias, controla o pool de vagas ociosas compartilhadas por moradores e arbitra o acesso concorrente aos dados das vagas físicas.
-- Módulo de Tarefas Assíncronas e Mensagens (Notification Queue): Desacoplado do fluxo síncrono principal da API, este módulo é responsável por enfileirar e despachar tarefas que não devem onerar a latência de rede direta da requisição, como o processamento de regras temporais em segundo plano e o disparo de notificações push para os telefones celulares dos moradores.
+### Stack Técnica e Tecnologias
+* **APIs Node.js / TypeScript:** Node.js, Express, Prisma ORM 6, Vitest, Supertest.
+* **API .NET Core:** ASP.NET Core 8, Entity Framework Core, Swagger (OpenAPI).
+* **Persistência de Dados (SGBD):** PostgreSQL Serverless hospedado na plataforma Neon (tabelas prefixadas com `vagaLivre` + tabela `notifications`).
+* **Integração e Orquestração:** API Gateway utilizando `http-proxy-middleware`.
+* **Hospedagem e Infraestrutura:** Render (Serviços HTTP) e Neon (Banco de Dados Serverless).
 
-## 1.2. Justificativa da Pilha de Desenvolvimento
+### Volumetria e Capacidade Transacional
+A solução foi dimensionada para atender à volumetria típica do cenário condominial (dezenas a centenas de moradores por condomínio, com acessos simultâneos concentrados nos horários de pico de reservas). Para suportar a carga e mitigar oscilações de desempenho:
+* A camada de banco de dados utiliza o *connection pooling* serverless da Neon para otimizar conexões transacionais concorrentes.
+* O API Gateway conta com um tempo limite (*timeout*) configurado em **60 segundos** para absorver com resiliência eventuais atrasos de inicialização (*cold start*) dos microsserviços hospedados no ambiente gratuito da plataforma Render.
 
-As escolhas das tecnologias de desenvolvimento para o back-end foram planejadas estrategicamente para maximizar a sinergia técnica com o histórico do código pré-existente e garantir robustez sob carga:
-
-- Pilha de Programação: Node.js (TypeScript) utilizando o framework NestJS. O Node.js oferece alta escalabilidade graças ao seu mecanismo de E/S assíncrono e não-bloqueante orientado a eventos (Single-Threaded Event Loop), garantindo que requisições paralelas rápidas (leitura do mapa de vagas) sejam processadas com latência mínima. O NestJS introduz um padrão de organização modular robusto inspirado em Clean Architecture, utilizando inversão de controle e injeção de dependências, o que mitiga o acoplamento de código.
-- Gerenciador de Banco de Dados (SGBD): PostgreSQL com a camada de abstração de dados do Prisma ORM. O PostgreSQL foi eleito por seu estrito cumprimento das propriedades ACID (Atomicidade, Consistência, Isolamento e Durabilidade). Em sistemas de reservas de vagas, onde múltiplos usuários podem disputar o mesmo espaço no mesmo segundo, o controle transacional do PostgreSQL impede inconsistências lógicas de persistência concorrente. O Prisma ORM garante a consistência de tipagem de dados de ponta a ponta em TypeScript entre o banco de dados e as rotas da API.
-- Armazenamento de Alta Velocidade e Filas: Redis. Atua como banco de dados chave-valor em memória para gerenciar a blacklist de tokens JWT revogados, realizar cache de dados estáticos de baixa mutabilidade e hospedar a infraestrutura de filas distribuídas por meio da biblioteca BullMQ, garantindo que o disparo de e-mails ou alertas móveis não consuma threads de CPU do servidor principal da API REST.
-
-## 1.3. Volumetria e Capacidade Transacional Esperada
-
-O dimensionamento técnico do backend do VagaLivre foi modelado para atender com folga às demandas de um condomínio residencial de médio a grande porte:
-
-- Escopo de Entidades: O banco de dados é projetado para suportar até 1.000 usuários ativos, 1.500 veículos registrados e 500 vagas de garagem simuladas.
-- Latência de Resposta: Estabelece-se a meta de tempo de resposta HTTP inferior a 150ms para consultas de leitura (visualizar vagas disponíveis) e inferior a 250ms para solicitações de escrita (realizar uma reserva com lock transacional).
-- Tratamento de Concorrência Extrema: A capacidade transacional exige zero anomalias de double-booking em testes de estresse de gravação paralela (múltiplas chamadas de reserva enviadas à mesma vaga no mesmo milissegundo), garantindo que o PostgreSQL aborte as requisições excedentes de forma controlada através de exceções semânticas de concorrência.
+**API Gateway em Produção:** [https://gateway-api-d2uo.onrender.com](https://gateway-api-d2uo.onrender.com)
 
 ---
 
 # 2. Modelagem da Aplicação e Arquitetura de Dados
 
-*(Esta seção atende diretamente à rubrica **H35b**)*
-
-Esta seção detalha a estrutura lógica e física de persistência do ecossistema distribuído do VagaLivre, apresentando a modelagem das entidades, os seus relacionamentos e o plano de infraestrutura para garantir a integridade dos dados e o alto desempenho em cenários de uso concorrente.
-
 ## 2.1. Schema e Diagrama Entidade-Relacionamento
 
-Para garantir consistência estática e tipagem forte em todo o fluxo de dados (do banco de dados até as rotas da API), a persistência é gerenciada utilizando o Prisma ORM integrado a um banco de dados relacional PostgreSQL.
+O modelo lógico de dados foi projetado para garantir a integridade referencial e o isolamento do domínio de negócios entre os microsserviços. A camada de persistência utiliza o ORM Prisma ([allan/schema.prisma](./allan/schema.prisma) e equivalentes) para mapeamento objeto-relacional nas APIs Node.js, e o Entity Framework Core na API .NET. No banco de dados PostgreSQL (Neon), as tabelas físicas utilizam o prefixo `vagaLivre`, à exceção da tabela de auditoria e notificações.
 
-**Diagrama Entidade-Relacionamento (DER)**
+### Detalhamento do Schema Relacional
 
-O relacionamento entre as tabelas do sistema distribuído está mapeado no diagrama abaixo, estruturado para suportar o cadastro de moradores, o controle de seus veículos, o mapeamento físico das vagas e as operações de compartilhamento e reserva.
+| Tabela | Chave Primária (PK) | Relacionamentos / Chaves Estrangeiras (FK) | Descrição / Observação |
+| ------ | ------ | ------ | ------ |
+| `vagaLivreCondominiums` | `id` | 1:N com `vagaLivreRegisteredUsers` | Cadastro de condomínios (nome, endereço) |
+| `vagaLivreRegisteredUsers` | `id` (e-mail único) | N:1 com `vagaLivreCondominiums`; 1:N com vagas e reservas | Usuários e papéis (`resident` / `manager`); status (`pending`, `approved`, `denied`) |
+| `vagaLivreParkingSpots` | `id` | N:1 com `vagaLivreRegisteredUsers` (proprietário); 1:N com reservas | Vagas de garagem (`compact`, `standard`, `suv`, `motorcycle`); disponibilidade em JSON |
+| `vagaLivreReservations` | `id` | N:1 com `vagaLivreParkingSpots`; N:1 com `vagaLivreRegisteredUsers` | Agendamentos de vagas com datas de início/fim (`timestamptz`) e placa do veículo |
+| `notifications` | `id` | N:1 com `vagaLivreRegisteredUsers` | Histórico de avisos transacionais e e-mails disparados |
+
+### Diagrama Entidade-Relacionamento (DER)
 
 ```mermaid
 erDiagram
-    USUARIO {
-        String id PK
-        String nome
-        String email UK
-        String senha
-        String perfil "ADMIN | SINDICO | MORADOR"
-        String apartamento
-        String bloco
-        String celular
-        DateTime createdAt
-    }
-    VEICULO {
-        String id PK
-        String marca
-        String modelo
-        String cor
-        String placa UK
-        String proprietarioId FK
-        DateTime createdAt
-    }
-    VAGA {
-        String id PK
-        Int numero UK
-        String tipo "COBERTA | DESCOBERTA"
-        String status "LIVRE | OCUPADA | COMPARTILHADA"
-        String proprietarioId FK "NULL para Rotativa"
-    }
-    COMPARTILHAMENTO {
-        String id PK
-        String vagaId FK
-        String proprietarioId FK
-        DateTime dataInicio
-        DateTime dataFim
-        String status "ATIVO | FINALIZADO"
-    }
-    RESERVA {
-        String id PK
-        String vagaId FK
-        String moradorId FK
-        String veiculoId FK
-        DateTime dataInicio
-        DateTime dataFim
-        String status "CONFIRMADA | CANCELADA | FINALIZADA"
-        DateTime createdAt
-    }
+    VAGA_LIVRE_CONDOMINIUMS ||--o{ VAGA_LIVRE_REGISTERED_USERS : possui
+    VAGA_LIVRE_REGISTERED_USERS ||--o{ VAGA_LIVRE_PARKING_SPOTS : disponibiliza
+    VAGA_LIVRE_REGISTERED_USERS ||--o{ VAGA_LIVRE_RESERVATIONS : realiza
+    VAGA_LIVRE_PARKING_SPOTS ||--o{ VAGA_LIVRE_RESERVATIONS : recebe
+    VAGA_LIVRE_REGISTERED_USERS ||--o{ NOTIFICATIONS : recebe
 
-    USUARIO ||--o{ VEICULO : "possui"
-    USUARIO ||--o{ VAGA : "sendo dono de"
-    USUARIO ||--o{ COMPARTILHAMENTO : "disponibiliza"
-    USUARIO ||--o{ RESERVA : "realiza"
-    
-    VAGA ||--o{ COMPARTILHAMENTO : "possui registros de"
-    VAGA ||--o{ RESERVA : "recebe"
-    
-    VEICULO ||--o{ RESERVA : "eh utilizado na"
+    VAGA_LIVRE_CONDOMINIUMS {
+        string id PK
+        string name
+        string address
+    }
+    VAGA_LIVRE_REGISTERED_USERS {
+        string id PK
+        string name
+        string email UK
+        string role
+        string status
+        string condominiumId FK
+    }
+    VAGA_LIVRE_PARKING_SPOTS {
+        string id PK
+        string number
+        string type
+        string location
+        boolean isAvailable
+        string ownerId FK
+        json availability
+    }
+    VAGA_LIVRE_RESERVATIONS {
+        string id PK
+        string spotId FK
+        string userId FK
+        datetime startTime
+        datetime endTime
+        string vehiclePlate
+    }
+    NOTIFICATIONS {
+        string id PK
+        string userId FK
+        string title
+        string message
+        string type
+        boolean read
+    }
 ```
-**Script de Migração Schema (Prisma Schema DDL)**
 
-O código abaixo representa a especificação mestre de modelagem física que gera as tabelas, as chaves primárias (PK), as chaves estrangeiras (FK) e os índices únicos (UK) no PostgreSQL.
+* **Scripts de população e migração:** O script de carga inicial de testes está disponível em [`seed.js`](./seed.js) e a definição da tabela de notificações em [`add-notifications.sql`](./add-notifications.sql).
 
-O modelo de dados está definido no arquivo [schema.prisma](https://github.com/ICEI-PUC-Minas-PMV-SI/pmv-si-2026-2-pe6-t2-g09/blob/main/src/backend/schema.prisma)
-
-**Script de Sementes do Banco de Dados**
-
-Para viabilizar os testes de integração e garantir que o sistema distribuído possua dados básicos de infraestrutura em sua primeira execução (como a conta do administrador/síndico e o mapeamento inicial das vagas físicas), foi concebido o script de população automatizada de dados no arquivo [seed.ts](https://github.com/ICEI-PUC-Minas-PMV-SI/pmv-si-2026-2-pe6-t2-g09/blob/main/src/backend/seed.ts)
+---
 
 ## 2.2. Integração e Infraestrutura Distribuída
 
-O controle e a escalabilidade de uma solução distribuída para condomínios exigem que a arquitetura do backend mitigue gargalos comuns de concorrência física e acessos simultâneos de rede.
+A arquitetura de backend do **VagaLivre** adota o padrão de **microsserviços HTTP desacoplados e distribuídos**, centralizados por um **API Gateway** unificado. Essa abordagem possibilita o dimensionamento e a evolução independente de cada módulo da aplicação.
 
-### Controle Avançado de Concorrência (Prevenção de Reserva Dupla)
-Para impedir que dois moradores reservem a mesma vaga no mesmo intervalo de tempo, o backend utiliza um mecanismo de bloqueio transacional de concorrência.
+```mermaid
+flowchart LR
+    Front[Web / Mobile Client] --> GW[API Gateway]
+    GW -->|/api/v1/auth| Pedro[Identidade & Sessão]
+    GW -->|/api/v1/users e /condominiums| Roberta[Usuários & Condomínios]
+    GW -->|/api/v1/spots| Allan[Disponibilidade de Vagas]
+    GW -->|/api/v1/reservations| Gustavo[Gestão de Reservas]
+    GW -->|/notifications| Andre[Serviço de Notificações]
+    Pedro --> Neon[(PostgreSQL Neon Serverless)]
+    Roberta --> Neon
+    Allan --> Neon
+    Gustavo --> Neon
+    Andre --> Neon
+```
 
-- Ao receber uma solicitação de agendamento, o NestJS inicia uma transação ACID isolada no PostgreSQL (prisma.$transaction).
-- O sistema verifica se existe alguma reserva conflitante para aquela vaga e período usando uma estratégia de bloqueio de linha para escrita (pessimistic lock / SELECT FOR UPDATE).
-- Se nenhuma colisão for encontrada, a reserva é persistida e o status da vaga é alterado para OCUPADA (ou RESERVADA), liberando a trava e confirmando a operação de forma segura. Caso contrário, ocorre um rollback automático e a API retorna imediatamente o código de erro 409 Conflict.
+### Estratégias de Concorrência, Comunicação e Resiliência
 
-No arquivo ao lado está o trecho de código do serviço que implementa essa lógica de proteção contra agendamentos duplicados (double-booking) [reserva.service.ts](https://github.com/ICEI-PUC-Minas-PMV-SI/pmv-si-2026-2-pe6-t2-g09/blob/main/src/backend/reserva.service.ts)
+* **Comunicação Síncrona via Proxy:** O API Gateway (`http-proxy-middleware`) atua de forma síncrona, repassando o caminho da requisição HTTP (`pathname`) e seus parâmetros para o serviço responsável, retornando a resposta diretamente ao cliente.
+* **Gerenciamento de Concorrência e Conexões:** A persistência distribuída utiliza a arquitetura serverless do PostgreSQL na **Neon**, contando com *connection pooling* nativo. O Prisma Client gerencia a otimização de conexões concorrentes por microsserviço sem esgotar o limite do SGBD.
+* **Resiliência e Tolerância a Falhas:** O Gateway está configurado com um tempo limite (*timeout*) de **60 segundos**, mitigando os efeitos do atraso de inicialização (*cold start*) dos serviços na plataforma Render. Caso um microsserviço *upstream* fique indisponível, o Gateway responde com um código de erro apropriado (`HTTP 502 Bad Gateway`).
+* **Processamento Assíncrono Pontual:** A API de Notificações registra o evento de aviso no banco de dados de forma síncrona e realiza o disparo de e-mails transacionais (via provedor Resend) em segundo plano (*background task*), garantindo baixos tempos de resposta ao usuário.
 
-### Pool de Conexões com Banco de Dados (Connection Pooling)
-Uma das principais causas de lentidão em backend Node.js integrado a bancos relacionais é o esgotamento de conexões disponíveis. Para otimizar o uso de recursos de infraestrutura:
+### Roteamento Interno do Gateway (`gateway/server.js`)
 
-- O backend utiliza o gerenciador de conexões embutido no Prisma Client, configurado com um limite dinâmico de conexões simultâneas (connection_limit=10 por instância de container).
-- Se o sistema for hospedado em arquitetura serverless ou escalado horizontalmente em múltiplos containers, a API integrará um PgBouncer (proxy de pool de conexões para PostgreSQL), aglutinando as requisições de maneira eficiente sem sobrecarregar as portas físicas do SGBD.
-
-A integração segura do Prisma Client ao ciclo de vida do framework NestJS é realizada através do seguinte serviço central de banco de dados no arquivo ao lado [prisma.service.ts](https://github.com/ICEI-PUC-Minas-PMV-SI/pmv-si-2026-2-pe6-t2-g09/blob/main/src/backend/prisma.service.ts)
-
-### Cache Distribuído com Redis
-Para reduzir a carga de processamento de consultas repetitivas que demandam computação onerosa, o Redis é acoplado como um banco de dados chave-valor em memória:
-
-- Cache de Leituras: O mapa dinâmico de vagas e a listagem de garagens livres são cacheados no Redis com um Tempo de Vida curto (TTL de 30 segundos). Isso garante que, se dezenas de moradores abrirem o aplicativo móvel simultaneamente na portaria, a API responderá instantaneamente a partir da memória Ram (latência < 15ms) sem precisar realizar varreduras (table scans) repetitivas no banco PostgreSQL.
-- Invalidação Reativa de Cache: Assim que uma reserva é criada ou cancelada com sucesso no PostgreSQL, um gatilho (trigger) de código invalida imediatamente a chave correspondente às vagas no Redis, forçando o sistema a atualizar as informações na próxima requisição de leitura de forma consistente.
-
-### Processamento Assíncrono e Mensageria (Redis + BullMQ)
-Para evitar que tarefas de processamento demorado (como o envio de e-mails, alertas push ou a atualização periódica do status de reservas finalizadas) travem a linha de execução primária da API (Event Loop do Node.js), adota-se um fluxo assíncrono baseado em filas:
-
-- O NestJS utiliza a biblioteca BullMQ sobre a infraestrutura do Redis para enfileirar as tarefas geradas.
-- Quando a reserva do Carlos é confirmada, a API responde imediatamente com o código de sucesso 201 Created para o celular dele. Em segundo plano, um processo trabalhador (Worker) consome a fila de mensagens e realiza a chamada assíncrona para o serviço externo Expo Push Notification Service, notificando o morador sobre os detalhes da vaga sem atrasar seu fluxo de uso no aplicativo.
+| Prefixo do Caminho | Serviço de Destino | Responsável |
+| ------ | ------ | ------ |
+| `/api/v1/auth` | API de Identidade | Pedro |
+| `/api/v1/users` e `/api/v1/condominiums` | API de Usuários e Condomínios | Roberta |
+| `/api/v1/spots` | API de Disponibilidade de Vagas | Allan |
+| `/api/v1/reservations` | API de Reservas | Gustavo |
+| `/notifications` | API de Notificações | André |
+| `/api/ParkingSpots` | API .NET em ASP.NET Core (quando `GIOVANNY_API` está configurada) | Giovanny |
 
 ---
 
 # 3. Especificação Avançada de Endpoints
 
-*(Esta seção atende diretamente à rubrica **H36b**)*
+Abaixo estão listados os contratos reais implementados e disponibilizados no diretório [`src/backend/`](src/backend/). Cada endpoint encontra-se detalhado descrevendo métodos HTTP, caminhos de rota, mecanismos de autenticação, payloads de requisição/resposta e comportamentos de erro. Em ambiente de produção, o acesso público é centralizado pelo API Gateway.
 
-Abaixo devem estar listados os contratos reais que foram ou serão implementados no diretório [src/backend/](src/backend/). Cada endpoint deve ser detalhado descrevendo métodos HTTP, URLs, payloads aceitos e possíveis status codes.
-
-### 3.1. Relação Geral de Endpoints
+## 3.1. Relação Geral de Endpoints
 
 | Método / Verbo | Caminho da Rota (URI) | Descrição do Recurso / Ação | Reclama Autenticação? | Responsável Técnico |
 | :---: | :--- | :--- | :---: | :---: |
-| `POST` | `/api/v1/users/register` | Criação de novos usuários na plataforma | Não | [Nome do Aluno] |
-| `POST` | `/api/v1/auth/login` | Autenticação e geração de JWT | Não | [Nome do Aluno] |
-| `GET` | `/api/v1/orders` | Listagem paginada de pedidos com filtros de busca | Sim | [Nome do Aluno] |
-| `POST` | `/api/v1/orders` | Criação e despacho de um novo pedido de transporte | Sim | [Nome do Aluno] |
+| `GET` | `/health` | Verificação de saúde (*health check*) do serviço e gateway | Não | Equipe |
+| `POST` | `/api/v1/auth/login` | Autenticação de morador/síndico e geração de token HMAC | Não | Pedro |
+| `GET` | `/api/v1/auth/me` | Recuperação dos dados do usuário autenticado na sessão | Sim (Bearer) | Pedro |
+| `POST` | `/api/v1/auth/logout` | Encerramento da sessão no lado do cliente | Sim | Pedro |
+| `GET` | `/api/v1/condominiums` | Listagem de condomínios cadastrados | Sim | Roberta |
+| `GET` | `/api/v1/condominiums/:id` | Busca detalhada de um condomínio específico por ID | Sim | Roberta |
+| `POST` | `/api/v1/condominiums` | Cadastro de novo condomínio | Sim (Síndico / Admin) | Roberta |
+| `GET` | `/api/v1/users` | Listagem de usuários com filtros por status e condomínio | Sim (Síndico / Admin) | Roberta |
+| `GET` | `/api/v1/users/:id` | Consulta de perfil de usuário específico | Sim | Roberta |
+| `POST` | `/api/v1/users` | Cadastro de usuário (1º cadastro do condomínio vira `manager` aprovado) | Não (Onboarding) | Roberta |
+| `PATCH` | `/api/v1/users/:id` | Atualização de perfil ou alteração de status (`approved` / `denied`) | Sim (Síndico / Próprio) | Roberta |
+| `DELETE` | `/api/v1/users/:id` | Remoção de usuário do sistema | Sim (Admin) | Roberta |
+| `GET` | `/api/v1/spots` | Consulta e listagem de vagas com filtros (`q`, `type`, `status`, `date`) | Sim | Allan |
+| `GET` | `/api/v1/spots/:id` | Detalhamento de uma vaga de garagem específica | Sim | Allan |
+| `GET` | `/api/v1/reservations` | Consulta de reservas com filtros por usuário e vaga | Sim | Gustavo |
+| `GET` | `/api/v1/reservations/:id` | Detalhes de uma reserva específica | Sim | Gustavo |
+| `POST` | `/api/v1/reservations` | Criação de reserva com validação de regras de agenda e conflitos | Sim | Gustavo |
+| `DELETE` | `/api/v1/reservations/:id` | Cancelamento de reserva existente | Sim (Dono da reserva) | Gustavo |
+| `GET` | `/notifications/user/:userId` | Consulta do histórico de avisos e notificações do morador | Sim | André |
+| `POST` | `/notifications` | Registro de novo aviso e disparo de e-mail transacional | Sim | André |
+| `PATCH` | `/notifications/:id/read` | Atualização de status da notificação para lida | Sim | André |
+| `DELETE` | `/notifications/:id` | Exclusão de aviso do histórico | Sim | André |
+| `GET` / `POST` / `PUT` / `DELETE` | `/api/ParkingSpots` | Endpoints CRUD HATEOAS para gestão de vagas (.NET ASP.NET Core) | Sim | Giovanny |
 
 ---
 
-### 3.2. Detalhamento dos Payloads de Requisição e Resposta (Exemplos)
+## 3.2. Detalhamento dos Payloads de Requisição e Resposta (Exemplos)
 
-#### Endpoint: `/api/v1/orders` (Criação de Pedidos)
+### Endpoint: `/api/v1/auth/login` (Autenticação de Usuário)
 - **Verbo**: `POST`
-- **Headers Requeridos**: `Authorization: Bearer <token_jwt>`
+- **Headers Requeridos**: `Content-Type: application/json`
 - **Payload de Entrada (JSON)**:
   ```json
   {
-    "userId": 45,
-    "itens": [
-      { "produtoId": 302, "quantidade": 2 }
-    ],
-    "enderecoEntrega": {
-      "rua": "Av. Dom José Gaspar",
-      "numero": "500",
-      "cidade": "Belo Horizonte"
+    "email": "teste@vagalivre.com",
+    "password": "123456"
+  }
+  ```
+- **Payload de Resposta de Sucesso (`200 OK`)**:
+  ```json
+  {
+    "message": "Login realizado com sucesso.",
+    "data": {
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+      "user": {
+        "id": "user-demo",
+        "name": "Morador Teste",
+        "email": "teste@vagalivre.com",
+        "role": "resident",
+        "status": "approved"
+      }
     }
+  }
+  ```
+- **Comportamento em caso de Erro (`401 Unauthorized` - Credenciais Inválidas)**:
+  ```json
+  {
+    "message": "Credenciais inválidas ou conta pendente de aprovação."
+  }
+  ```
+
+### Endpoint: `/api/v1/auth/me` (Validação de Sessão)
+- **Verbo**: `GET`
+- **Headers Requeridos**: `Authorization: Bearer <token_hmac>`
+- **Payload de Resposta de Sucesso (`200 OK`)**:
+  ```json
+  {
+    "data": {
+      "id": "user-demo",
+      "name": "Morador Teste",
+      "email": "teste@vagalivre.com",
+      "role": "resident",
+      "status": "approved"
+    }
+  }
+  ```
+- **Comportamento em caso de Erro (`401 Unauthorized` - Token Expirado/Inválido)**:
+  ```json
+  {
+    "message": "Token de acesso inválido ou expirado."
+  }
+  ```
+
+### Endpoint: `/api/v1/spots` (Listagem e Filtro de Vagas)
+- **Verbo**: `GET`
+- **Headers Requeridos**: `Authorization: Bearer <token_hmac>`
+- **Parâmetros de Busca (Query Params)**: `q`, `type` (`compact` | `standard` | `suv` | `motorcycle`), `status` (`available` | `occupied`), `date` (`YYYY-MM-DD`)
+- **Payload de Resposta de Sucesso (`200 OK`)**:
+  ```json
+  {
+    "data": [
+      {
+        "id": "spot-demo",
+        "number": "A-01",
+        "type": "standard",
+        "location": "Subsolo 1",
+        "isAvailable": true,
+        "ownerId": "user-demo",
+        "availability": [],
+        "reservations": []
+      }
+    ]
+  }
+  ```
+
+### Endpoint: `/api/v1/reservations` (Criação de Reserva)
+- **Verbo**: `POST`
+- **Headers Requeridos**: `Authorization: Bearer <token_hmac>`, `Content-Type: application/json`
+- **Payload de Entrada (JSON)**:
+  ```json
+  {
+    "spotId": "spot-demo",
+    "userId": "user-demo",
+    "startTime": "2026-10-08T08:00:00Z",
+    "endTime": "2026-10-10T18:00:00Z",
+    "vehiclePlate": "XYZ-9A87"
   }
   ```
 - **Payload de Resposta de Sucesso (`201 Created`)**:
   ```json
   {
-    "orderId": 8092,
-    "status": "pending",
-    "createdAt": "2026-07-28T14:32:00Z",
-    "previsaoEntrega": "2026-07-28T16:00:00Z"
+    "message": "Vaga reservada com sucesso!",
+    "data": {
+      "id": "res-1029",
+      "spotId": "spot-demo",
+      "userId": "user-demo",
+      "startTime": "2026-10-08T08:00:00Z",
+      "endTime": "2026-10-10T18:00:00Z",
+      "vehiclePlate": "XYZ-9A87"
+    }
   }
   ```
-- **Comportamento em caso de Erro (`400 Bad Request` - Parâmetro Ausente)**:
+- **Comportamento em caso de Erro (`409 Conflict` - Conflito de Agenda)**:
   ```json
   {
-    "errorCode": "INVALID_PARAMETERS",
-    "message": "O campo 'enderecoEntrega.cidade' é obrigatório."
+    "message": "A vaga selecionada já possui reserva no período informado."
+  }
+  ```
+
+### Endpoint: `/api/v1/users` (Cadastro de Usuário)
+- **Verbo**: `POST`
+- **Headers Requeridos**: `Content-Type: application/json`
+- **Payload de Entrada (JSON)**:
+  ```json
+  {
+    "name": "Novo Morador",
+    "email": "morador@vagalivre.com",
+    "password": "senhaSegura123",
+    "condominiumId": "condo-01"
+  }
+  ```
+- **Payload de Resposta de Sucesso (`201 Created`)**:
+  ```json
+  {
+    "message": "Usuário cadastrado com sucesso. Aguardando aprovação do síndico.",
+    "data": {
+      "id": "user-new",
+      "name": "Novo Morador",
+      "email": "morador@vagalivre.com",
+      "role": "resident",
+      "status": "pending"
+    }
   }
   ```
 
 ---
 
-### 3.3. Segurança e Autorização
+## 3.3. Segurança e Autorização
 
-[Descreva como a segurança do canal é implementada estruturalmente. Como é feita a geração de token, qual algoritmo criptográfico de assinatura é empregado (ex: RS256, HS256), tempo de expiração do JWT e se há distinção baseada em perfis de acesso (RBAC - Role Based Access Control) entre usuários (por exemplo, Administrador, Entregador, Cliente).]
+A segurança do canal de comunicação e o controle de acesso ao ecossistema de APIs do **VagaLivre** foram estruturados em quatro camadas complementares:
+
+1. **CORS (Cross-Origin Resource Sharing):** Habilitado em todos os microsserviços e no API Gateway para restrição e suporte seguro às requisições originadas dos clientes Web e Mobile.
+2. **Gestão de Segredos e Variáveis de Ambiente:** Credenciais sensíveis (como `DATABASE_URL`, `JWT_SECRET` e tokens de serviço de e-mail) não são armazenadas no repositório Git, sendo injetadas diretamente através das variáveis de ambiente na plataforma de hospedagem Render. O arquivo `.env` é mantido no `.gitignore`.
+3. **Autenticação por Token de Sessão (HMAC-SHA256):** O serviço de identidade assina os tokens no momento do login utilizando a biblioteca criptográfica nativa do Node.js (`crypto.createHmac("sha256", JWT_SECRET)`). O token expede um *payload* contendo `{ id, email, role, exp }` com validade de **24 horas**. O cliente deve transmitir o cabeçalho `Authorization: Bearer <token>` em todas as rotas protegidas.
+4. **Controle de Acesso Baseado em Papéis (RBAC):**
+   - Papel **`manager` (Síndico):** Possui privilégios para criar novos condomínios, visualizar todos os moradores do condomínio e alterar o status de aprovação de novos cadastros (`approved` / `denied`).
+   - Papel **`resident` (Morador):** Possui permissão para consultar vagas disponíveis, realizar reservas de vagas e gerenciar seus próprios dados.
+   - **Validação de Status e Posse:** O login e o acesso às funcionalidades principais são restritos a contas com status `approved`. Operações sensíveis de escrita/exclusão (como cancelar uma reserva) validam se o `userId` requisitante corresponde ao proprietário do recurso, retornando erro `403 Forbidden` em caso de divergência.
 
 ---
 
 # 4. Estratégia e Relatório de Testes Automatizados
 
-*(Esta seção atende diretamente à rubrica **H36c**)*
+*(Rubrica **H36c**)*
 
-[Explique a estratégia adotada pela equipe para testar as rotas de backend. Detalhe como rodar os testes localmente no repositório. O processo de avaliação pedagógica identificará a implementação física destes testes no diretório de código para validar as metas da rubrica.]
+A equipe testa cada microsserviço **localmente**, com **Vitest** e **Supertest**. O Prisma é mockado: a suíte não depende do Neon nem de credenciais. Os casos cobrem fluxo de sucesso e caminhos de exceção.
 
-1. **Ferramenta de Asserção Utilizada**: (Ex: `Jest` em Node, `pytest` em Python, `xUnit/NUnit` em .NET).
-2. **Método de Execução do Comando de Teste**:
-   *(Exemplo)*: `npm run test:cov` ou `dotnet test`.
-3. **Cobertura Esperada/Alcançada**: (Porcentagem geral de caminhos de controle avaliados).
+1. **Ferramenta:** Vitest + Supertest  
+2. **Comando** (na pasta do serviço):
 
-### Exemplo de Quadro de Cobertura de Testes:
+```bash
+cd src/backend/allan    && npm test
+cd src/backend/pedro    && npm test
+cd src/backend/roberta  && npm test
+cd src/backend/gustavo  && npm test
+cd src/backend/andre    && npm test
+```
 
-| Módulo do Sistema | Tipo de Teste (Unitário/Integração) | Cenários Avaliados | Status da Suíte |
+No PowerShell, se `npm.ps1` estiver bloqueado:
+
+```powershell
+Set-ExecutionPolicy -Scope Process Bypass
+npm test
+```
+
+3. **Resultado local da suíte:** 11 (Allan) + 12 (Pedro) + 23 (Roberta) + 16 (Gustavo) + 7 (André).
+
+| Módulo | Tipo | Cenários avaliados | Status |
 | :--- | :--- | :--- | :---: |
-| **Módulo de Autenticação** | Unitário | Geração do JWT, senhas incorretas, usuários inexistentes | ✔️ Passou |
-| **Serviço de Pedidos** | Integração (com DB mockado) | Criação de orders, validação de itens esgotados, cálculo de frete | ✔️ Passou |
+| Disponibilidade — [`allan/tests/spots.spec.js`](./allan/tests/spots.spec.js) | Integração (DB mockado) | Health, listagem, filtros, validação `400`, detalhe `200`/`404`, falha `500` | ✔️ Passou (11) |
+| Autenticação — [`pedro/tests/auth.spec.js`](./pedro/tests/auth.spec.js) | Integração (DB mockado) | Login com credenciais, pendente, negado, token, `/me`, logout, falha `500` | ✔️ Passou (12) |
+| Usuários e condomínios — [`roberta/tests/users.spec.js`](./roberta/tests/users.spec.js) | Integração (DB mockado) | CRUD, primeiro síndico, morador pendente, e-mail duplicado, status inválido | ✔️ Passou (23) |
+| Reservas — [`gustavo/tests/reservations.spec.js`](./gustavo/tests/reservations.spec.js) | Integração (DB mockado) | Criação, conflito `409`, disponibilidade, cancelamento pelo dono | ✔️ Passou (16) |
+| Notificações — [`andre/tests/`](./andre/tests/) | Unitário + integração (DB e e-mail mockados) | POST, GET, PATCH, DELETE e validação de campos | ✔️ Passou (7) |
+
+O gateway publicado em [https://gateway-api-d2uo.onrender.com/api/v1/spots](https://gateway-api-d2uo.onrender.com/api/v1/spots) confirma a integração ponta a ponta com o Neon após o deploy.
 
 ---
 
 # 5. Instruções de Implantação e DevOps
 
-*(Esta seção atende diretamente à rubrica **H35c**)*
-
-Abaixo detalhe como a aplicação backend é empacotada de forma portável e como seria o processo ideal de implantação/hospedagem em nuvem (proposta teórica). **Nota:** Não há cobrança de deploy prático em nuvem nesta disciplina; a avaliação consiste na demonstração teórica da arquitetura física proposta e nas automações de build/testes locais.
+*(Rubrica **H35c**)*
 
 ## 5.1. Conteinerização de Serviços
 
-[Insira aqui a justificativa e os caminhos de arquivos das imagens Docker criadas. Demonstre como múltiplos contêineres se comunicam na mesma rede por meio de um arquivo `docker-compose.yml` que sobe a API de backend juntamente com quaisquer instâncias de banco de dados ou mensageria de forma auto-contida para execução e testes locais.]
+A API .NET de vagas é empacotada com Docker para execução local auto-contida (API + PostgreSQL na mesma rede):
 
-- **Caminho do Dockerfile do Backend**: `[src/backend/Dockerfile](src/backend/Dockerfile)` *(adicione o link do arquivo se ele já existir)*
-- **Caminho do Docker Compose**: `[docker-compose.yml](docker-compose.yml)` *(opcional se na raiz)*
+- Dockerfile: [`giovanny/Dockerfile`](./giovanny/Dockerfile)
+- Compose: [`giovanny/docker-compose.yml`](./giovanny/docker-compose.yml)
 
----
+```bash
+cd src/backend/giovanny
+docker compose up --build
+```
+
+- API: `http://localhost:8080`
+- Swagger: `http://localhost:8080/swagger`
+
+As APIs Node sobem com `npm start` em cada pasta (`node server.js` ou `npx tsx server.ts` no André) e compartilham o mesmo `DATABASE_URL` da Neon.
 
 ## 5.2. Proposta de Infraestrutura de Deploy e Ambiente em Produção
 
-[Descreva de forma conceitual como seria estruturado o deploy contínuo (CI/CD) para o ambiente de produção. Por exemplo, indique como seria configurado o GitHub Actions para rodar testes locais e como seria a topologia de implantação na nuvem (ex: Render, AWS, Fly.io, Azure).]
+**Modelo de CI/CD:** a cada *push* ou *pull request* na `main`, o GitHub Actions executa `npm test` nas pastas `allan`, `pedro`, `roberta`, `gustavo` e `andre`. O merge segue com a suíte verde. O Render faz o deploy automático a partir da `main`, com o *root directory* apontando para a pasta de cada microsserviço.
 
-- **Modelo de CI/CD Planejado**: [Indique que ações seriam realizadas a cada push/pull request para validar o código, como testes rodando automaticamente.]
-- **Arquitetura Física Proposta**: [Apresente as premissas de arquitetura de hospedagem planejadas: onde a API responderia, como seriam geridos os bancos de dados em nuvem e variáveis de ambiente secretas.]
+**Arquitetura física:**
+
+```mermaid
+flowchart TB
+    Dev[Push na main] --> GHA[GitHub Actions - npm test]
+    GHA --> Render[Render Web Services]
+    Render --> GW[Gateway]
+    Render --> APIs[Microsserviços Node e .NET]
+    APIs --> Neon[(Neon PostgreSQL)]
+    Client[Web / Mobile] --> GW
+    GW --> APIs
+```
+
+- **HTTP:** um Web Service Render por API + o gateway como host público dos fronts
+- **Dados:** Neon (Postgres + pooler)
+- **Segredos:** painel do Render (`DATABASE_URL`, `JWT_SECRET`, `ALLAN_API`, `GUSTAVO_API`, `PEDRO_API`, `ROBERTA_API`, `ANDRE_API`)
+
+| Serviço | URL |
+| :--- | :--- |
+| Gateway | [https://gateway-api-d2uo.onrender.com](https://gateway-api-d2uo.onrender.com) |
+| Disponibilidade | [https://vaga-livre-api.onrender.com](https://vaga-livre-api.onrender.com) |
+| Reservas | [https://gusstavo-api.onrender.com](https://gusstavo-api.onrender.com) |
+| Identidade | [https://pmv-si-2026-2-pe6-t2-g09-1.onrender.com](https://pmv-si-2026-2-pe6-t2-g09-1.onrender.com) |
+| Usuários | [https://pmv-si-2026-2-pe6-t2-g09-1-jbk9.onrender.com](https://pmv-si-2026-2-pe6-t2-g09-1-jbk9.onrender.com) |
+| Notificações | [https://andre-api-bhnv.onrender.com](https://andre-api-bhnv.onrender.com) |
 
 ---
 
 # 6. Referências Acadêmicas e de Engenharia
 
-[Registre as referências que deram suporte técnico para a modelagem lógica, banco de dados ou metodologias de automação do backend das APIs.]
-
-1. **DATE, C. J**. *Introdução a Sistemas de Bancos de Dados*. Rio de Janeiro: Elsevier, 2004.
-2. **RICHARDSON, Leonard; RUBY, Sam**. *RESTful Web Services*. O'Reilly Media, 2007.
-3. [Adicione referências de documentação oficial, SGBDs ou bibliotecas utilizadas].
-
+1. DATE, C. J. *Introdução a Sistemas de Bancos de Dados*. Rio de Janeiro: Elsevier, 2004.
+2. RICHARDSON, Leonard; RUBY, Sam. *RESTful Web Services*. Sebastopol: O’Reilly Media, 2007.
+3. Prisma. *Prisma Client — PostgreSQL*. <https://www.prisma.io/docs>
+4. Neon. *Serverless Postgres*. <https://neon.tech/docs>
+5. Express. *API reference*. <https://expressjs.com>
+6. Vitest. *Documentation*. <https://vitest.dev>
+7. GitHub. *Creating diagrams (Mermaid)*. <https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/creating-diagrams>
+8. http-proxy-middleware. <https://github.com/chimurai/http-proxy-middleware>
+9. Microsoft. *ASP.NET Core Web API*. <https://learn.microsoft.com/aspnet/core>
