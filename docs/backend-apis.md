@@ -17,27 +17,24 @@ Ao final desta Etapa, cada aluno será avaliado individualmente nestas 6 compet�
 
 ---
 
-## 📅 QUADRO DE CONTRIBUIÇÃO REAL (ETAPA 2)
+### 📅 QUADRO DE CONTRIBUIÇÃO REAL (ETAPA 2) - CORRIGIDO
 
-**Atenção alunos:** Preencham esta tabela para atualizar o andamento das tarefas e quem foi o responsável técnico pela construção do backend. Os nomes, usuários e links de evidências devem corresponder aos entregáveis em [src/backend/](src/backend/).
+**Atenção alunos:** Preencham esta tabela para atualizar o andamento das tarefas e quem foi o responsável técnico pela construção do backend. Os nomes, usuários e links de evidências devem corresponder aos entregáveis em `src/backend/`.
 
-- **Status admitidos**: `⌛ Não Iniciado` | `📝 Em Progresso` | `✔️ Entregue`
-- **Autoria Git**: Indica se há commits desse estudante nos arquivos da tarefa.
-
-**Atividades Semanais desta Etapa** (ver [Cronograma do Semestre](contexto.md#-cronograma-do-semestre-semana--periodo)):
-- `ATV2.1` — Desenvolvimento de Funcionalidades - API (Semanas 5 a 8)
-- `ATV2.2` — Testes - API (Semana 9)
+* **Status admitidos**: ⌛ Não Iniciado | 📝 Em Progresso | ✔️ Entregue
+* **Autoria Git**: Indica se há commits confirmados do estudante nos arquivos da tarefa.
 
 | Rubrica Curricular | ID Tarefa | Atividade Semanal | Descrição Detalhada da Tarefa | Estudante Responsável | GitHub Username | Status de Entrega | Evidência/Seção Temática | Autoria Git |
-| :---: | :---: | :---: | :--- | :--- | :---: | :---: | :--- | :---: |
-| **H36b** | `T2.1` | `ATV2.1` | Configuração do Boilerplate da API, Roteamento e Inicialização | Allan Aviana | `AllanAviana` | `✔️ Entregue` | [Instalação/README](src/backend/README.md) | [ ] |
-| **H36b** | `T2.2` | `ATV2.1` | Modelagem e Persistência de Dados (Conexão DB, ORM, Schemas) | Andre Lopes | `dezim005` | `✔️ Entregue` | [Seção 2.1](#21-schema-e-diagrama-entidade-relacionamento) | [ ] |
-| **H36b** | `T2.3` | `ATV2.1` | Implementação de Endpoints CRUD e Lógica de Negócios Principal | Giovanny Lisboa | `glisboapuc` | `✔️ Entregue` | [Seção 3.0](#3-especificacao-avancada-de-endpoints) | [ ] |
-| **H36b** | `T2.4` | `ATV2.1` | Mecanismo de Segurança da API (Autenticação/Autorização JWT) | Gustavo Veloso | `gust_2003` | `✔️ Entregue` | [Seção 3.3](#33-seguranca-e-autorizacao) | [ ] |
-| **H35b** | `T2.5` | `ATV2.1` | Gateway, Integração de Serviços Web e Clientes HTTP Externos |Roberta Alves Lima | `RobertaAlvesLima` | `✔️ Entregue` | [Seção 2.2](#22-integracao-e-infraestrutura-distribuida) | [ ] |
-| **H36c** | `T2.6` | `ATV2.2` | Desenvolvimento de Testes Automatizados (Unitários/Integração) | Allan Viana | `AllanAviana` | `✔️ Entregue` | [Seção 4.0](#4-estrategia-e-relatorio-de-testes-automatizados) | [ ] |
-| **H35c** | `T2.7` | `ATV2.1` | Construção de Dockerfile e Configuração de docker-compose | Giovanny Lisboa | `glisboapuc` | `✔️ Entregue` | [Seção 5.1](#51-conteinerizacao-de-servicos) | [ ] |
-| **H36c** | `T2.8` | `ATV2.2` | Proposta de Implantação e Pipeline de CI/CD Backend | Pedro Cassimiro | `pedroh-corr` | `✔️ Entregue` | [Seção 5.2](#52-proposta-de-infraestrutura-de-deploy-e-ambiente-em-producao) | [ ] |
+| ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
+| **H36b** | T2.1 | ATV2.1 | Configuração do Boilerplate da API, Roteamento e Inicialização | Allan Aviana | AllanAviana | ✔️ Entregue | [Instalação/README](src/backend/README.md) | [x] |
+| **H36b** | T2.2 | ATV2.1 | Modelagem e Persistência de Dados (Conexão DB, ORM, Schemas) | Andre Lopes | dezim005 | ✔️ Entregue | [Seção 2.1](#21-schema-e-diagrama-entidade-relacionamento) | [x] |
+| **H36b** | T2.3 | ATV2.1 | Implementação de Endpoints CRUD e Lógica de Negócios Principal | Giovanny Lisboa | glisboapuc | ✔️ Entregue | [Seção 3.0](#3-especificacao-avancada-de-endpoints) | [x] |
+| **H36b** | T2.4 | ATV2.1 | Mecanismo de Segurança da API (Autenticação/Autorização JWT) | Gustavo Veloso | gust_2003 | ✔️ Entregue | [Seção 3.3](#33-seguranca-e-autorizacao) | [x] |
+| **H35b** | T2.5 | ATV2.1 | Gateway, Integração de Serviços Web e Clientes HTTP Externos | Roberta Alves Lima | RobertaAlvesLima | ✔️ Entregue | [Seção 2.2](#22-integracao-e-infraestrutura-distribuida) | [x] |
+| **H36c** | T2.6 | ATV2.2 | Desenvolvimento de Testes Automatizados (Unitários/Integração) | Allan Viana | AllanAviana | ✔️ Entregue | [Seção 4.0](#4-estrategia-e-relatorio-de-testes-automatizados) | [x] |
+| **H35c** | T2.7 | ATV2.1 | Construção de Dockerfile e Configuração de docker-compose | Giovanny Lisboa | glisboapuc | ✔️ Entregue | [Seção 5.1](#51-conteinerizacao-de-servicos) | [x] |
+| **H36c** | T2.8 | ATV2.2 | Proposta de Implantação e Pipeline de CI/CD Backend | Pedro Cassimiro | pedroh-corr | ✔️ Entregue | [Seção 5.2](#52-proposta-de-infraestrutura-de-deploy-e-ambiente-em-producao) | [x] |
+
 
 ---
 
