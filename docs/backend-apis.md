@@ -409,56 +409,54 @@ O gateway publicado em [https://gateway-api-d2uo.onrender.com/api/v1/spots](http
 
 ---
 
-# 5. Instruções de Implantação e DevOps
+### 5. Instruções de Implantação e DevOps
+*(Esta seção atende diretamente à rubrica **H35c**)*
 
-*(Rubrica **H35c**)*
-
-## 5.1. Conteinerização de Serviços
-
-A API .NET de vagas é empacotada com Docker para execução local auto-contida (API + PostgreSQL na mesma rede):
-
-- Dockerfile: [`giovanny/Dockerfile`](./giovanny/Dockerfile)
-- Compose: [`giovanny/docker-compose.yml`](./giovanny/docker-compose.yml)
+#### 5.1. Conteinerização de Serviços
+A API .NET de vagas foi empacotada com Docker para execução local auto-contida (API + PostgreSQL na mesma rede de contêineres):
+* **Dockerfile:** [`src/backend/giovanny/Dockerfile`](src/backend/giovanny/Dockerfile)
+* **Docker Compose:** [`src/backend/giovanny/docker-compose.yml`](src/backend/giovanny/docker-compose.yml)
 
 ```bash
 cd src/backend/giovanny
 docker compose up --build
 ```
+* **Acesso à API Local:** `http://localhost:8080`
+* **Interface Swagger Local:** `http://localhost:8080/swagger`
 
-- API: `http://localhost:8080`
-- Swagger: `http://localhost:8080/swagger`
+As APIs em Node.js/TypeScript são inicializadas via `npm start` no diretório de cada microsserviço e compartilham a mesma instância do banco PostgreSQL hospedado na plataforma Neon através de variáveis de ambiente.
 
-As APIs Node sobem com `npm start` em cada pasta (`node server.js` ou `npx tsx server.ts` no André) e compartilham o mesmo `DATABASE_URL` da Neon.
+#### 5.2. Proposta de Infraestrutura de Deploy e Ambiente em Produção
 
-## 5.2. Proposta de Infraestrutura de Deploy e Ambiente em Produção
+##### Proposta de Pipeline de CI/CD (Melhoria Futura de Integração Contínua)
+Como **proposta de arquitetura DevOps e integração contínua**, projeta-se a inclusão do **GitHub Actions** (a ser configurado no diretório `.github/workflows/ci.yml`). No fluxo proposto:
+1. A cada *push* ou *pull request* direcionado à branch `main`, o GitHub Actions disparará a execução automatizada dos testes unitários e de integração (`npm test`) nas pastas dos microsserviços (`allan`, `pedro`, `roberta`, `gustavo`, `andre`).
+2. Com a aprovação da suíte de testes, o merge é autorizado, permitindo que a plataforma Render realize o *build* e o *deploy* automático de cada Web Service a partir do diretório raiz de cada microsserviço.
 
-**Modelo de CI/CD:** a cada *push* ou *pull request* na `main`, o GitHub Actions executa `npm test` nas pastas `allan`, `pedro`, `roberta`, `gustavo` e `andre`. O merge segue com a suíte verde. O Render faz o deploy automático a partir da `main`, com o *root directory* apontando para a pasta de cada microsserviço.
-
-**Arquitetura física:**
-
+##### Arquitetura Física em Produção (Implantada)
 ```mermaid
 flowchart TB
-    Dev[Push na main] --> GHA[GitHub Actions - npm test]
-    GHA --> Render[Render Web Services]
-    Render --> GW[Gateway]
+    Dev[Push na Main] --> Render[Render Web Services (Auto-Deploy)]
+    Render --> GW[API Gateway]
     Render --> APIs[Microsserviços Node e .NET]
-    APIs --> Neon[(Neon PostgreSQL)]
-    Client[Web / Mobile] --> GW
+    APIs --> Neon[(Neon PostgreSQL Serverless)]
+    Client[Web / Mobile Client] --> GW
     GW --> APIs
 ```
 
-- **HTTP:** um Web Service Render por API + o gateway como host público dos fronts
-- **Dados:** Neon (Postgres + pooler)
-- **Segredos:** painel do Render (`DATABASE_URL`, `JWT_SECRET`, `ALLAN_API`, `GUSTAVO_API`, `PEDRO_API`, `ROBERTA_API`, `ANDRE_API`)
+* **Camada de Aplicação:** Um Web Service individual configurado no Render para cada microsserviço + o API Gateway atuando como ponto público de entrada.
+* **Camada de Dados:** PostgreSQL Serverless hospedado na plataforma Neon com *connection pooler*.
+* **Gestão de Segredos:** Configurado no painel do Render (`DATABASE_URL`, `JWT_SECRET`, e URLs internas dos microsserviços).
 
-| Serviço | URL |
-| :--- | :--- |
-| Gateway | [https://gateway-api-d2uo.onrender.com](https://gateway-api-d2uo.onrender.com) |
-| Disponibilidade | [https://vaga-livre-api.onrender.com](https://vaga-livre-api.onrender.com) |
-| Reservas | [https://gusstavo-api.onrender.com](https://gusstavo-api.onrender.com) |
-| Identidade | [https://pmv-si-2026-2-pe6-t2-g09-1.onrender.com](https://pmv-si-2026-2-pe6-t2-g09-1.onrender.com) |
-| Usuários | [https://pmv-si-2026-2-pe6-t2-g09-1-jbk9.onrender.com](https://pmv-si-2026-2-pe6-t2-g09-1-jbk9.onrender.com) |
-| Notificações | [https://andre-api-bhnv.onrender.com](https://andre-api-bhnv.onrender.com) |
+##### URLs dos Serviços em Produção
+| Serviço | URL Pública de Produção |
+| ------ | ------ |
+| **API Gateway** | [https://gateway-api-d2uo.onrender.com](https://gateway-api-d2uo.onrender.com) |
+| **Disponibilidade** | [https://vaga-livre-api.onrender.com](https://vaga-livre-api.onrender.com) |
+| **Reservas** | [https://gusstavo-api.onrender.com](https://gusstavo-api.onrender.com) |
+| **Identidade** | [https://pmv-si-2026-2-pe6-t2-g09-1.onrender.com](https://pmv-si-2026-2-pe6-t2-g09-1.onrender.com) |
+| **Usuários** | [https://pmv-si-2026-2-pe6-t2-g09-1-jbk9.onrender.com](https://pmv-si-2026-2-pe6-t2-g09-1-jbk9.onrender.com) |
+| **Notificações** | [https://vaga-livre-backend-qt70.onrender.com](https://vaga-livre-backend-qt70.onrender.com) |
 
 ---
 
