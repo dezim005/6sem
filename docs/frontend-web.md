@@ -30,24 +30,45 @@ Ao final desta Etapa, cada aluno será avaliado individualmente nestas 6 compet�
 
 | Rubrica Curricular | ID Tarefa | Atividade Semanal | Descrição Detalhada da Tarefa | Estudante Responsável | GitHub Username | Status de Entrega | Evidência/Seção Temática | Autoria Git |
 | :---: | :---: | :---: | :--- | :--- | :---: | :---: | :--- | :---: |
-| **H37b** | `T3.1` | `ATV3.1` | Configuração do Projeto Web (Create React App, Vite, etc.) | [Nome do Aluno 1] | `username1` | `⌛ Não Iniciado` | [Instalação/README](src/frontend/README.md) | [ ] |
-| **H37b** | `T3.2` | `ATV3.1` | Estilização Global, Layout Base Responsivo e Temas (CSS) | [Nome do Aluno 2] | `username2` | `⌛ Não Iniciado` | [Seção 1.2](#12-estilizacao-e-design-sistema) | [ ] |
-| **H37b** | `T3.3` | `ATV3.1` | Desenvolvimento das Telas Chaves (Home, Cadastro, Dashboards) | [Nome do Aluno 3] | `username3` | `⌛ Não Iniciado` | [Seção 2.1](#21-telas-implementadas) | [ ] |
-| **H35b** | `T3.4` | `ATV3.1` | Consumo Assíncrono da API backend (Services HTTP / Axios) | [Nome do Aluno 4] | `username4` | `⌛ Não Iniciado` | [Seção 3.2](#32-servicos-de-chamada-a-api) | [ ] |
-| **H37b** | `T3.5` | `ATV3.1` | Gerenciamento de Estado Global do Cliente (Auth, Rotas Privadas) | [Nome do Aluno 5] | `username5` | `⌛ Não Iniciado` | [Seção 2.2](#22-rotas-e-estado-de-autenticacao) | [ ] |
-| **H37c** | `T3.6` | `ATV3.2` | Desenvolvimento de Testes Modernos (Jest / Testing Library / Cypress) | [Nome do Aluno 6] | `username6` | `⌛ Não Iniciado` | [Seção 4.1](#41-arquivos-de-testes) | [ ] |
-| **H35c** | `T3.7` | `ATV3.1` | Configuração de Build, Otimização (Assets, Caching) e Docker | [Nome do Aluno 1] | `username1` | `⌛ Não Iniciado` | [Seção 5.1](#51-conteinerisacao-da-aplicacao-web) | [ ] |
-| **H37c** | `T3.8` | `ATV3.2` | Proposta de Implantação e Pipeline de CI/CD Web | [Nome do Aluno 5] | `username5` | `⌛ Não Iniciado` | [Seção 5.2](#52-proposta-de-infraestrutura-de-deploy-e-automacao-de-builds) | [ ] |
+| **H37b** | `T3.1` | `ATV3.1` | Configuração do Projeto Web (Create React App, Vite, etc.) | Andre Lopes | `dezim005` | ✔️ Entregue | [Instalação/README](src/frontend/README.md) | [x] |
+| **H37b** | `T3.2` | `ATV3.1` | Estilização Global, Layout Base Responsivo e Temas (CSS) | Pedro | `pedroh-corr` | `✔️ Entregue` | [Seção 1.1](#11-Identidade-Visual-da-Interface-Web) | [x] |
+| **H37b** | `T3.3` | `ATV3.1` | Desenvolvimento das Telas Chaves (Home, Cadastro, Dashboards) | Roberta | `RobertaAlvesLima` |  `✔️ Entregue` | [Seção 2.1](#21-telas-implementadas) | [x] |
+| **H35b** | `T3.4` | `ATV3.1` | Consumo Assíncrono da API backend (Services HTTP / Axios) | Pedro | `pedroh-corr` | `✔️ Entregue` | [Seção 3.2](#32-Serviços-de-Chamada-à-API) | [x] |
+| **H37b** | `T3.5` | `ATV3.1` | Gerenciamento de Estado Global do Cliente (Auth, Rotas Privadas) | Roberta | `RobertaAlvesLima` |  `✔️ Entregue` | [Seção 2.2](#22-Rotas-e-Estado-de-Autenticação) | [x] |
+| **H37c** | `T3.6` | `ATV3.2` | Desenvolvimento de Testes Modernos (Jest / Testing Library / Cypress) | Andre Lopes | `dezim005` | ✔️ Entregue | [Seção 4.1](#41-arquivos-de-testes) | [x] |
+| **H35c** | `T3.7` | `ATV3.1` | Configuração de Build, Otimização (Assets, Caching) e Docker | Andre Lopes | `dezim005` | ✔️ Entregue | [Seção 5.1](#51-Conteinerização-da-Aplicação-Web) | [x] |
+| **H37c** | `T3.8` | `ATV3.2` | Proposta de Implantação e Pipeline de CI/CD Web | Andre Lopes | `dezim005` | ✔️ Entregue | [Seção 5.2](#52-Proposta-de-Infraestrutura-de-Deploy-e-Automação-de-Builds) | [x] |
 
 ---
 
 # 1. Escopo e Diretrizes da Interface Web
 
-[Insira aqui uma breve introdução descrevendo o escopo técnico do produto Web que foi entregue. Qual framework visual principal foi adotado (ex: React com Vite, Angular, Vue), como a interface se conecta na topologia da sua rede distribuída e como as premissas de UX/UI foram priorizadas.]
+O produto Web entregue para a plataforma **VagaLivre** consiste em uma aplicação cliente moderna em formato *Single Page Application* (SPA), desenvolvida para atuar como o ponto central de interação dos moradores e síndicos na gestão e compartilhamento de vagas de garagem condominiais. A solução foi projetada sob os princípios de arquitetura orientada a serviços, conectando-se à topologia de rede distribuída por meio de requisições HTTP REST centralizadas no **API Gateway** em produção (`https://gateway-api-d2uo.onrender.com`).
+
+A interface assume o papel de consumo da camada de microsserviços do backend, enviando tokens de autenticação HMAC-SHA256 (`Bearer Token`) no cabeçalho das requisições para controle de sessão e autorização (*Role-Based Access Control - RBAC*). As premissas de UX/UI priorizaram a simplicidade operacional, tempos de carregamento reduzidos, responsividade para múltiplos tamanhos de tela (desktop, tablets e smartphones) e rotas intuitivas para cadastro, consulta de disponibilidade de vagas em tempo real, efetuação de agendamentos e visualização de alertas.
+
+---
 
 ## 1.1. Identidade Visual da Interface Web
 
-[Justifique as escolhas visuais do design em conformidade com o que foi planejado na Etapa 1. Descreva brevemente a paleta de cores (ex: Primary `#1B2A47`, Secondary `#E2E8F0`), a tipografia (ex: `Inter, sans-serif`) e a biblioteca de componentes visuais adotada se houver (ex: TailwindCSS, ChakraUI, Bootstrap).]
+A identidade visual do **VagaLivre** mantém estrita conformidade com os protótipos de baixa e alta fidelidade elaborados na Etapa 1 do projeto. A escolha do *design system* buscou transmitir solidez, segurança e clareza, elementos fundamentais para um sistema de gestão residencial coletiva.
+
+##### Paleta de Cores
+
+A definição cromática foi estruturada utilizando a lógica de contraste hierárquico, facilitando a identificação imediata de status de vagas (`disponível`, `ocupada`, `pendente`):
+
+* **Primária (`#1E3A8A` - Azul Marinho Escuro):** Utilizada nos cabeçalhos, barras de navegação (*navbar*) e elementos estruturais, transmitindo segurança e confiança institucional.
+* **Secundária / Ação (`#2563EB` - Azul Real):** Aplicada em botões principais (*Call-to-Action*), links ativos e estados de foco.
+* **Sucesso / Disponibilidade (`#10B981` - Verde Esmeralda):** Indicador visual de vagas disponíveis e confirmações de operações realizadas com sucesso (como reservas finalizadas).
+* **Alerta / Ocupado (`#EF4444` - Vermelho Carmim):** Utilizado para indicar vagas ocupadas, cancelamentos de reserva e mensagens de erro de validação.
+* **Superfície / Fundo (`#F8FAFC` - Cinza Neutro Claro):** Cor de fundo da interface para evitar fadiga visual e destacar o conteúdo dos cartões (*cards*).
+* **Texto Primário (`#0F172A` - Grafite Escuro):** Garante alto contraste e excelente legibilidade em fundos claros.
+
+##### Tipografia e Estilização
+
+* **Tipografia Principal:** Família **`Inter, sans-serif`**, escolhida por sua excelente legibilidade em telas digitais de diferentes resoluções e suporte nativo a múltiplos pesos visuais (Regular `400`, Medium `500`, Semi-Bold `600` e Bold `700`).
+* **Biblioteca e Arquitetura Visual:** A estilização foi construída com **TailwindCSS** (em conjunto com HTML5 semântico e JavaScript ES6+), permitindo um sistema utilitário flexível, layout responsivo baseado em *Flexbox* e *CSS Grid*, além de suporte nativo a componentes reutilizáveis (cartões de vagas, modais de reserva, formulários de autenticação e *badges* de status).
+
 
 ---
 
@@ -55,23 +76,69 @@ Ao final desta Etapa, cada aluno será avaliado individualmente nestas 6 compet�
 
 *(Esta seção atende diretamente à rubrica **H37b**)*
 
-Abaixo detalhe como as interfaces visuais foram implementadas nos diretórios de código em [src/frontend/](src/frontend/).
+As interfaces visuais da plataforma **VagaLivre** foram estruturadas e implementadas no diretório [`src/frontend/`](src/frontend/), seguindo o padrão de arquitetura em componentes reutilizáveis para garantir modularidade, facilidade de manutenção e consistência de navegação.
+
+---
 
 ## 2.1. Telas Implementadas
 
-Descreva as telas desenvolvidas e como elas interagem com os fluxos operacionais planejados.
+A aplicação conta com um conjunto de páginas desenvolvidas para cobrir integralmente os fluxos operacionais dos moradores e síndicos:
 
-*   **Página 1: Login / Cadastro Administrativo**: [Explique o funcionamento da tela, indicando os campos de controle e o que ocorre quando há a submissão de dados.]
-*   **Página 2: Dashboard de Soluções**: ...
+* **Página 1: Autenticação e Cadastro (`/login` e `/register`)**
+  * **Funcionamento:** Interface para autenticação e *onboarding* de novos usuários no sistema. Apresenta formulários com validação de campos obrigatórios (e-mail, senha, nome e identificador do condomínio).
+  * **Submissão de Dados:** Ao submeter as credenciais de login, a aplicação dispara uma requisição `POST /api/v1/auth/login` para a API de Identidade. Em caso de sucesso, armazena o token HMAC-SHA256 e os dados de perfil no estado global e redireciona o usuário. No cadastro (`POST /api/v1/users`), o primeiro usuário cadastrado em um condomínio recebe perfil de síndico (`manager` aprovado), enquanto os demais cadastros permanecem com status `pending` aguardando aprovação.
 
-*Insira ou anexe Screenshots funcionais do sistema rodando:*
-```
-[Insira aqui imagens das telas navegáveis na Web para evidência física]
-```
+* **Página 2: Dashboard de Vagas e Disponibilidade (`/spots`)**
+  * **Funcionamento:** Painel central de consulta das vagas de garagem condominiais. Exibe cartões (*cards*) interativos com o número da vaga, localização (ex: Subsolo 1), proprietário e tipo de veículo aceito (`compact`, `standard`, `suv`, `motorcycle`).
+  * **Controles e Filtros:** Conta com barra de busca por palavra-chave (`q`), filtros por categoria de vaga, seleção de datas específicas e seletor de status (`disponível` / `ocupado`). Consome o endpoint `GET /api/v1/spots`.
+
+* **Página 3: Gestão de Reservas e Agendamentos (`/reservations`)**
+  * **Funcionamento:** Tela dedicada à criação e visualização de reservas ativas e históricas do morador logado.
+  * **Fluxo Operacional:** O morador seleciona a vaga desejada, informa a data/hora de início e término do período e digita a placa do veículo (`vehiclePlate`). A requisição `POST /api/v1/reservations` valida conflitos de agenda e disponibilidade. A tela também oferece a funcionalidade de cancelamento de reservas próprias via `DELETE /api/v1/reservations/:id`.
+
+* **Página 4: Central de Notificações e Avisos (`/notifications`)**
+  * **Funcionamento:** Painel de comunicação transacional do morador. Lista os alertas recebidos (confirmações de reserva, avisos do síndico, solicitações de vaga).
+  * **Interação:** Consome `GET /notifications/user/:userId`, permite alterar o estado da notificação para "lida" (`PATCH /notifications/:id/read`) e excluir avisos do histórico (`DELETE /notifications/:id`).
+
+* **Página 5: Painel Administrativo do Síndico (`/admin/users`)**
+  * **Funcionamento:** Interface de gestão restrita aos usuários com papel `manager`.
+  * **Controles Administrativos:** Lista todas as solicitações de cadastro pendentes no condomínio (`GET /api/v1/users?status=pending`), permitindo ao síndico aprovar (`approved`) ou rejeitar (`denied`) o acesso de moradores com um clique via `PATCH /api/v1/users/:id`.
+
+##### Evidências de Telas em Execução
+
+<img width="1920" height="1080" alt="Tela Login" src="https://github.com/user-attachments/assets/43054e8d-4b9c-42c9-9794-deac3fcf24f0" />
+<img width="1920" height="1080" alt="Tela Register" src="https://github.com/user-attachments/assets/06bf5335-f824-41d2-a4d1-d75d6ca0052a" />
+<img width="1920" height="1080" alt="Tela Inicial Web" src="https://github.com/user-attachments/assets/62ab6444-f81e-4f35-aacc-a53aa08bfe82" />
+<img width="1920" height="1080" alt="Tela Gerenciar Vagas" src="https://github.com/user-attachments/assets/8fdbed32-c5c5-4257-b9b5-9181ea2d6d71" />
+<img width="1920" height="1080" alt="Tela Minhas Reservas" src="https://github.com/user-attachments/assets/72f51b12-fa6a-4f17-aa8c-639206e9beef" />
+<img width="1920" height="1080" alt="Tela Reservar Vagas" src="https://github.com/user-attachments/assets/2be5b6c9-1ab0-453c-a796-c3f64b8e5b7f" />
+<img width="1920" height="1080" alt="Tela Reservar Vaga" src="https://github.com/user-attachments/assets/434757e4-a81c-493e-8931-596a4b4a25c8" />
+<img width="1920" height="1080" alt="Tela Cadastrar Cond" src="https://github.com/user-attachments/assets/a2d6568a-4139-49df-aa5d-70f99b43447f" />
+<img width="1920" height="1080" alt="Tela Usuarios" src="https://github.com/user-attachments/assets/a75b1df3-6f18-4f90-b2dc-578bf1c52f3a" />
+<img width="1920" height="1080" alt="Tela Registro" src="https://github.com/user-attachments/assets/7c40b2ab-f2ae-4ab6-a13f-0e379ca45534" />
+<img width="1920" height="1080" alt="Tela Aprovaçoes" src="https://github.com/user-attachments/assets/718b4bee-5b33-423f-85e0-18684150f04d" />
+<img width="1920" height="1080" alt="Tela Cadastrar Vaga" src="https://github.com/user-attachments/assets/25098395-044c-4f9c-aabd-25670b7893b5" />
+
+
+---
 
 ## 2.2. Rotas e Estado de Autenticação
 
-[Descreva como o aplicativo lida com autenticação. Explique se há um contexto de autenticação global para guardar o JWT gerado no backend, como o guardião de rotas (Route Guards) protege as páginas privadas de usuários sem login e como os dados são retidos no navegador (ex: localStorage, sessionStorage).]
+A arquitetura de frontend do **VagaLivre** adota um modelo centralizado e reativo para gestão do estado de autenticação e proteção de rotas privadas:
+
+##### Contexto Global de Autenticação (`AuthContext`)
+* O aplicativo utiliza um provedor de contexto global (`AuthProvider`) que envolve a árvore de componentes da SPA.
+* O estado armazena as informações do usuário autenticado (`id`, `name`, `email`, `role`, `status`) e o token JWT/HMAC emitido pela API de Identidade.
+
+##### Retenção de Dados e Persistência no Navegador
+* **`localStorage`:** O token de sessão e os dados do usuário são mantidos no `localStorage` do navegador para preservar a sessão do morador mesmo após recarregar a página ou reabrir a aba.
+* **Validação de Sessão (`/auth/me`):** Ao inicializar a aplicação, o contexto dispara automaticamente uma chamada `GET /api/v1/auth/me` enviando o token salvo para validar a integridade da assinatura e a expiração do token (24 horas).
+
+##### Guardião de Rotas (*Route Guards* / Proteção de Acesso)
+* **Rotas Públicas:** `/login` e `/register` (acessíveis sem autenticação).
+* **Rotas Privadas de Morador (`PrivateRoute`):** Páginas como `/spots`, `/reservations` e `/notifications` verificam a presença de um token válido e status `approved`. Usuários não autenticados são redirecionados automaticamente para `/login`.
+* **Rotas de Gestão Administrativa (`AdminRoute`):** A rota `/admin/users` aplica uma camada adicional de verificação de papel (*RBAC*), permitindo a navegação apenas se `user.role === 'manager'`. Caso um morador comum tente acessar a rota, o sistema exibe um aviso de acesso negado ou redireciona para o dashboard principal.
+* **Interceptador HTTP:** Um cliente HTTP centralizado (ex: Axios Instance ou wrapper de `fetch`) anexa automaticamente o cabeçalho `Authorization: Bearer <token>` em todas as requisições enviadas ao API Gateway.
 
 ---
 
@@ -239,25 +306,41 @@ export const userService = {
 };
 ```
 
+
 ---
 
 # 4. Estratégia e Relatório de Testes Web
 
 *(Esta seção atende diretamente à rubrica **H37c**)*
 
-[Descreva como a qualidade da interface e a resiliência a bugs foram validadas no projeto Web. Indique que ferramentas foram aplicadas para rodar os testes localmente.]
+A validação da qualidade, usabilidade e resiliência da interface Web do **VagaLivre** foi conduzida por meio de testes automatizados de componentes e integração, combinados com testes de fluxo ponta a ponta (E2E). A estratégia buscou garantir a correta renderização reativa dos componentes, a validação defensiva dos formulários de entrada, a integridade do estado global de autenticação (`AuthContext`) e a correta manipulação dos dados retornados pelas chamadas assíncronas ao API Gateway.
+
+---
 
 ## 4.1. Arquivos de Testes
 
-- **Ferramenta de Asserção de Interface**: (Ex: `Jest`, `React Testing Library`, `Cypress`, `Playwright`).
-- **Comando de Execução**: `npm run test` ou `npm run cypress:run`.
+* **Ferramentas de Asserção de Interface:** **Vitest** + **React Testing Library** (`@testing-library/react`) para testes unitários e de componentes; **Cypress** para suítes de testes End-to-End (E2E).
+* **Comando de Execução (Testes Unitários e de Componentes):**
+  ```bash
+  cd src/frontend && npm test
+  ```
+* **Comando de Execução (Testes E2E / Cypress):**
+  ```bash
+  cd src/frontend && npm run cypress:run
+  ```
 
-### Tabela de Cobertura de Testes Web:
+##### Tabela de Cobertura de Testes Web
 
 | Componente Web | Tipo de Teste (Unitário/E2E) | Cenário de Teste Validado | Status da Suíte |
 | :--- | :--- | :--- | :---: |
-| **Formulário de Entrada** | Unitário | Validação de preenchimento, e-mail inválido, botão desabilitado | ✔️ Passou |
-| **Integração de Compra** | E2E | Fluxo completo desde seleção de item, autenticação até sucesso | ✔️ Passou |
+| **Formulário de Autenticação (`Login.jsx`)** | Unitário (Componente) | Validação de campos obrigatórios, formato de e-mail inválido, exibição de mensagem de erro e bloqueio de submissão vazia | ✔️ Passou |
+| **Formulário de Cadastro (`Register.jsx`)** | Unitário (Componente) | Validação de confirmação de senha, seleção de condomínio e disparo do fluxo de cadastro inicial | ✔️ Passou |
+| **Contexto de Autenticação (`AuthContext.jsx`)** | Unitário (Estado) | Retenção e recuperação do token no `localStorage`, inicialização da sessão e expurgo de estado no *logout* | ✔️ Passou |
+| **Cartão de Vaga (`SpotCard.jsx`)** | Unitário (Componente) | Renderização reativa de badges de status (`disponível`/`ocupado`), ícones por categoria e acionamento da modal de reserva | ✔️ Passou |
+| **Modal de Reserva (`ReservationModal.jsx`)** | Unitário (Componente) | Validação de intervalo de datas (`startTime` < `endTime`), formato de placa veicular e habilitação do botão de confirmação | ✔️ Passou |
+| **Central de Notificações (`NotificationCenter.jsx`)** | Unitário (Componente) | Renderização da lista de avisos, alternância de status para lido (`PATCH`) e exclusão de notificação do histórico (`DELETE`) | ✔️ Passou |
+| **Fluxo Completo de Reserva de Vaga** | E2E (Cypress) | Login do morador, navegação no catálogo de vagas, aplicação de filtros, criação de reserva e validação do registro em Meus Agendamentos | ✔️ Passou |
+| **Painel Administrativo do Síndico (`AdminUsers.jsx`)** | E2E (Cypress) | Autenticação com papel `manager`, listagem de usuários pendentes (`pending`), alteração de status para `approved`/`denied` e atualização reativa da lista | ✔️ Passou |
 
 ---
 
@@ -265,29 +348,111 @@ export const userService = {
 
 *(Esta seção atende diretamente à rubrica **H35c**)*
 
+A implantação da interface Web da plataforma **VagaLivre** foi planejada para assegurar alta performance na entrega de ativos estáticos, integração transparente com a topologia de microsserviços distribuídos centralizada pelo API Gateway e conformidade com as boas práticas de DevOps e entrega contínua.
+
+---
+
 ## 5.1. Conteinerização da Aplicação Web
 
-[Descreva se o projeto conta com dockerização para servir a interface Web. Por exemplo, uso de imagens multi-stage contendo a etapa de geração de build node e a etapa final rodando um proxy reverso estático como o Nginx para melhor performance.]
+Em conformidade com a arquitetura definida para a interface Web do **VagaLivre**, o repositório da aplicação cliente em `src/frontend/` **não conta com conteinerização ativa por Docker no estágio atual**, sendo estruturado para compilação direta de ativos estáticos otimizados via Vite/Node.js (`npm run build`). A conteinerização via Docker no ecossistema VagaLivre está concentrada na camada de microsserviços e APIs distribuídas do backend (conforme demonstrado em `src/backend/` na Etapa 2).
 
-- **Caminho do Dockerfile do Frontend Web**: `[src/frontend/Dockerfile](src/frontend/Dockerfile)`
+- **Caminho do Dockerfile do Frontend Web**: N/A (`src/frontend/Dockerfile` não é utilizado no projeto Web atual; a aplicação gera o *bundle* estático diretamente para execução local ou hospedagem em servidor Web estático/CDN).
+
+##### Proposta Teórica de Conteinerização (Multi-Stage Build com Nginx)
+
+Caso a infraestrutura exija a conteinerização isolada do frontend no futuro, apresenta-se a **proposta teórica** de um `Dockerfile` estruturado em múltiplos estágios (*multi-stage build*) utilizando o proxy reverso **Nginx**:
+
+1. **Estágio 1 - Compilação (*Build Stage*):**
+   * **Imagem Base:** `node:20-alpine`
+   * **Ação:** Instalação limpa de dependências (`npm ci`) e compilação dos arquivos estáticos minificados (HTML, JS, CSS) na pasta `/dist` através do script `npm run build`.
+2. **Estágio 2 - Servidor e Proxy Reverso (*Production Stage*):**
+   * **Imagem Base:** `nginx:alpine`
+   * **Ação:** Cópia dos ativos estáticos compilados da pasta `/dist` para o diretório de publicação do Nginx (`/usr/share/nginx/html`).
+   * **Configuração Nginx (`nginx.conf`):** Ajustada com diretiva `try_files $uri /index.html;` para suportar o roteamento interno de aplicação SPA (*Single Page Application*), evitando erros HTTP 404 ao recarregar rotas dinâmicas, além de habilitar compressão Gzip.
+
+```dockerfile
+# Proposta Teórica de Conteinerização: src/frontend/Dockerfile
+# Estágio 1: Build da SPA
+FROM node:20-alpine AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+# Estágio 2: Servidor estático com Nginx
+FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+```
 
 ---
 
 ## 5.2. Proposta de Infraestrutura de Deploy e Automação de Builds
 
-Abaixo, apresente a proposta teórica de como o build de produção seria gerido e publicado. **Nota:** Não há cobrança de deploy prático na nuvem para esta disciplina; a avaliação consiste na demonstração teórica do plano de implantação/hospedagem e nos testes de interface executados localmente.
+Conforme as diretrizes acadêmicas da disciplina, a infraestrutura de deploy do frontend Web é apresentada como uma **proposta teórica de arquitetura DevOps e entrega contínua**, complementada pela execução e validação dos testes de interface executados localmente.
 
-- **Serviço de Hospedagem Planejado**: (Ex: `Vercel`, `Netlify`, `GitHub Pages`).
-- **Proposta de Fluxo Contínuo**: Explique como o build estático de produção seria planejado de forma automatizada no repositório (ex: GitHub Actions disparando build/teste a cada push).
-- **Tratamento de Variáveis e Integração**: Descreva de forma textual como o frontend web se comunicaria com as URLs de variáveis de ambiente secretas em produção para apontar para as APIs distribuídas sem hardcode.
+##### 1. Serviço de Hospedagem Planejado
+
+* **Provedor:** **Render / Vercel** (Static Site Hosting).
+* **Justificativa:** Como o frontend consiste em ativos estáticos compilados de uma SPA (Vite/React), o uso de uma plataforma de *Static Site Hosting* alimentada por CDN (*Content Delivery Network*) garante distribuição global de baixa latência, suporte nativo a HTTPS gratuito e dispensa a necessidade de manter contêineres rodando 24/7 exclusivamente para servir ativos estáticos.
+
+##### 2. Proposta de Fluxo Contínuo (Pipeline de CI/CD)
+
+A proposta de automação de integração e entrega contínua (CI/CD) prevê a utilização do **GitHub Actions** (`.github/workflows/frontend-ci.yml`), disparado a cada *push* ou *Pull Request* direcionado à *branch* principal (`main`):
+
+```mermaid
+flowchart LR
+    Dev[Push / PR na branch main] --> GHA1[GHA: Checkout & Setup Node.js]
+    GHA1 --> GHA2[GHA: npm ci - Instalar Dependências]
+    GHA2 --> GHA3[GHA: npm test - Executar Vitest]
+    GHA3 --> GHA4[GHA: npm run build - Compilar SPA]
+    GHA4 --> Deploy[Deploy Automático no Render / Vercel]
+```
+
+* **Etapa de Qualidade (CI):** Instalação de dependências, execução da suíte de testes unitários de interface (`npm test`) e verificação de integridade do build (`npm run build`).
+* **Etapa de Implantação (CD):** Após a aprovação de todos os testes unitários, o robô de deploy envia os artefatos compilados para a plataforma de hospedagem.
+
+##### 3. Tratamento de Variáveis de Ambiente e Integração com APIs
+
+Para evitar a codificação direta (*hardcode*) de endereços de rede no código-fonte e permitir a alternância transparente entre os ambientes de desenvolvimento e produção, as requisições do frontend ao backend são parametrizadas por meio de **Variáveis de Ambiente**:
+
+* **Nome da Variável:** `VITE_API_GATEWAY_URL`
+* **Valor em Desenvolvimento (`.env.development`):** `http://localhost:3000`
+* **Valor em Produção (`.env.production` / Painel do Host):** `https://gateway-api-d2uo.onrender.com`
+
+No código da aplicação (`src/frontend/src/services/api.js`), a instância centralizada do Axios lê a variável injetada dinamicamente pelo Vite durante o tempo de compilação (*build time*):
+
+```javascript
+import axios from 'axios';
+
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_GATEWAY_URL || 'https://gateway-api-d2uo.onrender.com',
+  timeout: 60000,
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});
+
+export default api;
+```
+
+Em ambiente de publicação na nuvem, a variável `VITE_API_GATEWAY_URL` é cadastrada no painel de configurações do provedor de hospedagem (*Environment Variables / Secrets*), garantindo que os artefatos estáticos se comuniquem diretamente com o **API Gateway em produção** sem expor credenciais sensíveis no repositório público.
 
 ---
 
 # 6. Referências Acadêmicas e de Engenharia
 
-[Registre as fontes técnicas, documentação de frameworks (React, Angular) ou livros sobre usabilidade que inspiraram a solução.]
-
-1. **NIELSEN, Jakob**. *Projetando Websites*: Usabilidade Desenvolvido por Jakob Nielsen. Rio de Janeiro: Campus, 2000.
-2. **KRUG, Steve**. *Não me faça pensar*: Uma abordagem de bom senso à usabilidade na Web. Rio de Janeiro: Alta Books, 2014.
-3. [Adicione referências de documentação oficial de frameworks e CSS utilizados].
-
+1. **NIELSEN, Jakob**. *Projetando Websites: Usabilidade*. Rio de Janeiro: Campus, 2000.
+2. **KRUG, Steve**. *Não Me Faça Pensar: Uma Abordagem de Bom Senso à Usabilidade na Web*. 3. ed. Rio de Janeiro: Alta Books, 2014.
+3. **REACT**. *React: A JavaScript library for building user interfaces*. Documentação oficial.
+4. **VITE**. *Vite: Next Generation Frontend Tooling*. Documentação oficial.
+5. **TAILWINDCSS**. *Tailwind CSS: Rapidly build modern websites without ever leaving your HTML*. Documentação oficial.
+6. **AXIOS**. *Axios: Promise based HTTP client for the browser and node.js*. Documentação oficial.
+7. **VITEST**. *Vitest: A Vite-native unit test framework*. Documentação oficial.
+8. **CYPRESS**. *Cypress Documentation: Fast, easy and reliable testing for anything that runs in a browser*. Documentação oficial.
+9. **DOCKER**. *Docker Docs: Build, Ship, and Run Any App, Anywhere*. Documentação oficial.
+10. **NGINX**. *NGINX Docs: High Performance Load Balancer, Web Server, & Reverse Proxy*. Documentação oficial.
+11. **MERMAID**. *Mermaid: JavaScript based diagramming and charting tool*. Documentação oficial.
