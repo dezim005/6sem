@@ -23,7 +23,7 @@ import { Logo } from "@/components/logo";
 import { UserNav } from "@/components/layout/user-nav";
 import type { User, Condominium } from "@/types";
 import { getUsers, updateUser } from "@/lib/user-service";
-import { getCondominiumById } from "@/lib/condominium-service";
+import { getCondominiums } from "@/lib/condominium-service";
 import { LayoutDashboard, ParkingSquare, CalendarCheck, Building, Users as UsersIcon, ArrowLeft, Loader2, UserCheck, UserX, Bookmark, History, CheckCircle2, XCircle, Hourglass } from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
 import { useRouter } from "next/navigation";
@@ -40,6 +40,7 @@ export default function ManageApprovalsPage() {
   const { isMobile, state: sidebarState } = useSidebar();
   
   const [pendingUsers, setPendingUsers] = React.useState<User[]>([]);
+  const [condominiums, setCondominiums] = React.useState<Condominium[]>([]);
   const [isLoadingUsers, setIsLoadingUsers] = React.useState(true);
 
   React.useEffect(() => {
@@ -54,34 +55,64 @@ export default function ManageApprovalsPage() {
   }, [isAuthenticated, isAuthLoading, currentUser, router, toast]);
 
   const fetchPendingUsers = React.useCallback(() => {
-    if (isAuthenticated && currentUser?.role === 'manager') {
-      setIsLoadingUsers(true);
-      const allUsers = getUsers();
-      setPendingUsers(allUsers.filter(u => u.status === 'pending'));
-      setIsLoadingUsers(false);
+    if (!(isAuthenticated && currentUser?.role === "manager")) {
+      return;
     }
+    let cancelled = false;
+    setIsLoadingUsers(true);
+    Promise.all([getUsers(), getCondominiums()])
+      .then(([allUsers, condos]) => {
+        if (cancelled) {
+          return;
+        }
+        setPendingUsers(allUsers.filter((u) => u.status === "pending"));
+        setCondominiums(condos);
+      })
+      .catch((error) => {
+        console.error("Falha ao carregar usuários pendentes", error);
+        if (!cancelled) {
+          setPendingUsers([]);
+          setCondominiums([]);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setIsLoadingUsers(false);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [isAuthenticated, currentUser]);
 
   React.useEffect(() => {
-    fetchPendingUsers();
+    return fetchPendingUsers();
   }, [fetchPendingUsers]);
 
   const handleApprovalAction = async (userId: string, newStatus: 'approved' | 'denied') => {
     const userToUpdate = pendingUsers.find(u => u.id === userId);
     if (!userToUpdate) return;
 
-    const updatedUser = updateUser(userId, { status: newStatus });
-
-    if (updatedUser) {
-      toast({
-        title: `Cadastro ${newStatus === 'approved' ? 'Aprovado' : 'Negado'}`,
-        description: `O cadastro de ${userToUpdate.name} foi ${newStatus === 'approved' ? 'aprovado' : 'negado'} com sucesso.`,
-      });
-      fetchPendingUsers(); // Re-fetch para atualizar a lista
-    } else {
+    try {
+      const updatedUser = await updateUser(userId, { status: newStatus });
+      if (updatedUser) {
+        toast({
+          title: `Cadastro ${newStatus === 'approved' ? 'Aprovado' : 'Negado'}`,
+          description: `O cadastro de ${userToUpdate.name} foi ${newStatus === 'approved' ? 'aprovado' : 'negado'} com sucesso.`,
+        });
+        fetchPendingUsers();
+      } else {
+        toast({
+          title: "Falha na Operação",
+          description: `Não foi possível ${newStatus === 'approved' ? 'aprovar' : 'negar'} o cadastro.`,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Falha ao atualizar status do usuário", error);
       toast({
         title: "Falha na Operação",
-        description: `Não foi possível ${newStatus === 'approved' ? 'aprovar' : 'negar'} o cadastro.`,
+        description: error instanceof Error ? error.message : `Não foi possível ${newStatus === 'approved' ? 'aprovar' : 'negar'} o cadastro.`,
         variant: "destructive",
       });
     }
@@ -244,7 +275,7 @@ export default function ManageApprovalsPage() {
                       </TableHeader>
                       <TableBody>
                         {pendingUsers.map((user) => {
-                          const condominium = user.condominiumId ? getCondominiumById(user.condominiumId) : null;
+                          const condominium = user.condominiumId ? condominiums.find((condo) => condo.id === user.condominiumId) : null;
                           return (
                             <TableRow key={user.id}>
                               <TableCell className="font-medium">{user.name}</TableCell>

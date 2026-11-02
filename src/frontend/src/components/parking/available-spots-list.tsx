@@ -16,10 +16,10 @@ import { Search, ParkingSquare, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/auth-context";
 import { addReservation, getAllReservations } from "@/lib/reservation-service";
-import { getParkingSpots } from "@/lib/parking-spot-service";
+import { fetchParkingSpots } from "@/lib/parking-spot-service";
+import { apiDayEnd, apiDayStart, hasBookableDay } from "@/lib/bookable-days";
 import { SpotReservationDialog } from "./spot-reservation-dialog"; 
 import type { DateRange } from "react-day-picker";
-import { startOfDay, endOfDay } from "date-fns";
 
 
 interface AvailableSpotsListProps {
@@ -45,9 +45,14 @@ export function AvailableSpotsList({ spots: initialSpots }: AvailableSpotsListPr
   React.useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
-      setSpots(initialSpots); // Use initialSpots from props
-      const fetchedReservations = getAllReservations();
-      setAllReservations(fetchedReservations);
+      setSpots(initialSpots);
+      try {
+        const fetchedReservations = await getAllReservations();
+        setAllReservations(fetchedReservations);
+      } catch (error) {
+        console.error("Falha ao carregar reservas da API", error);
+        setAllReservations([]);
+      }
       setIsLoading(false);
     };
     fetchData();
@@ -59,25 +64,23 @@ export function AvailableSpotsList({ spots: initialSpots }: AvailableSpotsListPr
                             spot.location.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesType = filterType === 'all' || spot.type === filterType;
       
-      // Show spots that are owner-available and have some availability configured
-      // The detailed booking status (fully_booked etc) will be handled by ParkingSpotCard
-      return spot.isAvailable && spot.availability && spot.availability.length > 0 && matchesSearch && matchesType;
+      return spot.isAvailable && hasBookableDay(spot, allReservations) && matchesSearch && matchesType;
     });
-  }, [spots, searchTerm, filterType]);
+  }, [spots, allReservations, searchTerm, filterType]);
 
   const handleOpenReservationDialog = (spot: ParkingSpot) => {
     setSelectedSpotForDialog(spot);
     setIsReservationDialogOpen(true);
   };
 
-  const handleConfirmReservation = async (spotId: string, dateRange: DateRange) => {
+  const handleConfirmReservation = async (spotId: string, dateRange: DateRange): Promise<boolean> => {
     if (!user) {
       toast({ title: "Erro", description: "Você precisa estar logado para reservar.", variant: "destructive" });
-      return;
+      return false;
     }
     if (!dateRange.from) {
       toast({ title: "Selecione o Período", description: "Por favor, selecione um período para sua reserva.", variant: "destructive" });
-      return;
+      return false;
     }
     
     setIsSubmittingReservation(true);
@@ -85,8 +88,8 @@ export function AvailableSpotsList({ spots: initialSpots }: AvailableSpotsListPr
     const reservationData = {
       spotId,
       userId: user.id,
-      startTime: startOfDay(dateRange.from),
-      endTime: dateRange.to ? endOfDay(dateRange.to) : endOfDay(dateRange.from),
+      startTime: apiDayStart(dateRange.from),
+      endTime: apiDayEnd(dateRange.to ?? dateRange.from),
     };
 
     const result = await addReservation(reservationData);
@@ -96,20 +99,30 @@ export function AvailableSpotsList({ spots: initialSpots }: AvailableSpotsListPr
         title: "Reserva Confirmada!",
         description: result.message,
       });
-      // Re-fetch data to update UI, including reservations to update card statuses
-      const updatedSpots = getParkingSpots(); // Re-fetch spots
-      setSpots(updatedSpots);
-      const updatedReservations = getAllReservations(); // Re-fetch all reservations
-      setAllReservations(updatedReservations);
-      setIsReservationDialogOpen(false); 
-    } else {
-      toast({
-        title: "Falha na Reserva",
-        description: result.message || "Não foi possível reservar a vaga para este período.",
-        variant: "destructive",
-      });
+      try {
+        const updatedSpots = await fetchParkingSpots();
+        setSpots(updatedSpots);
+      } catch (error) {
+        console.error("Falha ao atualizar vagas da API", error);
+      }
+      try {
+        const updatedReservations = await getAllReservations();
+        setAllReservations(updatedReservations);
+      } catch (error) {
+        console.error("Falha ao atualizar reservas da API", error);
+      }
+      setIsReservationDialogOpen(false);
+      setIsSubmittingReservation(false);
+      return true;
     }
+
+    toast({
+      title: "Falha na Reserva",
+      description: result.message || "Não foi possível reservar a vaga para este período.",
+      variant: "destructive",
+    });
     setIsSubmittingReservation(false);
+    return false;
   };
   
   if (isLoading) {
@@ -166,8 +179,8 @@ export function AvailableSpotsList({ spots: initialSpots }: AvailableSpotsListPr
       ) : (
         <div className="text-center py-10 border rounded-md bg-card">
           <ParkingSquare className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-          <p className="text-lg font-medium text-muted-foreground">Nenhuma vaga disponível que corresponda aos seus critérios.</p>
-          <p className="text-sm text-muted-foreground">Verifique se há vagas com disponibilidade definida ou ajuste seus filtros.</p>
+          <p className="text-lg font-medium text-muted-foreground">Nenhuma vaga livre para reservar.</p>
+          <p className="text-sm text-muted-foreground">Só aparecem vagas com pelo menos um dia livre no calendário.</p>
         </div>
       )}
 

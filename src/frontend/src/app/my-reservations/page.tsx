@@ -22,7 +22,7 @@ import { Logo } from "@/components/logo";
 import { UserNav } from "@/components/layout/user-nav";
 import type { Reservation, ParkingSpot } from "@/types";
 import { getAllReservations, cancelReservation } from "@/lib/reservation-service";
-import { getSpotById } from "@/lib/parking-spot-service";
+import { fetchParkingSpots } from "@/lib/parking-spot-service";
 import { LayoutDashboard, ParkingSquare, CalendarCheck, Bookmark, Loader2, AlertTriangle, Building, Users, History, UserCheck, Trash2, XCircle } from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
 import { useRouter } from "next/navigation";
@@ -65,23 +65,49 @@ export default function MyReservationsPage() {
   }, [isAuthenticated, isAuthLoading, router]);
 
   const fetchUserReservations = React.useCallback(() => {
-    if (isAuthenticated && user) {
-      setIsLoadingReservations(true);
-      const allRes = getAllReservations();
-      const currentUserReservations = allRes.filter(res => res.userId === user.id);
-      
-      const detailedReservations: UserReservationDetails[] = currentUserReservations.map(res => {
-        const spot = getSpotById(res.spotId);
-        return { ...res, spotDetails: spot };
-      }).sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime()); 
-
-      setUserReservations(detailedReservations);
-      setIsLoadingReservations(false);
+    if (!(isAuthenticated && user)) {
+      return;
     }
+    let cancelled = false;
+    setIsLoadingReservations(true);
+    getAllReservations({ userId: user.id })
+      .then((currentUserReservations) => {
+        return fetchParkingSpots()
+          .then((spots) => ({ currentUserReservations, spots }))
+          .catch((error) => {
+            console.error("Falha ao carregar vagas da API", error);
+            return { currentUserReservations, spots: [] as ParkingSpot[] };
+          });
+      })
+      .then(({ currentUserReservations, spots }) => {
+        if (cancelled) {
+          return;
+        }
+        const detailedReservations: UserReservationDetails[] = currentUserReservations.map(res => {
+          const spot = spots.find(item => item.id === res.spotId);
+          return { ...res, spotDetails: spot };
+        }).sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
+        setUserReservations(detailedReservations);
+      })
+      .catch((error) => {
+        console.error("Falha ao carregar reservas da API", error);
+        if (!cancelled) {
+          setUserReservations([]);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setIsLoadingReservations(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [isAuthenticated, user]);
 
   React.useEffect(() => {
-    fetchUserReservations();
+    return fetchUserReservations();
   }, [fetchUserReservations]);
 
 

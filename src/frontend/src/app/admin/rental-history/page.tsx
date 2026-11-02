@@ -27,7 +27,7 @@ import { UserNav } from "@/components/layout/user-nav";
 import type { Reservation, User, ParkingSpot } from "@/types";
 import { getAllReservations } from "@/lib/reservation-service";
 import { getUsers } from "@/lib/user-service";
-import { getParkingSpots } from "@/lib/parking-spot-service";
+import { fetchParkingSpots } from "@/lib/parking-spot-service";
 import { LayoutDashboard, ParkingSquare, CalendarCheck, Building, Users as UsersIcon, ArrowLeft, Loader2, History, User as UserIconLucide, Calendar as CalendarIconLucide, Bookmark, FilterX, Download, UserCheck } from "lucide-react"; // Adicionado UserCheck
 import { useAuth } from "@/contexts/auth-context";
 import { useRouter } from "next/navigation";
@@ -66,13 +66,55 @@ export default function RentalHistoryPage() {
   }, [isAuthenticated, isAuthLoading, currentUser, router]);
 
   React.useEffect(() => {
-    if (isAuthenticated && currentUser?.role === 'manager') {
-      setIsLoadingData(true);
-      setAllReservations(getAllReservations());
-      setAllUsers(getUsers());
-      setAllSpots(getParkingSpots());
-      setIsLoadingData(false);
+    if (!(isAuthenticated && currentUser?.role === "manager")) {
+      return;
     }
+    let cancelled = false;
+    setIsLoadingData(true);
+    getAllReservations()
+      .then((reservations) => {
+        if (!cancelled) {
+          setAllReservations(reservations);
+        }
+      })
+      .catch((error) => {
+        console.error("Falha ao carregar reservas da API", error);
+        if (!cancelled) {
+          setAllReservations([]);
+        }
+      });
+    getUsers()
+      .then((users) => {
+        if (!cancelled) {
+          setAllUsers(users);
+        }
+      })
+      .catch((error) => {
+        console.error("Falha ao carregar usuários da API", error);
+        if (!cancelled) {
+          setAllUsers([]);
+        }
+      });
+    fetchParkingSpots()
+      .then((spots) => {
+        if (!cancelled) {
+          setAllSpots(spots);
+        }
+      })
+      .catch((error) => {
+        console.error("Falha ao carregar vagas da API", error);
+        if (!cancelled) {
+          setAllSpots([]);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setIsLoadingData(false);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [isAuthenticated, currentUser]);
 
   const detailedReservations = React.useMemo((): DetailedReservation[] => {

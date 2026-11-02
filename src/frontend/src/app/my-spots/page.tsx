@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ParkingSpotCard } from "@/components/parking/parking-spot-card";
 import type { ParkingSpot, Reservation } from "@/types";
-import { getParkingSpots } from "@/lib/parking-spot-service"; 
+import { fetchParkingSpots } from "@/lib/parking-spot-service"; 
 import { getAllReservations } from "@/lib/reservation-service"; 
 import { PlusCircle, ParkingSquare, LayoutDashboard, CalendarCheck, Loader2, Building, Users, Bookmark, History, UserCheck } from "lucide-react"; // Adicionado UserCheck
 import { Logo } from "@/components/logo";
@@ -44,14 +44,43 @@ export default function MySpotsPage() {
   }, [isAuthenticated, isAuthLoading, router]);
 
   React.useEffect(() => {
-    if (isAuthenticated) {
-      setIsLoadingData(true);
-      const spotsFromService = getParkingSpots();
-      setAllSpots(spotsFromService);
-      const reservationsFromService = getAllReservations();
-      setAllReservations(reservationsFromService);
-      setIsLoadingData(false);
+    if (!isAuthenticated) {
+      return;
     }
+    let cancelled = false;
+    setIsLoadingData(true);
+    getAllReservations()
+      .then((reservationsFromService) => {
+        if (!cancelled) {
+          setAllReservations(reservationsFromService);
+        }
+      })
+      .catch((error) => {
+        console.error("Falha ao carregar reservas da API", error);
+        if (!cancelled) {
+          setAllReservations([]);
+        }
+      });
+    fetchParkingSpots()
+      .then((spotsFromService) => {
+        if (!cancelled) {
+          setAllSpots(spotsFromService);
+        }
+      })
+      .catch((error) => {
+        console.error("Falha ao carregar vagas da API", error);
+        if (!cancelled) {
+          setAllSpots([]);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setIsLoadingData(false);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [isAuthenticated]);
 
   if (isAuthLoading || !isAuthenticated || !user) {

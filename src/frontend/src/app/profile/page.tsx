@@ -90,25 +90,38 @@ export default function ProfilePage() {
 
   React.useEffect(() => {
     if (user) {
-      let condoName = "Não especificado";
-      if (user.condominiumId) {
-        const condo = getCondominiumById(user.condominiumId);
-        if (condo) {
-          condoName = condo.name;
+      let cancelled = false;
+      const loadProfile = async () => {
+        let condoName = "Não especificado";
+        if (user.condominiumId) {
+          try {
+            const condo = await getCondominiumById(user.condominiumId);
+            if (condo) {
+              condoName = condo.name;
+            }
+          } catch (error) {
+            console.error("Falha ao carregar condomínio da API", error);
+          }
         }
-      }
-      setCondominiumName(condoName);
-
-      form.reset({
-        name: user.name || "",
-        email: user.email || "",
-        apartment: user.apartment || "",
-        dateOfBirth: user.dateOfBirth ? user.dateOfBirth.split('T')[0] : "", 
-        cpf: user.cpf || "",
-        phone: user.phone || "",
-        description: user.description || "",
-        condominiumName: condoName,
-      });
+        if (cancelled) {
+          return;
+        }
+        setCondominiumName(condoName);
+        form.reset({
+          name: user.name || "",
+          email: user.email || "",
+          apartment: user.apartment || "",
+          dateOfBirth: user.dateOfBirth ? user.dateOfBirth.split("T")[0] : "",
+          cpf: user.cpf || "",
+          phone: user.phone || "",
+          description: user.description || "",
+          condominiumName: condoName,
+        });
+      };
+      loadProfile();
+      return () => {
+        cancelled = true;
+      };
     }
   }, [user, form]);
 

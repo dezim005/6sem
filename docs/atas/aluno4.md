@@ -10,11 +10,25 @@
 
 | Etapa | % Participação | Commits |
 | :---: | :---: | :---: |
+| Etapa 2 | `78%` | `7` |
 | Etapa 1 | `78%` | `8` |
 
 ---
 
 ## 🔍 Avaliação por Etapa
+
+### 🏗️ ETAPA 2 - APIs, Web Services e Persistência de Dados Distribuída
+*   **Participação**: `78%` — Commits: `7`
+*   **Funcionalidades em que atuou** (do total de 11 do sistema):
+    - F6 — Reservas: criação com validação de conflito de agenda, consulta e cancelamento pelo dono — commits `605afde`, `98f7fc8`
+*   **Atividades Entregues**:
+    - API de Reservas (H36b) — `605afde`, `98f7fc8`: `server.js` (231 linhas) com regras de conflito (409) e posse (403), `schema.prisma`, `package.json`.
+    - Testes automatizados (H36c) — `98f7fc8`: `tests/reservations.spec.js` com 16 cenários (Vitest, Prisma mockado) e `vitest.config.js`.
+    - README do serviço — `b9c264e`: 78 linhas com endpoints e execução.
+*   **Atividades Pendentes/Incompletas**:
+    - T2.4 (JWT) consta no quadro em seu nome, mas a autenticação foi implementada no serviço do Pedro; seu username no quadro está incorreto (`gust_2003`).
+    - Sem texto próprio no `backend-apis.md`; histórico com arquivos apagados e recriados (`ce833c7`, `9289b21`, `4911519`).
+*   **Parecer do Professor**: O serviço de reservas é a regra de negócio central e foi entregue com boa cobertura de testes. A atuação ficou restrita a uma funcionalidade, concentrada em 24/09 e 04/10, sem contribuição à documentação da etapa. Corrija o quadro de contribuição e documente a seção de reservas.
 
 ### 🏗️ ETAPA 1 - Contexto e Planejamento da Solução Distribuída
 *   **Participação**: `78%` — Commits: `8`

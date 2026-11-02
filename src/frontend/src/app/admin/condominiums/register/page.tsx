@@ -77,10 +77,10 @@ export default function RegisterCondominiumPage() {
   async function onSubmit(data: CondominiumFormValues) {
     setIsSubmitting(true);
     try {
-      addCondominium({ name: data.name, address: data.address });
+      const created = await addCondominium({ name: data.name, address: data.address });
       toast({
         title: "Condomínio Cadastrado!",
-        description: `O condomínio "${data.name}" foi cadastrado com sucesso.`,
+        description: `O condomínio "${created.name}" foi cadastrado com sucesso.`,
       });
       form.reset();
       // router.push("/admin/condominiums"); 

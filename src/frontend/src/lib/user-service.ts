@@ -1,75 +1,82 @@
-
 "use client";
 
 import type { User } from "@/types";
 
-const REGISTERED_USERS_KEY = "vagaLivreRegisteredUsers";
+const API_BASE =
+  process.env.NEXT_PUBLIC_GATEWAY_URL || "https://gateway-api-d2uo.onrender.com";
 
-export function getUsers(): User[] {
-  if (typeof window === "undefined") {
-    return [];
-  }
-  try {
-    const users = localStorage.getItem(REGISTERED_USERS_KEY);
-    return users ? JSON.parse(users) : [];
-  } catch (error) {
-    console.error("Falha ao carregar usuários do localStorage", error);
-    return [];
-  }
+const WAKE_RETRY_ATTEMPTS = 8;
+const WAKE_RETRY_DELAY_MS = 8000;
+
+function wait(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export function getUserById(id: string): User | undefined {
-  const users = getUsers();
-  return users.find(user => user.id === id);
-}
-
-export function updateUser(userId: string, data: Partial<User>): User | undefined {
-  let users = getUsers();
-  const userIndex = users.findIndex(user => user.id === userId);
-
-  if (userIndex !== -1) {
-    users[userIndex] = { ...users[userIndex], ...data };
+async function request(path: string, init?: RequestInit): Promise<{ ok: boolean; status: number; body: any }> {
+  let lastError: unknown;
+  for (let attempt = 0; attempt < WAKE_RETRY_ATTEMPTS; attempt++) {
     try {
-      localStorage.setItem(REGISTERED_USERS_KEY, JSON.stringify(users));
-      
-      const authState = localStorage.getItem("vagaLivreAuth");
-      if (authState) {
-        const authData = JSON.parse(authState);
-        if (authData.user && authData.user.id === userId) {
-          authData.user = { ...authData.user, ...data };
-          localStorage.setItem("vagaLivreAuth", JSON.stringify(authData));
-        }
+      const response = await fetch(`${API_BASE}${path}`, {
+        ...init,
+        headers: {
+          "Content-Type": "application/json",
+          ...(init?.headers || {}),
+        },
+      });
+      const body = await response.json().catch(() => ({}));
+      if (response.ok || (response.status !== 502 && response.status !== 503)) {
+        return { ok: response.ok, status: response.status, body };
       }
-      return users[userIndex];
+      lastError = new Error(body?.message || `HTTP ${response.status}`);
     } catch (error) {
-      console.error("Falha ao salvar usuários atualizados no localStorage", error);
-      return undefined;
+      lastError = error;
+    }
+    if (attempt < WAKE_RETRY_ATTEMPTS - 1) {
+      await wait(WAKE_RETRY_DELAY_MS);
     }
   }
-  return undefined;
+  throw lastError instanceof Error ? lastError : new Error("Erro ao buscar usuários.");
 }
 
-export function deleteUser(userId: string): boolean {
-  let users = getUsers();
-  const initialLength = users.length;
-  users = users.filter(user => user.id !== userId);
-
-  if (users.length < initialLength) {
-    try {
-      localStorage.setItem(REGISTERED_USERS_KEY, JSON.stringify(users));
-      // Se o usuário excluído for o logado, limpar também o estado de autenticação
-      const authState = localStorage.getItem("vagaLivreAuth");
-      if (authState) {
-        const authData = JSON.parse(authState);
-        if (authData.user && authData.user.id === userId) {
-          localStorage.removeItem("vagaLivreAuth");
-        }
-      }
-      return true;
-    } catch (error) {
-      console.error("Falha ao salvar usuários após exclusão no localStorage", error);
-      return false;
-    }
+export async function getUsers(): Promise<User[]> {
+  const { ok, body } = await request("/api/v1/users");
+  if (!ok) {
+    throw new Error(body?.message || "Erro ao buscar usuários.");
   }
-  return false; // Usuário não encontrado
+  return Array.isArray(body?.data) ? body.data : [];
+}
+
+export async function getUserById(id: string): Promise<User | undefined> {
+  const { ok, status, body } = await request(`/api/v1/users/${encodeURIComponent(id)}`);
+  if (status === 404) {
+    return undefined;
+  }
+  if (!ok) {
+    throw new Error(body?.message || "Erro ao buscar usuário.");
+  }
+  return body?.data;
+}
+
+export async function updateUser(userId: string, data: Partial<User>): Promise<User | undefined> {
+  const { ok, status, body } = await request(`/api/v1/users/${encodeURIComponent(userId)}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+  if (status === 404) {
+    return undefined;
+  }
+  if (!ok) {
+    throw new Error(body?.message || "Erro ao atualizar usuário.");
+  }
+  return body?.data;
+}
+
+export async function deleteUser(userId: string): Promise<boolean> {
+  const { ok, status } = await request(`/api/v1/users/${encodeURIComponent(userId)}`, {
+    method: "DELETE",
+  });
+  if (status === 404) {
+    return false;
+  }
+  return ok;
 }

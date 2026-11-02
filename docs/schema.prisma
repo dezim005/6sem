@@ -1,0 +1,97 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum UserRole {
+  resident
+  manager
+}
+
+enum UserStatus {
+  pending
+  approved
+  denied
+}
+
+enum ParkingSpotType {
+  compact
+  standard
+  suv
+  motorcycle
+}
+
+model VagaLivreCondominiums {
+  id      String @id
+  name    String
+  address String
+  users   VagaLivreRegisteredUsers[]
+
+  @@map("vagaLivreCondominiums")
+}
+
+model VagaLivreRegisteredUsers {
+  id               String     @id
+  name             String
+  email            String     @unique
+  password         String?
+  role             UserRole
+  status           UserStatus
+  registrationDate String?
+  avatarUrl        String?
+  dateOfBirth      String?
+  apartment        String?
+  cpf              String?
+  phone            String?
+  description      String?
+  condominiumId    String?
+  condominium      VagaLivreCondominiums? @relation(fields: [condominiumId], references: [id])
+  ownedSpots       VagaLivreParkingSpots[]
+  reservations     VagaLivreReservations[]
+
+  @@map("vagaLivreRegisteredUsers")
+}
+
+model VagaLivreAuth {
+  id              String  @id @default("current")
+  isAuthenticated Boolean
+  user            Json?
+
+  @@map("vagaLivreAuth")
+}
+
+model VagaLivreParkingSpots {
+  id                   String          @id
+  number               String
+  type                 ParkingSpotType
+  location             String
+  isAvailable          Boolean         @default(true)
+  ownerId              String?
+  ownerName            String?
+  currentReservationId String?         @unique
+  description          String?
+  availability         Json            @default("[]")
+  owner                VagaLivreRegisteredUsers? @relation(fields: [ownerId], references: [id])
+  currentReservation   VagaLivreReservations?    @relation("CurrentReservation", fields: [currentReservationId], references: [id])
+  reservations         VagaLivreReservations[]   @relation("SpotReservations")
+
+  @@map("vagaLivreParkingSpots")
+}
+
+model VagaLivreReservations {
+  id           String   @id
+  spotId       String
+  userId       String
+  startTime    DateTime @db.Timestamptz
+  endTime      DateTime @db.Timestamptz
+  vehiclePlate String?
+  spot         VagaLivreParkingSpots      @relation("SpotReservations", fields: [spotId], references: [id])
+  user         VagaLivreRegisteredUsers   @relation(fields: [userId], references: [id])
+  currentForSpot VagaLivreParkingSpots?   @relation("CurrentReservation")
+
+  @@map("vagaLivreReservations")
+}

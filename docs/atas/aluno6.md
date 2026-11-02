@@ -10,11 +10,27 @@
 
 | Etapa | % Participação | Commits |
 | :---: | :---: | :---: |
+| Etapa 2 | `93%` | `8` |
 | Etapa 1 | `62%` | `3` |
 
 ---
 
 ## 🔍 Avaliação por Etapa
+
+### 🏗️ ETAPA 2 - APIs, Web Services e Persistência de Dados Distribuída
+*   **Participação**: `93%` — Commits: `8`
+*   **Funcionalidades em que atuou** (do total de 11 do sistema):
+    - F2 — Cadastro e aprovação de usuários: CRUD, primeiro cadastro vira síndico, status pendente/aprovado/negado — commit `a31d3dd`
+    - F3 — Gestão de condomínios: listagem, detalhe e cadastro — commit `a31d3dd`
+    - F10 — Contrato de API: tabela de endpoints da seção 3.1 e ajustes de segurança — commit `e29e99f`
+*   **Atividades Entregues**:
+    - API de Usuários e Condomínios (H36b) — `a31d3dd`, `96ccf5c`: `server.js` (293 linhas) e `schema.prisma`, com regras de papéis e status.
+    - Testes automatizados (H36c) — `1f16bbe`: `tests/users.spec.js` com 23 cenários (CRUD, duplicidade de e-mail, status inválido) e README do serviço (`6788404`).
+    - Documentação do contrato de API (H36a) — `e29e99f`: reescrita extensa de `backend-apis.md` (166 linhas adicionadas).
+*   **Atividades Pendentes/Incompletas**:
+    - Gateway e integração (T2.5, H35b): consta em seu nome, mas não há commit seu no gateway (autoria do Allan).
+    - Commits concentrados em um único dia (04/10).
+*   **Parecer do Professor**: Segundo maior volume de conteúdo da equipe: duas funcionalidades de negócio com a suíte de testes mais ampla e contribuição relevante na documentação. A tarefa de gateway não foi sua e o trabalho ficou todo na véspera do prazo. Distribua melhor a entrega ao longo das próximas etapas.
 
 ### 🏗️ ETAPA 1 - Contexto e Planejamento da Solução Distribuída
 *   **Participação**: `62%` — Commits: `3`

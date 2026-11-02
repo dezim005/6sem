@@ -4,7 +4,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { AvailableSpotsList } from "@/components/parking/available-spots-list";
-import { getParkingSpots } from "@/lib/parking-spot-service"; 
+import { fetchParkingSpots } from "@/lib/parking-spot-service"; 
 import type { ParkingSpot } from "@/types"; 
 // import { useToast } from "@/hooks/use-toast"; // No longer directly used here
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -43,12 +43,31 @@ export default function ReservationsPage() {
   }, [isAuthenticated, isAuthLoading, router]);
 
   React.useEffect(() => {
-    if (isAuthenticated) {
-      setIsLoadingSpots(true);
-      const spotsFromService = getParkingSpots(); 
-      setSpots(spotsFromService);
-      setIsLoadingSpots(false);
+    if (!isAuthenticated) {
+      return;
     }
+    let cancelled = false;
+    setIsLoadingSpots(true);
+    fetchParkingSpots()
+      .then((spotsFromService) => {
+        if (!cancelled) {
+          setSpots(spotsFromService);
+        }
+      })
+      .catch((error) => {
+        console.error("Falha ao carregar vagas da API", error);
+        if (!cancelled) {
+          setSpots([]);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setIsLoadingSpots(false);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [isAuthenticated]);
 
   if (isAuthLoading || !isAuthenticated || !user) {

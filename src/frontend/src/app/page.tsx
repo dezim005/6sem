@@ -22,8 +22,9 @@ import { ParkingSpotCard } from "@/components/parking/parking-spot-card";
 import { Logo } from "@/components/logo";
 import { UserNav } from "@/components/layout/user-nav";
 import type { ParkingSpot, Reservation } from "@/types"; 
-import { getParkingSpots } from "@/lib/parking-spot-service"; 
-import { getAllReservations, addReservation } from "@/lib/reservation-service"; 
+import { fetchParkingSpots } from "@/lib/parking-spot-service"; 
+import { getAllReservations, addReservation } from "@/lib/reservation-service";
+import { apiDayEnd, apiDayStart, hasBookableDay } from "@/lib/bookable-days"; 
 import { LayoutDashboard, ParkingSquare, CalendarCheck, Search, List, Map, Loader2, Building, Users, Bookmark, History, UserCheck } from "lucide-react"; // Adicionado UserCheck
 import { Input } from "@/components/ui/input";
 import {
@@ -36,7 +37,6 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/contexts/auth-context";
 import { useRouter } from "next/navigation";
-import { startOfDay, endOfDay } from "date-fns"; 
 import { cn } from "@/lib/utils";
 import { SpotReservationDialog } from "@/components/parking/spot-reservation-dialog";
 import type { DateRange } from "react-day-picker";
@@ -51,8 +51,7 @@ export default function DashboardPage() {
   const [allReservations, setAllReservations] = React.useState<Reservation[]>([]); 
   const [isLoadingData, setIsLoadingData] = React.useState(true); 
   const [searchTerm, setSearchTerm] = React.useState("");
-  const [filterType, setFilterType] = React.useState<string>("all");
-  const [filterAvailability, setFilterAvailability] = React.useState<string>("all"); 
+  const [filterType, setFilterType] = React.useState<string>("all"); 
   const [viewMode, setViewMode] = React.useState<"list" | "map">("list");
 
   const { isMobile, state: sidebarState } = useSidebar();
@@ -68,14 +67,43 @@ export default function DashboardPage() {
   }, [isAuthenticated, isAuthLoading, router]);
 
   React.useEffect(() => {
-    if (isAuthenticated) {
-      setIsLoadingData(true);
-      const spotsFromService = getParkingSpots();
-      setSpots(spotsFromService);
-      const reservationsFromService = getAllReservations(); 
-      setAllReservations(reservationsFromService);
-      setIsLoadingData(false);
+    if (!isAuthenticated) {
+      return;
     }
+    let cancelled = false;
+    setIsLoadingData(true);
+    getAllReservations()
+      .then((reservationsFromService) => {
+        if (!cancelled) {
+          setAllReservations(reservationsFromService);
+        }
+      })
+      .catch((error) => {
+        console.error("Falha ao carregar reservas da API", error);
+        if (!cancelled) {
+          setAllReservations([]);
+        }
+      });
+    fetchParkingSpots()
+      .then((spotsFromService) => {
+        if (!cancelled) {
+          setSpots(spotsFromService);
+        }
+      })
+      .catch((error) => {
+        console.error("Falha ao carregar vagas da API", error);
+        if (!cancelled) {
+          setSpots([]);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setIsLoadingData(false);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [isAuthenticated]);
 
   if (isAuthLoading || !isAuthenticated || !user) {
@@ -86,48 +114,11 @@ export default function DashboardPage() {
     );
   }
 
-  const isSpotOccupiedNow = (spot: ParkingSpot, spotSpecificReservations: Reservation[]): boolean => {
-    const now = new Date();
-    
-    const hasAvailabilityToday = spot.availability?.some(slot => {
-        const slotStart = startOfDay(new Date(slot.startTime));
-        const slotEnd = endOfDay(new Date(slot.endTime));
-        return now >= slotStart && now <= slotEnd;
-    }) || false;
-
-    if (spot.availability && spot.availability.length > 0 && !hasAvailabilityToday) {
-        return true; 
-    }
-    
-    return spotSpecificReservations.some(res => {
-      const resStart = new Date(res.startTime);
-      const resEnd = new Date(res.endTime);
-      return resStart <= now && resEnd >= now;
-    });
-  };
-  
   const filteredSpots = spots.filter(spot => {
     const matchesSearch = spot.number.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           spot.location.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = filterType === 'all' || spot.type === filterType;
-    
-    const spotSpecificReservations = allReservations.filter(r => r.spotId === spot.id);
-
-    let matchesAvailabilityFilter = true;
-    if (filterAvailability !== 'all') {
-        const isOccupied = isSpotOccupiedNow(spot, spotSpecificReservations);
-        if (filterAvailability === 'available') {
-            matchesAvailabilityFilter = spot.isAvailable && 
-                                        (spot.availability && spot.availability.length > 0) && 
-                                        !isOccupied;
-        } else if (filterAvailability === 'occupied') {
-            matchesAvailabilityFilter = !spot.isAvailable || 
-                                        !(spot.availability && spot.availability.length > 0) || 
-                                        isOccupied;
-        }
-    }
-
-    return spot.isAvailable && (spot.availability && spot.availability.length > 0) && matchesSearch && matchesType && matchesAvailabilityFilter;
+    return spot.isAvailable && hasBookableDay(spot, allReservations) && matchesSearch && matchesType;
   });
 
   const handleOpenReservationDialog = (spot: ParkingSpot) => {
@@ -135,14 +126,14 @@ export default function DashboardPage() {
     setIsReservationDialogOpen(true);
   };
 
-  const handleConfirmReservation = async (spotId: string, dateRange: DateRange) => {
+  const handleConfirmReservation = async (spotId: string, dateRange: DateRange): Promise<boolean> => {
     if (!user) {
       toast({ title: "Erro", description: "Você precisa estar logado para reservar.", variant: "destructive" });
-      return;
+      return false;
     }
     if (!dateRange.from) {
       toast({ title: "Selecione o Período", description: "Por favor, selecione um período para sua reserva.", variant: "destructive" });
-      return;
+      return false;
     }
     
     setIsSubmittingReservation(true);
@@ -150,8 +141,8 @@ export default function DashboardPage() {
     const reservationData = {
       spotId,
       userId: user.id,
-      startTime: startOfDay(dateRange.from),
-      endTime: dateRange.to ? endOfDay(dateRange.to) : endOfDay(dateRange.from),
+      startTime: apiDayStart(dateRange.from),
+      endTime: apiDayEnd(dateRange.to ?? dateRange.from),
     };
 
     const result = await addReservation(reservationData);
@@ -161,20 +152,30 @@ export default function DashboardPage() {
         title: "Reserva Confirmada!",
         description: result.message,
       });
-      // Re-fetch data to update UI
-      const updatedSpots = getParkingSpots(); 
-      setSpots(updatedSpots);
-      const updatedReservations = getAllReservations(); 
-      setAllReservations(updatedReservations);
-      setIsReservationDialogOpen(false); 
-    } else {
-      toast({
-        title: "Falha na Reserva",
-        description: result.message || "Não foi possível reservar a vaga para este período.",
-        variant: "destructive",
-      });
+      try {
+        const updatedSpots = await fetchParkingSpots();
+        setSpots(updatedSpots);
+      } catch (error) {
+        console.error("Falha ao atualizar vagas da API", error);
+      }
+      try {
+        const updatedReservations = await getAllReservations();
+        setAllReservations(updatedReservations);
+      } catch (error) {
+        console.error("Falha ao atualizar reservas da API", error);
+      }
+      setIsReservationDialogOpen(false);
+      setIsSubmittingReservation(false);
+      return true;
     }
+
+    toast({
+      title: "Falha na Reserva",
+      description: result.message || "Não foi possível reservar a vaga para este período.",
+      variant: "destructive",
+    });
     setIsSubmittingReservation(false);
+    return false;
   };
 
 
@@ -284,10 +285,10 @@ export default function DashboardPage() {
             <Card className="shadow-md">
               <CardHeader>
                 <CardTitle className="text-2xl">Disponibilidade de Vagas</CardTitle>
-                <CardDescription>Veja as vagas de estacionamento e seu status atual. Clique em uma vaga para ver a disponibilidade e reservar.</CardDescription>
+                <CardDescription>Só aparecem vagas com pelo menos um dia livre. No calendário, o verde é um dia que dá para reservar.</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                   <div className="relative">
                     <Search className="absolute left-2.5 top-3 h-4 w-4 text-muted-foreground" />
                     <Input
@@ -308,16 +309,6 @@ export default function DashboardPage() {
                       <SelectItem value="standard">Padrão</SelectItem>
                       <SelectItem value="suv">SUV</SelectItem>
                       <SelectItem value="motorcycle">Moto</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Select value={filterAvailability} onValueChange={setFilterAvailability}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Filtrar por disponibilidade" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Todos os Status (Agora)</SelectItem>
-                      <SelectItem value="available">Disponível (Agora)</SelectItem>
-                      <SelectItem value="occupied">Ocupada (Agora)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -362,8 +353,8 @@ export default function DashboardPage() {
                 ) : (
                   <div className="text-center py-10">
                     <ParkingSquare className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                    <p className="text-lg font-medium text-muted-foreground">Nenhuma vaga de estacionamento corresponde aos seus critérios.</p>
-                    <p className="text-sm text-muted-foreground">Tente ajustar sua busca ou filtros, ou verifique se há vagas com disponibilidade definida.</p>
+                    <p className="text-lg font-medium text-muted-foreground">Nenhuma vaga livre para reservar.</p>
+                    <p className="text-sm text-muted-foreground">Só aparecem vagas com pelo menos um dia livre no calendário.</p>
                   </div>
                 )}
               </CardContent>

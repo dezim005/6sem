@@ -21,8 +21,70 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const REGISTERED_USERS_KEY = "vagaLivreRegisteredUsers";
 const AUTH_STATE_KEY = "vagaLivreAuth";
+const API_BASE =
+  process.env.NEXT_PUBLIC_GATEWAY_URL || "https://gateway-api-d2uo.onrender.com";
+const WAKE_RETRY_ATTEMPTS = 8;
+const WAKE_RETRY_DELAY_MS = 8000;
+
+function wait(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function readStoredSession(): { user: User; token: string } | null {
+  try {
+    const storedAuth = localStorage.getItem(AUTH_STATE_KEY);
+    if (!storedAuth) {
+      return null;
+    }
+    const authData = JSON.parse(storedAuth);
+    if (authData?.token && authData?.user) {
+      return { user: authData.user, token: authData.token };
+    }
+  } catch (error) {
+    console.error("Falha ao carregar o estado de autenticação do localStorage", error);
+    localStorage.removeItem(AUTH_STATE_KEY);
+  }
+  return null;
+}
+
+function saveSession(user: User, token?: string) {
+  const current = readStoredSession();
+  localStorage.setItem(
+    AUTH_STATE_KEY,
+    JSON.stringify({
+      isAuthenticated: true,
+      user,
+      token: token || current?.token,
+    })
+  );
+}
+
+async function authRequest(path: string, init?: RequestInit): Promise<{ ok: boolean; status: number; body: any }> {
+  let lastError: unknown;
+  for (let attempt = 0; attempt < WAKE_RETRY_ATTEMPTS; attempt++) {
+    try {
+      const response = await fetch(`${API_BASE}${path}`, {
+        ...init,
+        headers: {
+          "Content-Type": "application/json",
+          ...(init?.headers || {}),
+        },
+      });
+      const body = await response.json().catch(() => ({}));
+      if (response.ok || (response.status !== 502 && response.status !== 503)) {
+        return { ok: response.ok, status: response.status, body };
+      }
+      lastError = new Error(body?.message || `HTTP ${response.status}`);
+    } catch (error) {
+      lastError = error;
+    }
+    if (attempt < WAKE_RETRY_ATTEMPTS - 1) {
+      await wait(WAKE_RETRY_DELAY_MS);
+    }
+  }
+  throw lastError instanceof Error ? lastError : new Error("Erro ao autenticar.");
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -32,87 +94,84 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const { toast } = useToast();
 
   useEffect(() => {
-    try {
-      const storedAuth = localStorage.getItem(AUTH_STATE_KEY);
-      if (storedAuth) {
-        const authData = JSON.parse(storedAuth);
-        if (authData.isAuthenticated && authData.user) {
+    let cancelled = false;
+
+    const restoreSession = async () => {
+      const stored = readStoredSession();
+      if (!stored) {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+        return;
+      }
+
+      try {
+        const { ok, body } = await authRequest("/api/v1/auth/me", {
+          headers: { Authorization: `Bearer ${stored.token}` },
+        });
+        if (!ok || !body?.data) {
+          localStorage.removeItem(AUTH_STATE_KEY);
+          if (!cancelled) {
+            setIsAuthenticated(false);
+            setUser(null);
+          }
+          return;
+        }
+        if (!cancelled) {
           setIsAuthenticated(true);
-          setUser(authData.user);
+          setUser(body.data);
+          saveSession(body.data, stored.token);
+        }
+      } catch (error) {
+        console.error("Falha ao validar a sessão", error);
+        if (!cancelled) {
+          setIsAuthenticated(true);
+          setUser(stored.user);
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
         }
       }
-    } catch (error) {
-      console.error("Falha ao carregar o estado de autenticação do localStorage", error);
-      localStorage.removeItem(AUTH_STATE_KEY);
-    }
-    setIsLoading(false);
+    };
+
+    restoreSession();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const getRegisteredUsers = (): User[] => {
-    try {
-      const users = localStorage.getItem(REGISTERED_USERS_KEY);
-      return users ? JSON.parse(users) : [];
-    } catch (error) {
-      console.error("Falha ao carregar usuários registrados do localStorage", error);
-      return [];
-    }
-  };
-
-  const saveRegisteredUsers = (users: User[]) => {
-    try {
-      localStorage.setItem(REGISTERED_USERS_KEY, JSON.stringify(users));
-    } catch (error) {
-      console.error("Falha ao salvar usuários registrados no localStorage", error);
-    }
-  };
-
   const login = async (data: Pick<User, "email" | "password">): Promise<boolean> => {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    const registeredUsers = getRegisteredUsers();
-    const foundUser = registeredUsers.find(
-      (u) => u.email === data.email && u.password === data.password
-    );
+    try {
+      const { ok, status, body } = await authRequest("/api/v1/auth/login", {
+        method: "POST",
+        body: JSON.stringify({ email: data.email, password: data.password }),
+      });
 
-    if (foundUser) {
-      if (foundUser.status === 'pending') {
+      if (!ok || !body?.data?.token || !body?.data?.user) {
+        const description = body?.message || (status === 401 ? "Email ou senha inválidos." : "Erro ao autenticar.");
         toast({
-          title: "Cadastro Pendente",
-          description: "Sua conta está aguardando aprovação pelo síndico.",
-          variant: "destructive",
-        });
-        return false;
-      }
-      if (foundUser.status === 'denied') {
-        toast({
-          title: "Acesso Negado",
-          description: "Seu acesso foi negado pelo síndico.",
-          variant: "destructive",
-        });
-        return false;
-      }
-      // Somente status 'approved' pode logar
-      if (foundUser.status !== 'approved') {
-         toast({
-          title: "Status Desconhecido",
-          description: "O status da sua conta não permite o login. Contate o suporte.",
+          title: status === 403 ? "Acesso não permitido" : "Falha no Login",
+          description,
           variant: "destructive",
         });
         return false;
       }
 
       setIsAuthenticated(true);
-      setUser(foundUser);
+      setUser(body.data.user);
       try {
-        localStorage.setItem(AUTH_STATE_KEY, JSON.stringify({ isAuthenticated: true, user: foundUser }));
+        saveSession(body.data.user, body.data.token);
       } catch (error) {
         console.error("Falha ao salvar o estado de autenticação no localStorage", error);
       }
       router.push("/");
       return true;
-    } else {
+    } catch (error) {
+      console.error("Falha ao autenticar", error);
       toast({
         title: "Falha no Login",
-        description: "Email ou senha inválidos.",
+        description: "Erro ao autenticar.",
         variant: "destructive",
       });
       return false;
@@ -120,84 +179,69 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const register = async (data: Pick<User, "name" | "email" | "password"> & { condominiumId?: string }): Promise<{ success: boolean; message: string }> => {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    const registeredUsers = getRegisteredUsers();
-
-    if (registeredUsers.find((u) => u.email === data.email)) {
-      return { success: false, message: "Este email já está cadastrado." };
+    try {
+      const response = await fetch(`${API_BASE}/api/v1/users`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          password: data.password,
+          condominiumId: data.condominiumId || undefined,
+        }),
+      });
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        return { success: false, message: body.message || "Erro ao cadastrar usuário." };
+      }
+      return { success: true, message: body.message || "Cadastro realizado com sucesso!" };
+    } catch (error) {
+      console.error("Falha ao cadastrar usuário", error);
+      return { success: false, message: "Erro ao cadastrar usuário." };
     }
-
-    let role: 'resident' | 'manager' = 'resident';
-    let status: 'pending' | 'approved' | 'denied' = 'pending';
-    const isFirstUser = registeredUsers.length === 0;
-
-    if (isFirstUser) {
-      role = 'manager';
-      status = 'approved'; // Síndico é aprovado automaticamente
-    }
-
-    if (role === 'resident' && !data.condominiumId) {
-      return { success: false, message: "Moradores devem selecionar um condomínio. Se nenhum estiver disponível, peça ao síndico para cadastrar." };
-    }
-
-    const newUser: User = {
-      id: `user-${Date.now()}`,
-      name: data.name,
-      email: data.email,
-      password: data.password, 
-      role: role,
-      status: status,
-      registrationDate: new Date().toISOString(),
-      avatarUrl: `https://placehold.co/40x40.png?text=${data.name[0]?.toUpperCase() || 'U'}`,
-      dateOfBirth: "",
-      apartment: "",
-      cpf: "",
-      phone: "",
-      description: "",
-      condominiumId: role === 'resident' ? data.condominiumId : undefined,
-    };
-
-    saveRegisteredUsers([...registeredUsers, newUser]);
-    
-    let successMessage = "Cadastro realizado com sucesso!";
-    if (role === 'manager') {
-      successMessage += " Você foi registrado como Síndico e sua conta está ativa.";
-    } else {
-      successMessage += " Seu cadastro como Morador foi recebido e está aguardando aprovação do síndico.";
-    }
-    successMessage += " Você será notificado sobre o status."; // Simplificação, notificação real não implementada
-
-    return { success: true, message: successMessage };
   };
 
   const updateUserProfile = async (data: Partial<User>): Promise<{ success: boolean; message: string }> => {
-    await new Promise(resolve => setTimeout(resolve, 500));
     if (!user) {
       return { success: false, message: "Usuário não autenticado." };
     }
 
-    const updatedUser = { ...user, ...data };
-    setUser(updatedUser);
-
-    const registeredUsers = getRegisteredUsers();
-    const userIndex = registeredUsers.findIndex(u => u.id === user.id);
-    if (userIndex !== -1) {
-      registeredUsers[userIndex] = updatedUser;
-      saveRegisteredUsers(registeredUsers);
-    }
-
     try {
-      localStorage.setItem(AUTH_STATE_KEY, JSON.stringify({ isAuthenticated: true, user: updatedUser }));
-    } catch (error) {
-      console.error("Falha ao salvar o estado de autenticação atualizado no localStorage", error);
-       return { success: false, message: "Erro ao salvar perfil. Tente novamente." };
-    }
+      const response = await fetch(`${API_BASE}/api/v1/users/${encodeURIComponent(user.id)}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok || !body?.data) {
+        return { success: false, message: body.message || "Erro ao salvar perfil. Tente novamente." };
+      }
 
-    return { success: true, message: "Perfil atualizado com sucesso!" };
+      const updatedUser = { ...user, ...body.data };
+      setUser(updatedUser);
+      try {
+        saveSession(updatedUser);
+      } catch (error) {
+        console.error("Falha ao salvar o estado de autenticação atualizado no localStorage", error);
+      }
+      return { success: true, message: body.message || "Perfil atualizado com sucesso!" };
+    } catch (error) {
+      console.error("Falha ao atualizar perfil", error);
+      return { success: false, message: "Erro ao salvar perfil. Tente novamente." };
+    }
   };
 
 
   const logout = () => {
+    const stored = readStoredSession();
+    if (stored?.token) {
+      authRequest("/api/v1/auth/logout", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${stored.token}` },
+      }).catch((error) => {
+        console.error("Falha ao encerrar a sessão na API", error);
+      });
+    }
     setIsAuthenticated(false);
     setUser(null);
     try {

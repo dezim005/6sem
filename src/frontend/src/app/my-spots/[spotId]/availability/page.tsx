@@ -5,7 +5,7 @@ import * as React from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { SpotAvailabilityCalendar } from "@/components/parking/spot-availability-calendar";
-import { getSpotById, updateSpot } from "@/lib/parking-spot-service"; 
+import { fetchSpotById, updateSpot } from "@/lib/parking-spot-service"; 
 import type { ParkingSpot, AvailabilitySlot } from "@/types"; 
 import { Logo } from "@/components/logo";
 import { UserNav } from "@/components/layout/user-nav";
@@ -47,12 +47,27 @@ export default function ManageSpotAvailabilityPage() {
 
   React.useEffect(() => {
     if (isAuthenticated && user && spotId) {
-      const foundSpot = getSpotById(spotId);
-      if (foundSpot && user.role === 'resident' && foundSpot.ownerId !== user.id) {
-        setSpot(null); 
-      } else {
-        setTimeout(() => setSpot(foundSpot || null), 300); 
-      }
+      let cancelled = false;
+      fetchSpotById(spotId)
+        .then((foundSpot) => {
+          if (cancelled) {
+            return;
+          }
+          if (foundSpot && user.role === "resident" && foundSpot.ownerId !== user.id) {
+            setSpot(null);
+          } else {
+            setSpot(foundSpot || null);
+          }
+        })
+        .catch((error) => {
+          console.error("Falha ao carregar vaga da API", error);
+          if (!cancelled) {
+            setSpot(null);
+          }
+        });
+      return () => {
+        cancelled = true;
+      };
     } else if (!isAuthenticated && !isAuthLoading) {
        setSpot(null);
     }

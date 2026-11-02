@@ -71,18 +71,28 @@ export default function RegisterPage() {
   }, [isAuthenticated, isAuthLoading, router]);
 
   React.useEffect(() => {
-    const fetchCondos = () => {
+    let cancelled = false;
+    const fetchCondos = async () => {
       setIsLoadingCondominiums(true);
       try {
-        const condos = getCondominiums();
-        setCondominiums(condos);
+        const condos = await getCondominiums();
+        if (!cancelled) {
+          setCondominiums(condos);
+        }
       } catch (error) {
         console.error("Erro ao buscar condomínios:", error);
-        toast({ title: "Erro", description: "Não foi possível carregar a lista de condomínios.", variant: "destructive" });
+        if (!cancelled) {
+          toast({ title: "Erro", description: "Não foi possível carregar a lista de condomínios.", variant: "destructive" });
+        }
       }
-      setIsLoadingCondominiums(false);
+      if (!cancelled) {
+        setIsLoadingCondominiums(false);
+      }
     };
     fetchCondos();
+    return () => {
+      cancelled = true;
+    };
   }, [toast]);
 
   async function onSubmit(data: RegistrationFormValues) {

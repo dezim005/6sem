@@ -10,11 +10,25 @@
 
 | Etapa | % Participação | Commits |
 | :---: | :---: | :---: |
+| Etapa 2 | `78%` | `1` |
 | Etapa 1 | `88%` | `5` |
 
 ---
 
 ## 🔍 Avaliação por Etapa
+
+### 🏗️ ETAPA 2 - APIs, Web Services e Persistência de Dados Distribuída
+*   **Participação**: `78%` — Commits: `1`
+*   **Funcionalidades em que atuou** (do total de 11 do sistema):
+    - F5 — CRUD de vagas (API .NET HATEOAS): `ParkingSpotsController`, EF Core, migrations, modelos — commit `a3cc9e1`
+    - F11 — Containerização: Dockerfile e docker-compose (API + PostgreSQL) — commit `a3cc9e1`
+*   **Atividades Entregues**:
+    - API de vagas em ASP.NET Core 8 (T2.3, H36b) — `a3cc9e1`: controller CRUD (168 linhas) com HATEOAS, `AppDbContext`, migration inicial, enums e `examples/requests.http`.
+    - Dockerfile e docker-compose (T2.7, H35c) — `a3cc9e1`: orquestração API + PostgreSQL com README de execução (117 linhas).
+*   **Atividades Pendentes/Incompletas**:
+    - Sem testes (automatizados ou roteiro manual documentado) para a API .NET.
+    - Serviço fora da lista de URLs publicadas e só roteado pelo gateway se `GIOVANNY_API` estiver configurada; sem texto próprio no `backend-apis.md` (as seções 5.1/3.x foram escritas por outro integrante).
+*   **Parecer do Professor**: Entregou, em um único commit robusto, uma API completa em outra stack e a conteinerização, o que é conteúdo real e relevante. A entrega ficou isolada: sem testes, sem publicação e sem integração efetiva ao gateway, e a participação se concentrou em um dia. Integre o serviço à arquitetura e documente os testes.
 
 ### 🏗️ ETAPA 1 - Contexto e Planejamento da Solução Distribuída
 *   **Participação**: `88%` — Commits: `5`

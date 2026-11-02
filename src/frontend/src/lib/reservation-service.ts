@@ -1,179 +1,120 @@
-
 "use client";
 
-import type { Reservation, ParkingSpot, AvailabilitySlot } from "@/types";
-import { getSpotById } from "./parking-spot-service"; 
-import { startOfDay, endOfDay, isEqual, eachDayOfInterval, isWithinInterval, format } from "date-fns";
+import type { Reservation, ParkingSpot } from "@/types";
+import { hasBookableDay } from "@/lib/bookable-days";
 
-const RESERVATIONS_STORAGE_KEY = "vagaLivreReservations";
+const API_BASE =
+  process.env.NEXT_PUBLIC_GATEWAY_URL || "https://gateway-api-d2uo.onrender.com";
 
-function saveReservations(reservations: Reservation[]): void {
-  if (typeof window !== "undefined") {
+const WAKE_RETRY_ATTEMPTS = 8;
+const WAKE_RETRY_DELAY_MS = 8000;
+
+function wait(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function toReservation(raw: Reservation): Reservation {
+  return {
+    id: raw.id,
+    spotId: raw.spotId,
+    userId: raw.userId,
+    startTime: new Date(raw.startTime),
+    endTime: new Date(raw.endTime),
+    vehiclePlate: raw.vehiclePlate,
+  };
+}
+
+async function request(path: string, init?: RequestInit): Promise<{ ok: boolean; status: number; body: any }> {
+  let lastError: unknown;
+  for (let attempt = 0; attempt < WAKE_RETRY_ATTEMPTS; attempt++) {
     try {
-      localStorage.setItem(RESERVATIONS_STORAGE_KEY, JSON.stringify(reservations));
+      const response = await fetch(`${API_BASE}${path}`, {
+        ...init,
+        headers: {
+          "Content-Type": "application/json",
+          ...(init?.headers || {}),
+        },
+      });
+      const body = await response.json().catch(() => ({}));
+      if (response.ok || (response.status !== 502 && response.status !== 503)) {
+        return { ok: response.ok, status: response.status, body };
+      }
+      lastError = new Error(body?.message || `HTTP ${response.status}`);
     } catch (error) {
-      console.error("Falha ao salvar reservas no localStorage", error);
+      lastError = error;
+    }
+    if (attempt < WAKE_RETRY_ATTEMPTS - 1) {
+      await wait(WAKE_RETRY_DELAY_MS);
     }
   }
+  throw lastError instanceof Error ? lastError : new Error("Erro ao buscar reservas.");
 }
 
-export function getAllReservations(): Reservation[] {
-  if (typeof window === "undefined") {
-    return [];
+export async function getAllReservations(filters?: { userId?: string; spotId?: string }): Promise<Reservation[]> {
+  const params = new URLSearchParams();
+  if (filters?.userId) {
+    params.set("userId", filters.userId);
   }
-  try {
-    const storedReservations = localStorage.getItem(RESERVATIONS_STORAGE_KEY);
-    if (storedReservations) {
-      return JSON.parse(storedReservations).map((res: any) => ({
-        ...res,
-        startTime: new Date(res.startTime), 
-        endTime: new Date(res.endTime),     
-      }));
-    }
-    return [];
-  } catch (error) {
-    console.error("Falha ao carregar reservas do localStorage", error);
-    return [];
+  if (filters?.spotId) {
+    params.set("spotId", filters.spotId);
   }
+  const query = params.toString();
+  const { ok, body } = await request(`/api/v1/reservations${query ? `?${query}` : ""}`);
+  if (!ok) {
+    throw new Error(body?.message || "Erro ao buscar reservas.");
+  }
+  const data = Array.isArray(body?.data) ? body.data : [];
+  return data.map(toReservation);
 }
 
-export function getReservationsBySpotId(spotId: string): Reservation[] {
-  const allReservations = getAllReservations();
-  return allReservations.filter(res => res.spotId === spotId);
-}
-
-// Helper function para verificar se a reserva está dentro de um slot de disponibilidade
-function isWithinAvailabilitySlot(
-  requestedReservationStart: Date, // Deve ser startOfDay
-  requestedReservationEnd: Date,   // Deve ser endOfDay
-  availabilitySlots: AvailabilitySlot[]
-): boolean {
-  if (!availabilitySlots || availabilitySlots.length === 0) {
-    return false;
-  }
-  return availabilitySlots.some(slot => {
-    const slotStart = startOfDay(new Date(slot.startTime)); 
-    const slotEnd = endOfDay(new Date(slot.endTime));     
-    
-    return requestedReservationStart >= slotStart && requestedReservationEnd <= slotEnd;
-  });
+export async function getReservationsBySpotId(spotId: string): Promise<Reservation[]> {
+  return getAllReservations({ spotId });
 }
 
 export async function addReservation(
   reservationData: Omit<Reservation, "id">
 ): Promise<{ success: boolean; message: string; reservation?: Reservation }> {
-  await new Promise(resolve => setTimeout(resolve, 300)); 
-
-  const spot = getSpotById(reservationData.spotId);
-  if (!spot) {
-    return { success: false, message: "Vaga não encontrada." };
+  try {
+    const { ok, body } = await request("/api/v1/reservations", {
+      method: "POST",
+      body: JSON.stringify(reservationData),
+    });
+    if (!ok || !body?.data) {
+      return { success: false, message: body?.message || "Não foi possível reservar a vaga para este período." };
+    }
+    return {
+      success: true,
+      message: body.message || "Vaga reservada com sucesso!",
+      reservation: toReservation(body.data),
+    };
+  } catch (error) {
+    console.error("Falha ao criar reserva", error);
+    return { success: false, message: "Erro ao criar reserva." };
   }
-
-  if (!spot.availability || spot.availability.length === 0) {
-    return { success: false, message: "Esta vaga não tem horários de disponibilidade definidos pelo proprietário." };
-  }
-
-  const requestedStart = startOfDay(new Date(reservationData.startTime));
-  const requestedEnd = endOfDay(new Date(reservationData.endTime));
-
-  if (requestedEnd < requestedStart) {
-    return { success: false, message: "A data final da reserva não pode ser anterior à data inicial." };
-  }
-  
-  if (!isWithinAvailabilitySlot(requestedStart, requestedEnd, spot.availability)) {
-    return { success: false, message: "O período selecionado não está disponível conforme definido pelo proprietário." };
-  }
-
-  const existingReservationsForSpot = getReservationsBySpotId(reservationData.spotId);
-  const hasConflict = existingReservationsForSpot.some(existingRes => {
-    const existingStart = startOfDay(new Date(existingRes.startTime));
-    const existingEnd = endOfDay(new Date(existingRes.endTime));
-    // Conflito se o novo período se sobrepõe a um existente
-    return requestedStart <= existingEnd && requestedEnd >= existingStart;
-  });
-
-  if (hasConflict) {
-    return { success: false, message: "Este período já está reservado ou entra em conflito com uma reserva existente." };
-  }
-
-  const newReservation: Reservation = {
-    id: `res-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
-    ...reservationData,
-    startTime: requestedStart, 
-    endTime: requestedEnd,     
-  };
-
-  const allReservations = getAllReservations();
-  saveReservations([...allReservations, newReservation]);
-
-  return { success: true, message: "Vaga reservada com sucesso!", reservation: newReservation };
 }
 
-export async function cancelReservation(reservationId: string, currentUserId: string): Promise<{ success: boolean; message: string }> {
-  await new Promise(resolve => setTimeout(resolve, 300)); // Simula chamada de API
-  
-  let allReservations = getAllReservations();
-  const reservationIndex = allReservations.findIndex(res => res.id === reservationId);
-
-  if (reservationIndex === -1) {
-    return { success: false, message: "Reserva não encontrada." };
+export async function cancelReservation(
+  reservationId: string,
+  currentUserId: string
+): Promise<{ success: boolean; message: string }> {
+  try {
+    const { ok, body } = await request(
+      `/api/v1/reservations/${encodeURIComponent(reservationId)}?userId=${encodeURIComponent(currentUserId)}`,
+      { method: "DELETE" }
+    );
+    if (!ok) {
+      return { success: false, message: body?.message || "Não foi possível cancelar a reserva." };
+    }
+    return { success: true, message: body?.message || "Reserva cancelada com sucesso." };
+  } catch (error) {
+    console.error("Falha ao cancelar reserva", error);
+    return { success: false, message: "Erro ao cancelar reserva." };
   }
-
-  const reservationToCancel = allReservations[reservationIndex];
-
-  if (reservationToCancel.userId !== currentUserId) {
-    return { success: false, message: "Você não tem permissão para cancelar esta reserva." };
-  }
-
-  // Opcional: Verificar se a reserva já passou
-  if (new Date() > new Date(reservationToCancel.endTime)) {
-    // return { success: false, message: "Não é possível cancelar uma reserva que já terminou." };
-    // Para este protótipo, vamos permitir o cancelamento mesmo que já tenha passado, para facilitar testes.
-    // Em um app real, essa regra seria importante.
-  }
-  
-  allReservations.splice(reservationIndex, 1);
-  saveReservations(allReservations);
-
-  return { success: true, message: "Reserva cancelada com sucesso." };
 }
-
 
 export function isSpotFullyBooked(spot: ParkingSpot, reservationsForSpot: Reservation[]): boolean {
   if (!spot.availability || spot.availability.length === 0) {
-    return false; 
+    return false;
   }
-
-  const availableDaysSet = new Set<string>(); 
-
-  spot.availability.forEach(slot => {
-    const daysInSlot = eachDayOfInterval({
-      start: startOfDay(new Date(slot.startTime)), 
-      end: startOfDay(new Date(slot.endTime)),     
-    });
-    daysInSlot.forEach(day => {
-      const [year, month, dayNum] = format(day, 'yyyy-MM-dd').split('-').map(Number);
-      availableDaysSet.add(format(new Date(year, month - 1, dayNum), 'yyyy-MM-dd'));
-    });
-  });
-
-  if (availableDaysSet.size === 0) {
-    return false; 
-  }
-
-  for (const dayStr of availableDaysSet) {
-    const [year, month, dayNum] = dayStr.split('-').map(Number);
-    const dayToCover = startOfDay(new Date(year, month - 1, dayNum));
-    
-    const isDayCoveredByReservation = reservationsForSpot.some(res => {
-      const resStart = startOfDay(new Date(res.startTime)); 
-      const resEnd = endOfDay(new Date(res.endTime));       
-      return dayToCover >= resStart && dayToCover <= resEnd;
-    });
-
-    if (!isDayCoveredByReservation) {
-      return false; 
-    }
-  }
-  return true; 
+  return !hasBookableDay(spot, reservationsForSpot);
 }

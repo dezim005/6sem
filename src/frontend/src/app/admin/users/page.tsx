@@ -26,7 +26,7 @@ import { Logo } from "@/components/logo";
 import { UserNav } from "@/components/layout/user-nav";
 import type { User, Condominium } from "@/types";
 import { getUsers, updateUser, deleteUser } from "@/lib/user-service";
-import { getCondominiumById, getCondominiums } from "@/lib/condominium-service";
+import { getCondominiums } from "@/lib/condominium-service";
 import { LayoutDashboard, ParkingSquare, CalendarCheck, Building, Users as UsersIcon, ArrowLeft, Loader2, Eye, Edit2, Trash2, User as UserIconLucide, Mail, Building2, Calendar as CalendarIconLucide, Hash, PhoneIcon, Bookmark, History, UserCheck as UserCheckIcon } from "lucide-react"; // Renomeado UserCheck para UserCheckIcon
 import { useAuth } from "@/contexts/auth-context";
 import { useRouter } from "next/navigation";
@@ -125,14 +125,34 @@ export default function ManageUsersPage() {
   }, [isAuthenticated, isAuthLoading, currentUser, router, toast]);
 
   React.useEffect(() => {
-    if (isAuthenticated && currentUser?.role === 'manager') {
-      setIsLoadingUsers(true);
-      const usersFromService = getUsers();
-      setAllUsers(usersFromService);
-      const condos = getCondominiums();
-      setCondominiums(condos);
-      setIsLoadingUsers(false);
+    if (!(isAuthenticated && currentUser?.role === "manager")) {
+      return;
     }
+    let cancelled = false;
+    setIsLoadingUsers(true);
+    Promise.all([getUsers(), getCondominiums()])
+      .then(([usersFromService, condos]) => {
+        if (cancelled) {
+          return;
+        }
+        setAllUsers(usersFromService);
+        setCondominiums(condos);
+      })
+      .catch((error) => {
+        console.error("Falha ao carregar usuários e condomínios", error);
+        if (!cancelled) {
+          setAllUsers([]);
+          setCondominiums([]);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setIsLoadingUsers(false);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [isAuthenticated, currentUser]);
   
   React.useEffect(() => {
@@ -170,17 +190,22 @@ export default function ManageUsersPage() {
   const handleConfirmDelete = async () => {
     if (!userToDelete) return;
 
-    const wasDeleted = deleteUser(userToDelete.id);
-    if (wasDeleted) {
-      setAllUsers(prevUsers => prevUsers.filter(u => u.id !== userToDelete.id));
-      toast({ title: "Usuário Excluído", description: `O usuário ${userToDelete.name} foi excluído com sucesso.` });
-      
-      if (currentUser?.id === userToDelete.id) {
-        toast({ title: "Auto-Exclusão", description: "Você excluiu sua própria conta e será deslogado."});
-        await logout(); 
+    try {
+      const wasDeleted = await deleteUser(userToDelete.id);
+      if (wasDeleted) {
+        setAllUsers(prevUsers => prevUsers.filter(u => u.id !== userToDelete.id));
+        toast({ title: "Usuário Excluído", description: `O usuário ${userToDelete.name} foi excluído com sucesso.` });
+
+        if (currentUser?.id === userToDelete.id) {
+          toast({ title: "Auto-Exclusão", description: "Você excluiu sua própria conta e será deslogado."});
+          await logout();
+        }
+      } else {
+        toast({ title: "Falha na Exclusão", description: "Não foi possível excluir o usuário.", variant: "destructive" });
       }
-    } else {
-      toast({ title: "Falha na Exclusão", description: "Não foi possível excluir o usuário.", variant: "destructive" });
+    } catch (error) {
+      console.error("Falha ao excluir usuário", error);
+      toast({ title: "Falha na Exclusão", description: error instanceof Error ? error.message : "Não foi possível excluir o usuário.", variant: "destructive" });
     }
     setIsDeleteDialogOpen(false);
     setUserToDelete(null);
@@ -219,17 +244,22 @@ export default function ManageUsersPage() {
       description: data.description,
     };
 
-    const updatedUser = updateUser(selectedUserForEdit.id, updatedUserData);
+    try {
+      const updatedUser = await updateUser(selectedUserForEdit.id, updatedUserData);
 
-    if (updatedUser) {
-      setAllUsers(prevUsers => prevUsers.map(u => u.id === updatedUser.id ? updatedUser : u));
-      if (currentUser?.id === updatedUser.id) { 
-        setAuthUser(updatedUser); 
+      if (updatedUser) {
+        setAllUsers(prevUsers => prevUsers.map(u => u.id === updatedUser.id ? updatedUser : u));
+        if (currentUser?.id === updatedUser.id) {
+          setAuthUser(updatedUser);
+        }
+        toast({ title: "Usuário Atualizado", description: `Os dados de ${updatedUser.name} foram atualizados.` });
+        setIsEditDialogOpen(false);
+      } else {
+        toast({ title: "Falha na Atualização", description: "Não foi possível atualizar os dados do usuário.", variant: "destructive" });
       }
-      toast({ title: "Usuário Atualizado", description: `Os dados de ${updatedUser.name} foram atualizados.` });
-      setIsEditDialogOpen(false);
-    } else {
-      toast({ title: "Falha na Atualização", description: "Não foi possível atualizar os dados do usuário.", variant: "destructive" });
+    } catch (error) {
+      console.error("Falha ao atualizar usuário", error);
+      toast({ title: "Falha na Atualização", description: error instanceof Error ? error.message : "Não foi possível atualizar os dados do usuário.", variant: "destructive" });
     }
     setIsSubmittingEdit(false);
   }
@@ -464,7 +494,7 @@ export default function ManageUsersPage() {
               <div className="flex items-center"><UserCheckIcon className="mr-2 h-4 w-4 text-muted-foreground" /><strong>Status:</strong><span className="ml-2"><Badge variant={getStatusBadgeVariant(selectedUserForView.status)}>{getStatusText(selectedUserForView.status)}</Badge></span></div>
               <div className="flex items-center"><Building className="mr-2 h-4 w-4 text-muted-foreground" /><strong>Apartamento:</strong><span className="ml-2">{selectedUserForView.apartment || "N/A"}</span></div>
               {selectedUserForView.condominiumId && (
-                <div className="flex items-center"><Building2 className="mr-2 h-4 w-4 text-muted-foreground" /><strong>Condomínio:</strong><span className="ml-2">{getCondominiumById(selectedUserForView.condominiumId)?.name || "N/A"}</span></div>
+                <div className="flex items-center"><Building2 className="mr-2 h-4 w-4 text-muted-foreground" /><strong>Condomínio:</strong><span className="ml-2">{condominiums.find((condo) => condo.id === selectedUserForView.condominiumId)?.name || "N/A"}</span></div>
               )}
               <div className="flex items-center"><UsersIcon className="mr-2 h-4 w-4 text-muted-foreground" /><strong>Papel:</strong><span className="ml-2">{selectedUserForView.role === 'manager' ? 'Síndico' : 'Morador'}</span></div>
               <div className="flex items-center"><CalendarIconLucide className="mr-2 h-4 w-4 text-muted-foreground" /><strong>Data de Nascimento:</strong><span className="ml-2">{selectedUserForView.dateOfBirth || "N/A"}</span></div>
