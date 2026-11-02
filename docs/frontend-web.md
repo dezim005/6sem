@@ -79,27 +79,165 @@ Descreva as telas desenvolvidas e como elas interagem com os fluxos operacionais
 
 *(Esta seção atende diretamente à rubrica **H35b**)*
 
+A integração entre a interface Web (*Single Page Application*) e a arquitetura distribuída de microsserviços do **VagaLivre** é totalmente desacoplada e padronizada através do protocolo HTTP/HTTPS REST. Todas as requisições disparadas pelo frontend são direcionadas ao **API Gateway** unificado em produção (`https://gateway-api-d2uo.onrender.com`), responsável pelo roteamento para os respectivos microsserviços em nuvem (Identidade, Usuários, Disponibilidade, Reservas e Notificações).
+
+---
+
 ## 3.1. Arquitetura de Comunicação Cliente-Servidor
+
+A comunicação entre o cliente Web e o backend ocorre de forma assíncrona orientada a eventos de interface (utilizando a API `fetch` ou o cliente `axios`). Para garantir a segurança dos dados transmitidos e manter o estado da sessão ativo, a aplicação implementa o fluxo completo de autenticação e validação de permissões conforme detalhado no diagrama de sequência abaixo.
+
+##### Diagrama de Sequência de Comunicação e Autenticação
 
 ```mermaid
 sequenceDiagram
-    participant Browser as Front-end (Navegador)
-    participant AuthContext as Estado (SPA Context)
-    participant Backend as API Gateway (Backend)
-    participant DB as Banco de Dados
-    
-    Browser->>AuthContext: Inicializa Aplicação
-    AuthContext->>Browser: Verifica existência de Token no LocalStorage
-    Browser->>Backend: Requisição HTTP POST /api/v1/auth/login
-    Backend->>DB: Valida credenciais do Usuário
-    DB-->>Backend: Sucesso
-    Backend-->>Browser: Retorna JWT Token e Perfil
-    Browser->>AuthContext: Atualiza Estado da Sessão (Token)
+    autonumber
+    participant Browser as Front-end (Navegador SPA)
+    participant AuthContext as Estado Global (AuthContext)
+    participant GW as API Gateway (Render)
+    participant IdentityAPI as API de Identidade (Pedro)
+    participant SpotsAPI as API de Vagas (Allan)
+    participant DB as PostgreSQL Serverless (Neon)
+
+    Note over Browser, DB: 1. Inicialização e Validação de Sessão
+    Browser->>AuthContext: Carrega aplicação SPA
+    AuthContext->>Browser: Busca token no localStorage ("vagalivre_token")
+    alt Token Presente
+        AuthContext->>GW: GET /api/v1/auth/me (Header Authorization: Bearer token)
+        GW->>IdentityAPI: Repassa chamada /api/v1/auth/me
+        IdentityAPI->>DB: Valida assinatura HMAC e status "approved"
+        DB-->>IdentityAPI: Dados do Usuário Válidos
+        IdentityAPI-->>GW: HTTP 200 OK (Dados do perfil)
+        GW-->>AuthContext: HTTP 200 OK
+        AuthContext->>Browser: Mantém usuário autenticado no Estado Global
+    else Token Ausente ou Expirado
+        AuthContext->>Browser: Redireciona para rota pública /login
+    end
+
+    Note over Browser, DB: 2. Fluxo de Autenticação (Login)
+    Browser->>GW: POST /api/v1/auth/login { email, password }
+    GW->>IdentityAPI: Roteia requisição de Login
+    IdentityAPI->>DB: Consulta credenciais e papel (resident/manager)
+    DB-->>IdentityAPI: Usuário encontrado e status "approved"
+    IdentityAPI-->>GW: HTTP 200 OK + Token HMAC-SHA256 (Validade 24h)
+    GW-->>Browser: HTTP 200 OK { token, user }
+    Browser->>AuthContext: Salva token no localStorage e atualiza estado da sessão
+
+    Note over Browser, DB: 3. Consulta de Dados Autenticada
+    Browser->>GW: GET /api/v1/spots?status=available (Bearer Token)
+    GW->>SpotsAPI: Encaminha requisição de busca de vagas
+    SpotsAPI->>DB: Consulta vagas com disponibilidade em JSON
+    DB-->>SpotsAPI: Retorna registros de vagas
+    SpotsAPI-->>GW: HTTP 200 OK [ Lista de Vagas ]
+    GW-->>Browser: HTTP 200 OK [ Lista de Vagas ]
+    Browser->>Browser: Renderiza componentes reativos (Cards de Vagas)
 ```
+
+---
 
 ## 3.2. Serviços de Chamada à API
 
-[Cole ou indique o trecho de código ou arquivo de configuração onde as requisições assíncronas são configuradas de forma centralizada (ex: `api.ts` usando Axios com suas URLs base de endpoints e injetando cabeçalhos de autenticação).]
+Para evitar a duplicação de código e centralizar as configurações de rede, o frontend utiliza uma camada de serviços isolada em [`src/frontend/src/services/api.js`](src/frontend/src/services/api.js). Esse módulo encapsula as chamadas HTTP com Axios, gerencia variáveis de ambiente e injeta interceptadores (*interceptors*) para tratamento global de tokens e erros.
+
+##### Configuração Centralizada da API (`src/frontend/src/services/api.js`)
+
+```javascript
+import axios from 'axios';
+
+// Definição da URL base centralizada no API Gateway em produção
+const API_BASE_URL = import.meta.env.VITE_API_GATEWAY_URL || 'https://gateway-api-d2uo.onrender.com';
+
+export const api = axios.create({
+  baseURL: API_BASE_URL,
+  timeout: 60000, // Timeout de 60s para absorver o cold start do Render
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+/* ==========================================================================
+   INTERCEPTOR DE REQUISIÇÃO: Injeção de Token HMAC/JWT
+   ========================================================================== */
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('vagalivre_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+/* ==========================================================================
+   INTERCEPTOR DE RESPOSTA: Tratamento Global de Erros e Expiração de Sessão
+   ========================================================================== */
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response) {
+      const { status } = error.response;
+      
+      // Sessão expirada ou token inválido: limpa o storage e redireciona para login
+      if (status === 401) {
+        localStorage.removeItem('vagalivre_token');
+        localStorage.removeItem('vagalivre_user');
+        if (window.location.pathname !== '/login') {
+          window.location.href = '/login?expired=true';
+        }
+      }
+      
+      // Falha de Gateway ou Cold Start excedido no Render
+      if (status === 502 || status === 504) {
+        console.error('[API Gateway] Serviço temporariamente indisponível (Cold Start). Retentando...');
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+```
+
+##### Módulos de Serviços Especializados
+
+As chamadas aos microsserviços do backend são expostas como funções assíncronas reutilizáveis:
+
+```javascript
+/* Módulo de Autenticação (Pedro) */
+export const authService = {
+  login: (credentials) => api.post('/api/v1/auth/login', credentials),
+  getProfile: () => api.get('/api/v1/auth/me'),
+  logout: () => api.post('/api/v1/auth/logout'),
+};
+
+/* Módulo de Disponibilidade de Vagas (Allan) */
+export const spotService = {
+  getAll: (params) => api.get('/api/v1/spots', { params }),
+  getById: (id) => api.get(`/api/v1/spots/${id}`),
+};
+
+/* Módulo de Gestão de Reservas (Gustavo) */
+export const reservationService = {
+  create: (data) => api.post('/api/v1/reservations', data),
+  getByUser: (userId) => api.get('/api/v1/reservations', { params: { userId } }),
+  cancel: (id) => api.delete(`/api/v1/reservations/${id}`),
+};
+
+/* Módulo de Notificações (André) */
+export const notificationService = {
+  getByUser: (userId) => api.get(`/notifications/user/${userId}`),
+  markAsRead: (id) => api.patch(`/notifications/${id}/read`),
+  delete: (id) => api.delete(`/notifications/${id}`),
+};
+
+/* Módulo de Usuários e Aprovação (Roberta) */
+export const userService = {
+  register: (data) => api.post('/api/v1/users', data),
+  getPending: (condominiumId) => api.get('/api/v1/users', { params: { condominiumId, status: 'pending' } }),
+  updateStatus: (userId, status) => api.patch(`/api/v1/users/${userId}`, { status }),
+};
+```
 
 ---
 
