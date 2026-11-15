@@ -10,12 +10,25 @@
 
 | Etapa | % Participação | Commits |
 | :---: | :---: | :---: |
+| Etapa 3 | `32%` | `2` |
 | Etapa 2 | `78%` | `1` |
 | Etapa 1 | `88%` | `5` |
 
 ---
 
 ## 🔍 Avaliação por Etapa
+
+### 🏗️ ETAPA 3 - Interface Web Responsiva (Front-end Web)
+*   **Participação**: `32%` — Commits: `2`
+*   **Requisitos Funcionais desenvolvidos no front-end** (do total de 14 RFs web da etapa):
+    - RF-105 — Cadastro de vagas: `spot-registration-form.tsx` e `parking-spot-service.ts` integrados ao serviço .NET — `5c2360c`
+    - Ajuste do gateway para produção (Render) — `6a0e670`
+*   **Atividades Entregues**:
+    - Integração do cadastro de vagas ao backend .NET (H35b) — `5c2360c`: cerca de 105 linhas no front (service e formulário); a maior parte do commit é backend (controller, EF Core, docker-compose).
+*   **Atividades Pendentes/Incompletas**:
+    - Sem atividade atribuída no quadro desta etapa e sem contribuição à documentação do front-end.
+    - RF-106 (edição/remoção de vagas e disponibilidade) permanece com a lógica de Allan; sem testes documentados.
+*   **Parecer do Professor**: Contribuição de código pontual e correta no cadastro de vagas, mas pequena no front-end e concentrada em um único dia (02/11). Participe das telas e do roteiro de testes na próxima etapa.
 
 ### 🏗️ ETAPA 2 - APIs, Web Services e Persistência de Dados Distribuída
 *   **Participação**: `78%` — Commits: `1`

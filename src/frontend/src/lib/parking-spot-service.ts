@@ -1,82 +1,72 @@
 
 "use client";
 
-import type { AvailabilitySlot, ParkingSpot } from "@/types";
+import type { AvailabilitySlot, ParkingSpot, Reservation } from "@/types";
 
 const SPOTS_API_BASE =
   process.env.NEXT_PUBLIC_GATEWAY_URL || "https://gateway-api-d2uo.onrender.com";
 
-const PARKING_SPOTS_STORAGE_KEY = "vagaLivreParkingSpots";
-
-function saveParkingSpots(spots: ParkingSpot[]): void {
-  if (typeof window !== "undefined") {
-    try {
-      localStorage.setItem(PARKING_SPOTS_STORAGE_KEY, JSON.stringify(spots));
-    } catch (error) {
-      console.error("Falha ao salvar vagas no localStorage", error);
-    }
-  }
-}
-
-export function getParkingSpots(): ParkingSpot[] {
+// As gravações usam exclusivamente a API .NET, através do Gateway.
+// As leituras existentes continuam na API de consulta de vagas (Allan).
+function readAuthToken(): string {
   if (typeof window === "undefined") {
-    return [];
+    throw new Error("É necessário estar autenticado para gerenciar vagas.");
   }
   try {
-    const storedSpots = localStorage.getItem(PARKING_SPOTS_STORAGE_KEY);
-    if (storedSpots) {
-      // Precisamos desserializar as datas que foram armazenadas como strings
-      return JSON.parse(storedSpots).map((spot: any) => ({
-        ...spot,
-        availability: spot.availability?.map((slot: any) => ({
-          ...slot,
-          startTime: new Date(slot.startTime),
-          endTime: new Date(slot.endTime),
-        })),
-      }));
-    }
-    return [];
-  } catch (error) {
-    console.error("Falha ao carregar vagas do localStorage", error);
-    return [];
+    const saved = localStorage.getItem("vagaLivreAuth");
+    const token = saved ? JSON.parse(saved)?.token : undefined;
+    if (typeof token === "string" && token) return token;
+  } catch {
+    // Sessão inválida: o usuário deverá efetuar login novamente.
   }
+  throw new Error("Sessão não encontrada. Faça login novamente.");
 }
 
-export function addParkingSpot(
-  spotData: Omit<ParkingSpot, "id" | "isAvailable" | "availability" | "currentReservationId"> & { ownerId: string; ownerName: string; }
-): ParkingSpot {
-  const spots = getParkingSpots();
-  const newSpot: ParkingSpot = {
-    id: `spot-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+async function writeSpotApi(
+  path: string,
+  method: "POST" | "PUT" | "PATCH",
+  payload: object,
+): Promise<ParkingSpot> {
+  const response = await fetch(`${SPOTS_API_BASE}${path}`, {
+    method,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${readAuthToken()}`,
+    },
+    body: JSON.stringify(payload),
+  });
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok || !body?.data) {
+    throw new Error(body?.message || `Falha ao salvar vaga (HTTP ${response.status}).`);
+  }
+  return normalizeSpot(body.data);
+}
+
+export async function addParkingSpot(
+  spotData: Pick<ParkingSpot, "number" | "type" | "location" | "description"> & {
+    ownerId: string;
+    ownerName: string;
+  },
+): Promise<ParkingSpot> {
+  return writeSpotApi("/api/ParkingSpots", "POST", {
     number: spotData.number,
     type: spotData.type,
     location: spotData.location,
     description: spotData.description,
-    isAvailable: true, // Vagas novas são disponíveis por padrão
     ownerId: spotData.ownerId,
-    ownerName: spotData.ownerName, // Salvar o nome do proprietário
-    currentReservationId: null,
-    availability: [], // Disponibilidade vazia por padrão
-  };
-  const updatedSpots = [...spots, newSpot];
-  saveParkingSpots(updatedSpots);
-  return newSpot;
+    // O backend obtém o nome do proprietário da tabela de usuários.
+  });
 }
 
-export function getSpotById(spotId: string): ParkingSpot | undefined {
-  const spots = getParkingSpots();
-  return spots.find(spot => spot.id === spotId);
-}
-
-export function updateSpot(spotId: string, updatedData: Partial<ParkingSpot>): ParkingSpot | undefined {
-  let spots = getParkingSpots();
-  const spotIndex = spots.findIndex(spot => spot.id === spotId);
-  if (spotIndex !== -1) {
-    spots[spotIndex] = { ...spots[spotIndex], ...updatedData };
-    saveParkingSpots(spots);
-    return spots[spotIndex];
-  }
-  return undefined;
+export async function updateSpot(
+  spotId: string,
+  updatedData: { availability: AvailabilitySlot[] },
+): Promise<ParkingSpot> {
+  return writeSpotApi(
+    `/api/ParkingSpots/${encodeURIComponent(spotId)}/availability`,
+    "PATCH",
+    { availability: updatedData.availability },
+  );
 }
 
 function normalizeAvailability(availability: unknown): AvailabilitySlot[] | undefined {
@@ -145,14 +135,36 @@ async function fetchSpotsApi(path: string): Promise<Response> {
   throw lastError instanceof Error ? lastError : new Error("Erro ao buscar vagas.");
 }
 
-export async function fetchParkingSpots(): Promise<ParkingSpot[]> {
+function normalizeReservation(raw: Reservation): Reservation {
+  return {
+    id: raw.id,
+    spotId: raw.spotId,
+    userId: raw.userId,
+    startTime: new Date(raw.startTime),
+    endTime: new Date(raw.endTime),
+    vehiclePlate: raw.vehiclePlate,
+  };
+}
+
+export async function fetchParkingBoard(): Promise<{ spots: ParkingSpot[]; reservations: Reservation[] }> {
   const response = await fetchSpotsApi("/api/v1/spots");
   if (!response.ok) {
     throw new Error("Erro ao buscar vagas.");
   }
   const body = await response.json();
   const data = Array.isArray(body?.data) ? body.data : [];
-  return data.map(normalizeSpot);
+  const reservations = data.flatMap((spot: { reservations?: Reservation[] }) =>
+    Array.isArray(spot.reservations) ? spot.reservations.map(normalizeReservation) : []
+  );
+  return {
+    spots: data.map(normalizeSpot),
+    reservations,
+  };
+}
+
+export async function fetchParkingSpots(): Promise<ParkingSpot[]> {
+  const { spots } = await fetchParkingBoard();
+  return spots;
 }
 
 export async function fetchSpotById(spotId: string): Promise<ParkingSpot | undefined> {

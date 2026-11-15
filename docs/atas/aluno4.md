@@ -10,12 +10,26 @@
 
 | Etapa | % Participação | Commits |
 | :---: | :---: | :---: |
+| Etapa 3 | `85%` | `1` |
 | Etapa 2 | `78%` | `7` |
 | Etapa 1 | `78%` | `8` |
 
 ---
 
 ## 🔍 Avaliação por Etapa
+
+### 🏗️ ETAPA 3 - Interface Web Responsiva (Front-end Web)
+*   **Participação**: `85%` — Commits: `1`
+*   **Requisitos Funcionais desenvolvidos no front-end** (do total de 14 RFs web da etapa):
+    - RF-110 — Criar reserva: `reservation-service.ts` integrado à API — `3981c29`
+    - RF-112 — Consultar reservas: `my-reservations`, `my-spots` e `rental-history` ligados à API — `3981c29`
+    - RF-113 — Cancelar reserva via API — `3981c29`
+*   **Atividades Entregues**:
+    - Integração de reservas (criação, listagem, cancelamento) com a API (H35b/H37b) — `3981c29`: `reservation-service.ts` reescrito (autor de 83 das ~120 linhas finais) e 5 telas ajustadas.
+*   **Atividades Pendentes/Incompletas**:
+    - Sem atividade no quadro desta etapa e sem teste/documentação do fluxo de reservas.
+    - Contribuição concentrada em um único commit (01/11).
+*   **Parecer do Professor**: Implementou a camada de serviço de reservas, que sustenta RF-110, 112 e 113, com código autoral substancial. Faltou presença em outros momentos da etapa e documentação/roteiro de teste do fluxo.
 
 ### 🏗️ ETAPA 2 - APIs, Web Services e Persistência de Dados Distribuída
 *   **Participação**: `78%` — Commits: `7`

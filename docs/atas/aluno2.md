@@ -10,12 +10,28 @@
 
 | Etapa | % Participação | Commits |
 | :---: | :---: | :---: |
+| Etapa 3 | `88%` | `4` |
 | Etapa 2 | `96%` | `24` |
 | Etapa 1 | `84%` | `11` |
 
 ---
 
 ## 🔍 Avaliação por Etapa
+
+### 🏗️ ETAPA 3 - Interface Web Responsiva (Front-end Web)
+*   **Participação**: `88%` — Commits: `4`
+*   **Requisitos Funcionais desenvolvidos no front-end** (do total de 14 RFs web da etapa):
+    - RF-102 — Cadastro/solicitação de acesso: `register/page.tsx` e `user-service.ts` integrados à API — `0eeefbc`
+    - RF-103 — Aprovação de moradores: `admin/approvals` e `admin/users` conectados à API — `0eeefbc`
+    - RF-104 — Cadastro de condomínio: `condominium-service.ts` e página de cadastro — `0eeefbc`
+    - RF-101 (parcial) — ajustes em `auth-context.tsx` — `0eeefbc`
+*   **Atividades Entregues**:
+    - Integração de usuários e condomínios à API (H35b/H37b) — `0eeefbc`: 10 arquivos, serviços reescritos (`user-service.ts`, `condominium-service.ts`) e telas de admin/perfil.
+    - Proposta de conteinerização e deploy/CI-CD (H35c) — `a7672c3`, `c61110f`: pipeline GitHub Actions e variável `VITE_API_GATEWAY_URL` documentados (aceito como documental).
+*   **Atividades Pendentes/Incompletas**:
+    - T3.6: não há testes (Vitest/Cypress) nem arquivos de teste no repositório, mas a seção 4.1 os declara com status 'Passou'. Documente testes manuais reais ou remova a afirmação.
+    - T3.1: o projeto é Next.js, não Vite; a documentação de deploy (Vite, `import.meta.env`) não corresponde ao código.
+*   **Parecer do Professor**: Entregou o bloco de usuários, condomínios e aprovação (RF-102, 103, 104) com código autoral e integração real à API. A documentação de testes descreve suítes inexistentes, o que compromete a credibilidade da seção; corrija na próxima rodada.
 
 ### 🏗️ ETAPA 2 - APIs, Web Services e Persistência de Dados Distribuída
 *   **Participação**: `96%` — Commits: `24`

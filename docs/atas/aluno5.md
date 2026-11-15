@@ -10,12 +10,25 @@
 
 | Etapa | % Participação | Commits |
 | :---: | :---: | :---: |
+| Etapa 3 | `68%` | `4` |
 | Etapa 2 | `76%` | `9` |
 | Etapa 1 | `69%` | `4` |
 
 ---
 
 ## 🔍 Avaliação por Etapa
+
+### 🏗️ ETAPA 3 - Interface Web Responsiva (Front-end Web)
+*   **Participação**: `68%` — Commits: `4`
+*   **Requisitos Funcionais desenvolvidos no front-end** (do total de 14 RFs web da etapa):
+    - RF-101 — Autenticação e sessão: reescrita de `auth-context.tsx` (login na API, sessão no localStorage, retry de cold start) — `181b950`
+*   **Atividades Entregues**:
+    - Contexto de autenticação (H35b/H37b) — `181b950`: +127 linhas, validação de sessão contra a API.
+    - Documentação 1.1, 3.1 e 3.2 (H37a/H35b) — `1af5bf2`, `a0fdd1b`: escopo, paleta de cores, diagrama de sequência e serviços de API.
+*   **Atividades Pendentes/Incompletas**:
+    - T3.2 (estilização global): o código de `globals.css`/Tailwind é de Allan; a seção 1.1 apenas documenta.
+    - T3.4: a seção 3.2 descreve `src/services/api.js` com Axios, que não existe; os serviços reais são `src/lib/*-service.ts` com `fetch`. Atualize a documentação.
+*   **Parecer do Professor**: Entregou o RF-101 com código autoral e escreveu a maior parte do texto do documento, porém parte dele descreve arquivos inexistentes e atribui a si tarefas implementadas por outro aluno. Alinhe o documento ao código real.
 
 ### 🏗️ ETAPA 2 - APIs, Web Services e Persistência de Dados Distribuída
 *   **Participação**: `76%` — Commits: `9`

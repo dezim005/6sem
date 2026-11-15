@@ -10,12 +10,29 @@
 
 | Etapa | % Participação | Commits |
 | :---: | :---: | :---: |
+| Etapa 3 | `94%` | `5` |
 | Etapa 2 | `95%` | `8` |
 | Etapa 1 | `75%` | `3` |
 
 ---
 
 ## 🔍 Avaliação por Etapa
+
+### 🏗️ ETAPA 3 - Interface Web Responsiva (Front-end Web)
+*   **Participação**: `94%` — Commits: `5`
+*   **Requisitos Funcionais desenvolvidos no front-end** (do total de 14 RFs web da etapa):
+    - RF-105/106 — Vagas e disponibilidade do proprietário: telas `my-spots`, `my-spots/register`, `availability` (base em `1fde0c6`) e integração à API de disponibilidade — `1fa85ec`, `5d406ac`
+    - RF-107/108/109 — Consulta, filtros e detalhe de vagas: `page.tsx`, `available-spots-list`, `parking-spot-card` e consulta à API (com retry de cold start) — `1fa85ec`, `5d406ac`, `eda694a`
+    - RF-110 — Reserva: `spot-reservation-dialog` e `bookable-days.ts` (só dias livres, notificação após reserva) — `7a1e98a`, `4bf6f33`
+    - RF-112/115/116 — Minhas reservas, histórico e painel do síndico: telas `my-reservations` e `admin/rental-history` ligadas à API — `1fa85ec`
+    - Base visual e layout (`layout.tsx`, `globals.css`, `components/ui`, login e demais telas) — `1fde0c6` (16/09)
+*   **Atividades Entregues**:
+    - Telas e componentes do front-end web (H37b) — `1fde0c6`, `1fa85ec`, `7a1e98a`: autor de cerca de 90% das linhas de `src/frontend/src`, incluindo layout base, estilos e componentes de vagas.
+    - Integração com a API de disponibilidade (H35b) — `1fa85ec`, `5d406ac`, `eda694a`: `parking-spot-service.ts` com retry para cold start do Render.
+*   **Atividades Pendentes/Incompletas**:
+    - Não consta no quadro de contribuição, embora seja o principal autor do código; T3.1/T3.2/T3.4 estão atribuídas a outros alunos.
+    - Sem testes (manuais ou automatizados) documentados por ele.
+*   **Parecer do Professor**: Autor da quase totalidade do front-end web (telas, layout, estilos e integração de vagas/reservas), com commits distribuídos em 31/10, 01/11 e 03/11. Acima da cota. Corrija o quadro de contribuição da etapa para refletir a autoria real.
 
 ### 🏗️ ETAPA 2 - APIs, Web Services e Persistência de Dados Distribuída
 *   **Participação**: `95%` — Commits: `8`

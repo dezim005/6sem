@@ -28,7 +28,7 @@ export class NotificationController {
       // 3. Dispara o e-mail via API HTTP (Porta 443 - NUNCA é bloqueada pelo Render)
       if (userEmail) {
         resend.emails.send({
-          from: 'Vaga Livre <onboarding@resend.dev>', // Remetente de testes padrão do Resend
+          from: 'Vaga Livre <nao-responda@vagalivre.me>', // Remetente de testes padrão do Resend
           to: userEmail,
           subject: `🚗 Vaga Livre: ${title}`,
           html: `

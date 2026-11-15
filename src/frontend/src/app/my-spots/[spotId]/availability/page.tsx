@@ -76,7 +76,7 @@ export default function ManageSpotAvailabilityPage() {
   const handleSaveAvailability = async (updatedAvailability: AvailabilitySlot[]) => {
     if (!spot) return;
     try {
-      const updatedSpotData = updateSpot(spot.id, { availability: updatedAvailability });
+      const updatedSpotData = await updateSpot(spot.id, { availability: updatedAvailability });
       if (updatedSpotData) {
         setSpot(updatedSpotData); 
         toast({
@@ -89,7 +89,7 @@ export default function ManageSpotAvailabilityPage() {
     } catch (error) {
       toast({
         title: "Falha ao Salvar",
-        description: "Ocorreu um erro ao salvar a disponibilidade da vaga.",
+        description: error instanceof Error ? error.message : "Ocorreu um erro ao salvar a disponibilidade da vaga.",
         variant: "destructive",
       });
       console.error("Erro ao salvar disponibilidade:", error);

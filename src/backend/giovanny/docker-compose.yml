@@ -1,47 +1,11 @@
-name: vagalivre
-
+# A API .NET usa o schema existente no Neon, sem subir PostgreSQL separado.
+# Defina DOTNET_CONNECTION_STRING (formato Npgsql) e JWT_SECRET no ambiente.
 services:
-  db:
-    image: postgres:16-alpine
-    hostname: db
-    environment:
-      POSTGRES_DB: vagalivre
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - "5432:5432"
-    volumes:
-      - vagalivre_postgres_data:/var/lib/postgresql/data
-    networks:
-      - vagalivre_network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d vagalivre"]
-      interval: 5s
-      timeout: 5s
-      retries: 20
-      start_period: 10s
-
   api:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__DefaultConnection: Host=db;Port=5432;Database=vagalivre;Username=postgres;Password=postgres;Timeout=5;Command Timeout=30
+      ConnectionStrings__DefaultConnection: ${DOTNET_CONNECTION_STRING:?Informe uma connection string Npgsql do Neon (branch de desenvolvimento)}
+      JWT_SECRET: ${JWT_SECRET:?Informe o mesmo segredo utilizado pelo backend Pedro}
     ports:
       - "8080:8080"
-    networks:
-      - vagalivre_network
-    depends_on:
-      db:
-        condition: service_healthy
-        restart: true
-    restart: on-failure
-
-networks:
-  vagalivre_network:
-    name: vagalivre_network
-    driver: bridge
-
-volumes:
-  vagalivre_postgres_data:

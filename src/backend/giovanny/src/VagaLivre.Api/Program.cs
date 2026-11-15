@@ -1,65 +1,42 @@
-using System.Text.Json.Serialization;
-using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using VagaLivre.Api.Data;
+using VagaLivre.Api.Enums;
+using VagaLivre.Api.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    });
-
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    throw new InvalidOperationException(
+        "Configure ConnectionStrings__DefaultConnection com a conexao da branch de desenvolvimento do Neon.");
+}
 
-// Configure the HTTP request pipeline.
+// EF Core 8 exige o mapeamento de enums PostgreSQL também no NpgsqlDataSource.
+var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
+dataSourceBuilder.MapEnum<UserRole>("UserRole");
+dataSourceBuilder.MapEnum<UserStatus>("UserStatus");
+dataSourceBuilder.MapEnum<ParkingSpotType>("ParkingSpotType");
+var dataSource = dataSourceBuilder.Build();
+builder.Services.AddSingleton(dataSource);
+builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(dataSource));
+builder.Services.AddScoped<SpotAuthService>();
+
+var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseAuthorization();
+app.MapGet("/health", () => Results.Ok(new { ok = true, service = "dotnet-parking-spots" }));
 app.MapControllers();
 
-// No Docker, aplica as migrations automaticamente quando o banco estiver disponivel.
-// O retry evita falha de inicializacao enquanto o PostgreSQL ainda esta iniciando.
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    var logger = scope.ServiceProvider.GetRequiredService<ILoggerFactory>()
-        .CreateLogger("DatabaseMigration");
-
-    const int maxAttempts = 30;
-
-    for (var attempt = 1; attempt <= maxAttempts; attempt++)
-    {
-        try
-        {
-            await db.Database.MigrateAsync();
-            logger.LogInformation("Migrations aplicadas com sucesso.");
-            break;
-        }
-        catch (Exception ex) when (attempt < maxAttempts)
-        {
-            logger.LogWarning(
-                "Banco ainda indisponivel. Tentativa {Attempt}/{MaxAttempts}: {Message}",
-                attempt,
-                maxAttempts,
-                ex.Message);
-
-            await Task.Delay(TimeSpan.FromSeconds(2));
-        }
-    }
-}
-
+// Intencional: NUNCA executar migracoes ou criacao de schema automaticamente no Neon.
+// O schema existente é administrado pelo Prisma dos outros microsserviços.
 app.Run();

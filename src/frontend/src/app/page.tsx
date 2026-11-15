@@ -22,8 +22,8 @@ import { ParkingSpotCard } from "@/components/parking/parking-spot-card";
 import { Logo } from "@/components/logo";
 import { UserNav } from "@/components/layout/user-nav";
 import type { ParkingSpot, Reservation } from "@/types"; 
-import { fetchParkingSpots } from "@/lib/parking-spot-service"; 
-import { getAllReservations, addReservation } from "@/lib/reservation-service";
+import { fetchParkingBoard } from "@/lib/parking-spot-service"; 
+import { addReservation } from "@/lib/reservation-service";
 import { apiDayEnd, apiDayStart, hasBookableDay } from "@/lib/bookable-days"; 
 import { LayoutDashboard, ParkingSquare, CalendarCheck, Search, List, Map, Loader2, Building, Users, Bookmark, History, UserCheck } from "lucide-react"; // Adicionado UserCheck
 import { Input } from "@/components/ui/input";
@@ -72,28 +72,18 @@ export default function DashboardPage() {
     }
     let cancelled = false;
     setIsLoadingData(true);
-    getAllReservations()
-      .then((reservationsFromService) => {
-        if (!cancelled) {
-          setAllReservations(reservationsFromService);
-        }
-      })
-      .catch((error) => {
-        console.error("Falha ao carregar reservas da API", error);
-        if (!cancelled) {
-          setAllReservations([]);
-        }
-      });
-    fetchParkingSpots()
-      .then((spotsFromService) => {
+    fetchParkingBoard()
+      .then(({ spots: spotsFromService, reservations: reservationsFromService }) => {
         if (!cancelled) {
           setSpots(spotsFromService);
+          setAllReservations(reservationsFromService);
         }
       })
       .catch((error) => {
         console.error("Falha ao carregar vagas da API", error);
         if (!cancelled) {
           setSpots([]);
+          setAllReservations([]);
         }
       })
       .finally(() => {
@@ -153,16 +143,11 @@ export default function DashboardPage() {
         description: result.message,
       });
       try {
-        const updatedSpots = await fetchParkingSpots();
+        const { spots: updatedSpots, reservations: updatedReservations } = await fetchParkingBoard();
         setSpots(updatedSpots);
-      } catch (error) {
-        console.error("Falha ao atualizar vagas da API", error);
-      }
-      try {
-        const updatedReservations = await getAllReservations();
         setAllReservations(updatedReservations);
       } catch (error) {
-        console.error("Falha ao atualizar reservas da API", error);
+        console.error("Falha ao atualizar vagas da API", error);
       }
       setIsReservationDialogOpen(false);
       setIsSubmittingReservation(false);

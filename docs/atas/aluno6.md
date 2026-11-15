@@ -10,12 +10,24 @@
 
 | Etapa | % Participação | Commits |
 | :---: | :---: | :---: |
+| Etapa 3 | `9%` | `2` |
 | Etapa 2 | `93%` | `8` |
 | Etapa 1 | `62%` | `3` |
 
 ---
 
 ## 🔍 Avaliação por Etapa
+
+### 🏗️ ETAPA 3 - Interface Web Responsiva (Front-end Web)
+*   **Participação**: `9%` — Commits: `2`
+*   **Requisitos Funcionais desenvolvidos no front-end** (do total de 14 RFs web da etapa):
+    - Nenhum RF do front-end com código autoral comprovado.
+*   **Atividades Entregues**:
+    - Atualização de status e seções 2.1/2.2 do documento (H37a) — `d516a1d`, `d0910fe`: texto descritivo das telas e do estado de autenticação.
+*   **Atividades Pendentes/Incompletas**:
+    - T3.3 (telas chave) e T3.5 (estado global/rotas privadas): declaradas como 'Entregue', mas sem nenhum commit de código dela em `src/frontend`; a autoria real é de Allan (telas) e Pedro/Andre (contexto de autenticação).
+    - Sem contribuição em nenhum RF do front-end e sem testes.
+*   **Parecer do Professor**: Não há código autoral dela no front-end; T3.3 e T3.5 constam como entregues sem evidência de commit. A participação se limita à edição do documento. É necessário assumir um RF e implementá-lo na próxima etapa.
 
 ### 🏗️ ETAPA 2 - APIs, Web Services e Persistência de Dados Distribuída
 *   **Participação**: `93%` — Commits: `8`

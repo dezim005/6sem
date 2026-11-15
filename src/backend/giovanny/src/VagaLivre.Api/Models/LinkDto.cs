@@ -2,7 +2,7 @@ namespace VagaLivre.Api.Models;
 
 public class LinkDto
 {
-    public LinkDto(Guid id, string? href, string rel, string method)
+    public LinkDto(string id, string? href, string rel, string method)
     {
         Id = id;
         Href = href ?? string.Empty;
@@ -10,7 +10,7 @@ public class LinkDto
         Method = method;
     }
 
-    public Guid Id { get; set; }
+    public string Id { get; set; }
     public string Href { get; set; }
     public string Rel { get; set; }
     public string Method { get; set; }

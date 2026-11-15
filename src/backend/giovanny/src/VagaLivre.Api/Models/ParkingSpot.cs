@@ -1,28 +1,21 @@
-using System.ComponentModel.DataAnnotations;
 using VagaLivre.Api.Enums;
 
 namespace VagaLivre.Api.Models;
 
-public class ParkingSpot : LinksHateoas
+public class ParkingSpot
 {
-    public Guid Id { get; set; }
-
-    [Required, MaxLength(30)]
+    public string Id { get; set; } = string.Empty;
     public string Number { get; set; } = string.Empty;
-
     public ParkingSpotType Type { get; set; }
-
-    [Required, MaxLength(100)]
     public string Location { get; set; } = string.Empty;
-
     public bool IsAvailable { get; set; } = true;
-
-    [MaxLength(500)]
+    public string? OwnerId { get; set; }
+    public string? OwnerName { get; set; }
+    public string? CurrentReservationId { get; set; }
     public string? Description { get; set; }
 
-    public Guid CondominiumId { get; set; }
-    public Condominium? Condominium { get; set; }
-
-    public Guid? OwnerId { get; set; }
+    // O Prisma persiste um array JSON em coluna jsonb.
+    public string AvailabilityJson { get; set; } = "[]";
     public RegisteredUser? Owner { get; set; }
+    public ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
 }

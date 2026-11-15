@@ -33,12 +33,12 @@ import { useAuth } from "@/contexts/auth-context";
 import { addParkingSpot } from "@/lib/parking-spot-service";
 
 const spotRegistrationSchema = z.object({
-  spotNumber: z.string().min(1, "Número da vaga é obrigatório"),
+  spotNumber: z.string().trim().min(1, "Número da vaga é obrigatório").max(30, "Número deve ter no máximo 30 caracteres"),
   spotType: z.enum(["compact", "standard", "suv", "motorcycle"], {
     required_error: "Tipo da vaga é obrigatório.",
   }),
-  locationDetails: z.string().min(5, "Detalhes da localização devem ter pelo menos 5 caracteres"),
-  additionalNotes: z.string().optional(),
+  locationDetails: z.string().trim().min(5, "Detalhes da localização devem ter pelo menos 5 caracteres").max(100, "Localização deve ter no máximo 100 caracteres"),
+  additionalNotes: z.string().trim().max(500, "Observações devem ter no máximo 500 caracteres").optional(),
 });
 
 type SpotRegistrationFormValues = z.infer<typeof spotRegistrationSchema>;
@@ -68,10 +68,9 @@ export function SpotRegistrationForm() {
       return;
     }
     setIsSubmitting(true);
-    await new Promise(resolve => setTimeout(resolve, 700)); // Simular chamada de API
 
     try {
-      addParkingSpot({
+      await addParkingSpot({
         number: data.spotNumber,
         type: data.spotType,
         location: data.locationDetails,
@@ -89,11 +88,12 @@ export function SpotRegistrationForm() {
     } catch (error) {
       toast({
         title: "Falha no Cadastro",
-        description: "Ocorreu um erro ao cadastrar a vaga.",
+        description: error instanceof Error ? error.message : "Ocorreu um erro ao cadastrar a vaga.",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
-    setIsSubmitting(false);
   }
 
   return (

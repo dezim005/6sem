@@ -11,7 +11,7 @@ const PEDRO_API = process.env.PEDRO_API || "https://pmv-si-2026-2-pe6-t2-g09-1.o
 const ROBERTA_API =
   process.env.ROBERTA_API || "https://pmv-si-2026-2-pe6-t2-g09-1-jbk9.onrender.com";
 const ANDRE_API = process.env.ANDRE_API || "https://andre-api-bhnv.onrender.com";
-const GIOVANNY_API = process.env.GIOVANNY_API || "";
+const GIOVANNY_API = process.env.GIOVANNY_API || "https://giovanny-api-aspnet.onrender.com";
 
 app.use(cors({ origin: true }));
 

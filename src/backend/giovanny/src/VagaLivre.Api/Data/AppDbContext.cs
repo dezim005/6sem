@@ -6,38 +6,40 @@ namespace VagaLivre.Api.Data;
 
 public class AppDbContext : DbContext
 {
-    public static readonly Guid DemoCondominiumId = Guid.Parse("11111111-1111-1111-1111-111111111111");
-    public static readonly Guid DemoResidentId = Guid.Parse("22222222-2222-2222-2222-222222222222");
-    public static readonly Guid DemoParkingSpotId = Guid.Parse("33333333-3333-3333-3333-333333333333");
-
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
-    {
-    }
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
     public DbSet<Condominium> Condominiums => Set<Condominium>();
     public DbSet<RegisteredUser> RegisteredUsers => Set<RegisteredUser>();
     public DbSet<ParkingSpot> ParkingSpots => Set<ParkingSpot>();
+    public DbSet<Reservation> Reservations => Set<Reservation>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // O PostgreSQL preserva case em nomes entre aspas, criados pelo Prisma.
+        modelBuilder.HasPostgresEnum<UserRole>(name: "UserRole");
+        modelBuilder.HasPostgresEnum<UserStatus>(name: "UserStatus");
+        modelBuilder.HasPostgresEnum<ParkingSpotType>(name: "ParkingSpotType");
+
         modelBuilder.Entity<Condominium>(entity =>
         {
-            entity.ToTable("condominiums");
+            entity.ToTable("vagaLivreCondominiums");
             entity.HasKey(x => x.Id);
-            entity.Property(x => x.Name).HasMaxLength(150).IsRequired();
-            entity.Property(x => x.Address).HasMaxLength(250).IsRequired();
+            entity.Property(x => x.Id).HasColumnName("id").ValueGeneratedNever();
+            entity.Property(x => x.Name).HasColumnName("name").IsRequired();
+            entity.Property(x => x.Address).HasColumnName("address").IsRequired();
         });
 
         modelBuilder.Entity<RegisteredUser>(entity =>
         {
-            entity.ToTable("registered_users");
+            entity.ToTable("vagaLivreRegisteredUsers");
             entity.HasKey(x => x.Id);
-            entity.Property(x => x.Name).HasMaxLength(150).IsRequired();
-            entity.Property(x => x.Email).HasMaxLength(200).IsRequired();
+            entity.Property(x => x.Id).HasColumnName("id").ValueGeneratedNever();
+            entity.Property(x => x.Name).HasColumnName("name").IsRequired();
+            entity.Property(x => x.Email).HasColumnName("email").IsRequired();
+            entity.Property(x => x.Role).HasColumnName("role").HasColumnType("\"UserRole\"");
+            entity.Property(x => x.Status).HasColumnName("status").HasColumnType("\"UserStatus\"");
+            entity.Property(x => x.CondominiumId).HasColumnName("condominiumId");
             entity.HasIndex(x => x.Email).IsUnique();
-            entity.Property(x => x.Role).HasConversion<string>();
-            entity.Property(x => x.Status).HasConversion<string>();
-
             entity.HasOne(x => x.Condominium)
                 .WithMany(x => x.Users)
                 .HasForeignKey(x => x.CondominiumId)
@@ -46,55 +48,44 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<ParkingSpot>(entity =>
         {
-            entity.ToTable("parking_spots");
+            entity.ToTable("vagaLivreParkingSpots");
             entity.HasKey(x => x.Id);
-            entity.Property(x => x.Number).HasMaxLength(30).IsRequired();
-            entity.Property(x => x.Location).HasMaxLength(100).IsRequired();
-            entity.Property(x => x.Description).HasMaxLength(500);
-            entity.Property(x => x.Type).HasConversion<string>();
-
-            // O numero da vaga precisa ser unico somente dentro do mesmo condominio.
-            entity.HasIndex(x => new { x.CondominiumId, x.Number }).IsUnique();
-
-            entity.HasOne(x => x.Condominium)
-                .WithMany(x => x.ParkingSpots)
-                .HasForeignKey(x => x.CondominiumId)
-                .OnDelete(DeleteBehavior.Cascade);
-
+            entity.Property(x => x.Id).HasColumnName("id").ValueGeneratedNever();
+            entity.Property(x => x.Number).HasColumnName("number").IsRequired();
+            entity.Property(x => x.Type).HasColumnName("type").HasColumnType("\"ParkingSpotType\"");
+            entity.Property(x => x.Location).HasColumnName("location").IsRequired();
+            entity.Property(x => x.IsAvailable).HasColumnName("isAvailable").HasDefaultValue(true);
+            entity.Property(x => x.OwnerId).HasColumnName("ownerId");
+            entity.Property(x => x.OwnerName).HasColumnName("ownerName");
+            entity.Property(x => x.CurrentReservationId).HasColumnName("currentReservationId");
+            entity.Property(x => x.Description).HasColumnName("description");
+            entity.Property(x => x.AvailabilityJson)
+                .HasColumnName("availability")
+                .HasColumnType("jsonb")
+                .HasDefaultValueSql("'[]'::jsonb")
+                .IsRequired();
+            entity.HasIndex(x => x.CurrentReservationId).IsUnique();
             entity.HasOne(x => x.Owner)
                 .WithMany(x => x.OwnedSpots)
                 .HasForeignKey(x => x.OwnerId)
                 .OnDelete(DeleteBehavior.SetNull);
+            entity.HasMany(x => x.Reservations)
+                .WithOne()
+                .HasForeignKey(x => x.SpotId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
-        modelBuilder.Entity<Condominium>().HasData(new Condominium
+        modelBuilder.Entity<Reservation>(entity =>
         {
-            Id = DemoCondominiumId,
-            Name = "Condominio Faculdade",
-            Address = "Rua Exemplo, 100"
+            entity.ToTable("vagaLivreReservations");
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.Id).HasColumnName("id").ValueGeneratedNever();
+            entity.Property(x => x.SpotId).HasColumnName("spotId");
+            entity.Property(x => x.UserId).HasColumnName("userId");
+            entity.Property(x => x.StartTime).HasColumnName("startTime").HasColumnType("timestamp with time zone");
+            entity.Property(x => x.EndTime).HasColumnName("endTime").HasColumnType("timestamp with time zone");
+            entity.Property(x => x.VehiclePlate).HasColumnName("vehiclePlate");
         });
-
-        modelBuilder.Entity<RegisteredUser>().HasData(new RegisteredUser
-        {
-            Id = DemoResidentId,
-            Name = "Morador Teste",
-            Email = "morador@vagalivre.local",
-            Role = UserRole.Resident,
-            Status = UserStatus.Approved,
-            Apartment = "101",
-            CondominiumId = DemoCondominiumId
-        });
-
-        modelBuilder.Entity<ParkingSpot>().HasData(new ParkingSpot
-        {
-            Id = DemoParkingSpotId,
-            Number = "A-01",
-            Type = ParkingSpotType.Standard,
-            Location = "Subsolo 1",
-            IsAvailable = true,
-            Description = "Vaga criada automaticamente para demonstracao",
-            CondominiumId = DemoCondominiumId,
-            OwnerId = DemoResidentId
-        });
+        // Não executar migrations: apenas mapear o banco administrado pelo Prisma.
     }
 }
