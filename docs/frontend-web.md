@@ -313,34 +313,156 @@ export const userService = {
 
 *(Esta seção atende diretamente à rubrica **H37c**)*
 
-A validação da qualidade, usabilidade e resiliência da interface Web do **VagaLivre** foi conduzida por meio de testes automatizados de componentes e integração, combinados com testes de fluxo ponta a ponta (E2E). A estratégia buscou garantir a correta renderização reativa dos componentes, a validação defensiva dos formulários de entrada, a integridade do estado global de autenticação (`AuthContext`) e a correta manipulação dos dados retornados pelas chamadas assíncronas ao API Gateway.
+A validação da qualidade, usabilidade e conformidade funcional da interface Web do **VagaLivre** na Etapa 3 foi realizada por meio de **Testes Manuais de Software (Testes de Caixa-Preta e Aceitação de Interface)**, executados diretamente no navegador contra o ambiente real integrado ao API Gateway em produção (`https://gateway-api-d2uo.onrender.com`).
+
+> **Nota de Escopo e Transparência:** Em estrita conformidade com o desenvolvimento prático do projeto, esclarece-se que **não foram implementadas suítes de testes automatizados (como Vitest ou Cypress) no repositório nesta etapa**. A aferição da estabilidade, conformidade dos Requisitos Funcionais entregues (RF-101, RF-102, RF-103 e RF-104) e integridade dos fluxos operacionais foi conduzida e registrada integralmente por meio de **casos de testes manuais sistemáticos**, cujos procedimentos, dados de entrada, resultados esperados e evidências reais obtidas são detalhados a seguir.
 
 ---
 
-## 4.1. Arquivos de Testes
+## 4.1. Metodologia de Testes e Ambiente de Execução
 
-* **Ferramentas de Asserção de Interface:** **Vitest** + **React Testing Library** (`@testing-library/react`) para testes unitários e de componentes; **Cypress** para suítes de testes End-to-End (E2E).
-* **Comando de Execução (Testes Unitários e de Componentes):**
-  ```bash
-  cd src/frontend && npm test
-  ```
-* **Comando de Execução (Testes E2E / Cypress):**
-  ```bash
-  cd src/frontend && npm run cypress:run
-  ```
+* **Ambiente de Teste:** Navegador Web moderno (Google Chrome / Mozilla Firefox) em resolução desktop (1920x1080) e resolução mobile responsiva via DevTools (375x667).
+* **Camada de Integração:** Requisições assíncronas direcionadas ao **API Gateway em produção** (`https://gateway-api-d2uo.onrender.com`), conectado aos bancos de dados de desenvolvimento/produção no Neon PostgreSQL.
+* **Ferramentas de Suporte à Inspeção Manual:**
+  * **Navegador Web:** Inspeção visual de renderização de componentes, usabilidade e responsividade;
+  * **Console do Desenvolvedor (DevTools Console):** Verificação de integridade do JavaScript e ausência de erros em tempo de execução;
+  * **Aba de Rede (DevTools Network Tab):** Monitoramento das chamadas HTTP REST, validação de envio de cabeçalhos de autenticação (`Authorization: Bearer <token>`), códigos de status de retorno (`200 OK`, `201 Created`, `204 No Content`, `400 Bad Request`, `401 Unauthorized`) e payloads JSON;
+  * **Aba de Armazenamento (DevTools Application / LocalStorage):** Confirmação da gravação, persistência e expurgo dos tokens de sessão.
 
-##### Tabela de Cobertura de Testes Web
+---
 
-| Componente Web | Tipo de Teste (Unitário/E2E) | Cenário de Teste Validado | Status da Suíte |
-| :--- | :--- | :--- | :---: |
-| **Formulário de Autenticação (`Login.jsx`)** | Unitário (Componente) | Validação de campos obrigatórios, formato de e-mail inválido, exibição de mensagem de erro e bloqueio de submissão vazia | ✔️ Passou |
-| **Formulário de Cadastro (`Register.jsx`)** | Unitário (Componente) | Validação de confirmação de senha, seleção de condomínio e disparo do fluxo de cadastro inicial | ✔️ Passou |
-| **Contexto de Autenticação (`AuthContext.jsx`)** | Unitário (Estado) | Retenção e recuperação do token no `localStorage`, inicialização da sessão e expurgo de estado no *logout* | ✔️ Passou |
-| **Cartão de Vaga (`SpotCard.jsx`)** | Unitário (Componente) | Renderização reativa de badges de status (`disponível`/`ocupado`), ícones por categoria e acionamento da modal de reserva | ✔️ Passou |
-| **Modal de Reserva (`ReservationModal.jsx`)** | Unitário (Componente) | Validação de intervalo de datas (`startTime` < `endTime`), formato de placa veicular e habilitação do botão de confirmação | ✔️ Passou |
-| **Central de Notificações (`NotificationCenter.jsx`)** | Unitário (Componente) | Renderização da lista de avisos, alternância de status para lido (`PATCH`) e exclusão de notificação do histórico (`DELETE`) | ✔️ Passou |
-| **Fluxo Completo de Reserva de Vaga** | E2E (Cypress) | Login do morador, navegação no catálogo de vagas, aplicação de filtros, criação de reserva e validação do registro em Meus Agendamentos | ✔️ Passou |
-| **Painel Administrativo do Síndico (`AdminUsers.jsx`)** | E2E (Cypress) | Autenticação com papel `manager`, listagem de usuários pendentes (`pending`), alteração de status para `approved`/`denied` e atualização reativa da lista | ✔️ Passou |
+## 4.2. Casos de Testes Manuais e Relatório de Conformidade
+
+Abaixo são apresentados os cenários de testes manuais executados para validação dos requisitos do sistema:
+
+### Tabela Resumo dos Testes Manuais de Interface
+
+| ID | Requisito Funcional | Cenário de Teste Validado | Método | Status |
+| :---: | :--- | :--- | :---: | :---: |
+| **CT-01** | **RF-102** (Cadastro de Usuário) | Cadastro de novo morador com seleção de condomínio e bloqueio em campos inválidos | Manual | ✔️ Conforme |
+| **CT-02** | **RF-101** (Autenticação / Login) | Login com credenciais válidas, retenção de token JWT no `localStorage` e bloqueio com senha incorreta | Manual | ✔️ Conforme |
+| **CT-03** | **RF-103** (Perfil do Usuário) | Visualização dos dados cadastrais do morador e atualização de telefone/unidade | Manual | ✔️ Conforme |
+| **CT-04** | **RF-104** (Moderação do Síndico) | Listagem de moradores com status `pending` e aprovação/rejeição de cadastro pelo síndico | Manual | ✔️ Conforme |
+| **CT-05** | **RF-104** (Controle RBAC / Guards) | Tentativa de acesso direto à rota `/admin/users` por usuário comum e redirecionamento de segurança | Manual | ✔️ Conforme |
+| **CT-06** | **RF-Vagas** (Dashboard de Vagas) | Consulta de vagas em tempo real, filtros por categoria de veículo (SUV/Moto) e atualização de status | Manual | ✔️ Conforme |
+| **CT-07** | **RF-Reservas** (Gestão de Agendamentos) | Abertura de modal, validação de placa veicular, confirmação de reserva e cancelamento pelo morador | Manual | ✔️ Conforme |
+| **CT-08** | **RF-Notificações** (Central de Avisos) | Recepção de aviso de confirmação de agendamento, marcação como lido (`PATCH`) e exclusão (`DELETE`) | Manual | ✔️ Conforme |
+
+---
+
+### Detalhamento dos Casos de Teste Manuais
+
+#### Caso de Teste CT-01: Cadastro de Usuário e Seleção de Condomínio
+* **Requisito Vinculado:** RF-102
+* **Objetivo:** Garantir que um novo morador consiga se cadastrar informando seus dados e selecionando um condomínio existente.
+* **Pré-condições:** Aplicação aberta na rota `/register`; lista de condomínios disponível no backend.
+* **Passos Executados:**
+  1. Acessar `/register`;
+  2. Preencher os campos: Nome completo, E-mail, Senha e Confirmação de Senha;
+  3. Selecionar o condomínio no menu *dropdown* carregado via `condominium-service.ts`;
+  4. Clicar em "Criar Conta".
+* **Resultado Esperado:** Requisição `POST /api/v1/users` enviada com sucesso; retorno HTTP 201; exibição de mensagem informando que o cadastro foi submetido e aguarda aprovação do síndico (status `pending`); redirecionamento para `/login`.
+* **Resultado Real Obtido:** ✔️ **Conforme.** O morador foi criado com sucesso no banco de dados com status `pending` e o redirecionamento ocorreu como esperado.
+
+---
+
+#### Caso de Teste CT-02: Autenticação e Persistência de Sessão
+* **Requisito Vinculado:** RF-101
+* **Objetivo:** Validar o processo de login, armazenamento do token no navegador e tratamento de credenciais inválidas.
+* **Pré-condições:** Usuário cadastrado e aprovado no sistema.
+* **Passos Executados:**
+  1. Acessar `/login` e tentar submeter o formulário vazio;
+  2. Inserir e-mail válido com senha incorreta e clicar em "Entrar";
+  3. Inserir e-mail e senha corretos e clicar em "Entrar";
+  4. Atualizar a página (F5) e verificar a persistência da sessão.
+* **Resultado Esperado:** 
+  * Campos vazios impedem a submissão (validação HTML5/JS);
+  * Senha incorreta exibe mensagem de alerta amigável ("Credenciais inválidas") sem quebrar a aplicação;
+  * Login correto grava o token no `localStorage` sob a chave `vagalivre_token` e redireciona para `/spots`;
+  * Ao atualizar a página, a sessão permanece ativa via consulta `/auth/me`.
+* **Resultado Real Obtido:** ✔️ **Conforme.** Validação de campos e tratamento de erro 401 funcionaram perfeitamente. O token permaneceu persistido no `localStorage`.
+
+---
+
+#### Caso de Teste CT-03: Visualização e Consulta de Perfil do Usuário
+* **Requisito Vinculado:** RF-103
+* **Objetivo:** Verificar a exibição correta dos dados do usuário logado na interface.
+* **Pré-condições:** Usuário autenticado na plataforma.
+* **Passos Executados:**
+  1. Navegar até a página ou menu de perfil do usuário (`/profile`);
+  2. Verificar os dados carregados pelo serviço `user-service.ts` (Nome, E-mail, Condomínio, Papel/Role).
+* **Resultado Esperado:** Requisição `GET /api/v1/users/me` executada com `Authorization: Bearer <token>`; exibição correta dos dados do morador nos componentes visuais.
+* **Resultado Real Obtido:** ✔️ **Conforme.** As informações de perfil foram carregadas e renderizadas sem inconsistências.
+
+---
+
+#### Caso de Teste CT-04: Moderação e Aprovação de Morador pelo Síndico
+* **Requisito Vinculado:** RF-104
+* **Objetivo:** Validar a funcionalidade administrativa que permite ao síndico aprovar ou rejeitar solicitações de novos moradores.
+* **Pré-condições:** Login efetuado com conta de perfil `manager` (síndico); pelo menos 1 morador com status `pending` registrado no condomínio.
+* **Passos Executados:**
+  1. Acessar o painel administrativo em `/admin/users`;
+  2. Localizar o morador com status "Pendente";
+  3. Clicar no botão "Aprovar";
+  4. Verificar a alteração visual e o retorno da rede.
+* **Resultado Esperado:** Disparo da requisição `PATCH /api/v1/users/:id` com `{ "status": "approved" }`; retorno HTTP 200 OK; atualização imediata do badge do morador para "Aprovado".
+* **Resultado Real Obtido:** ✔️ **Conforme.** O status do morador foi atualizado em tempo real na tabela e o usuário passou a conseguir logar na plataforma.
+
+---
+
+#### Caso de Teste CT-05: Proteção de Rotas Administrativas (Route Guard / RBAC)
+* **Requisito Vinculado:** RF-104
+* **Objetivo:** Impedir que moradores comuns acessem as rotas restritas de gestão administrativa.
+* **Pré-condições:** Login efetuado com perfil comum de morador (`role: 'resident'`).
+* **Passos Executados:**
+  1. Tentar digitar manualmente na barra de endereços do navegador a URL `/admin/users`;
+  2. Pressionar Enter.
+* **Resultado Esperado:** O componente guardião de rota (`AdminRoute`) intercepta a navegação, identifica que o usuário não possui a permissão de `manager` e redireciona automaticamente para o Dashboard (`/spots`) com mensagem de acesso não autorizado.
+* **Resultado Real Obtido:** ✔️ **Conforme.** O acesso não autorizado foi bloqueado com sucesso, impedindo a visualização da tela de aprovação por condôminos comuns.
+
+---
+
+#### Caso de Teste CT-06: Consulta de Vagas Disponíveis e Filtros
+* **Requisito Vinculado:** RF-Vagas
+* **Objetivo:** Validar a listagem de vagas de garagem e o comportamento dos filtros de busca.
+* **Pré-condições:** Morador autenticado e na página `/spots`.
+* **Passos Executados:**
+  1. Visualizar a grade de vagas cadastradas;
+  2. Selecionar o filtro por categoria "SUV";
+  3. Digitar um termo de busca no campo de pesquisa.
+* **Resultado Esperado:** Requisição `GET /api/v1/spots` com parâmetros de consulta; renderização de cartões dinâmicos exibindo número da vaga, localização e status (`Disponível`/`Ocupada`).
+* **Resultado Real Obtido:** ✔️ **Conforme.** Os cartões responderam aos filtros aplicados e os badges exibiram as cores corretas conforme o status da vaga.
+
+---
+
+#### Caso de Teste CT-07: Realização de Agendamento de Vaga
+* **Requisito Vinculado:** RF-Reservas
+* **Objetivo:** Validar a criação de reserva de vaga com validação de placa veicular.
+* **Pré-condições:** Vaga disponível selecionada no dashboard.
+* **Passos Executados:**
+  1. Clicar sobre uma vaga com badge "Disponível";
+  2. Na modal de reserva, preencher a placa do veículo (ex: `BRA2E19`) e o intervalo de datas;
+  3. Clicar em "Confirmar Reserva";
+  4. Acessar a página `/reservations`.
+* **Resultado Esperado:** Requisição `POST /api/v1/reservations` enviada com sucesso; retorno HTTP 201 Created; fechamento da modal; vaga exibida na listagem de reservas ativas do usuário.
+* **Resultado Real Obtido:** ✔️ **Conforme.** A reserva foi registrada e vinculada ao ID do usuário autenticado.
+
+---
+
+#### Caso de Teste CT-08: Notificações Transacionais e Atualização de Leitura
+* **Requisito Vinculado:** RF-Notificações
+* **Objetivo:** Validar a recepção de avisos do sistema e a atualização do estado de leitura.
+* **Pré-condições:** Reserva efetuada gerando notificação no backend.
+* **Passos Executados:**
+  1. Acessar a tela `/notifications`;
+  2. Visualizar o aviso de confirmação da reserva criada;
+  3. Clicar no botão de confirmação de leitura ("Marcar como lida");
+  4. Clicar no botão de exclusão.
+* **Resultado Esperado:** 
+  * Listagem correta via `GET /notifications/user/:userId`;
+  * Disparo de `PATCH /notifications/:id/read` retornando HTTP 200 OK e alterando o estilo visual do item para lido;
+  * Disparo de `DELETE /notifications/:id` retornando HTTP 204 No Content e removendo o item da tela.
+* **Resultado Real Obtido:** ✔️ **Conforme.** Todas as interações transacionais com o microsserviço de notificações foram concluídas com sucesso.
 
 ---
 
