@@ -11,6 +11,7 @@ import { ReservationsScreen } from '../screens/Reservations/ReservationsScreen';
 import { NotificationsScreen } from '../screens/Notifications/NotificationsScreen';
 import { ProfileScreen } from '../screens/Profile/ProfileScreen';
 import { AdminUsersScreen } from '../screens/Admin/AdminUsersScreen';
+import { RegisterScreen } from '../screens/Auth/RegisterScreen';
 
 const AuthStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -52,10 +53,17 @@ export const AppNavigator = () => {
 
   return (
     <RootStack.Navigator screenOptions={{ headerShown: false }}>
-      {!token ? (
-        // Fluxo Deslogado
-        <RootStack.Screen name="Auth" component={LoginScreen} />
-      ) : (
+  {!token ? (
+     // Fluxo Deslogado
+     <>
+       <RootStack.Screen name="Auth" component={LoginScreen} />
+       <RootStack.Screen 
+         name="Register" 
+         component={RegisterScreen} 
+         options={{ headerShown: true, title: 'Criar Nova Conta', headerStyle: { backgroundColor: '#1E3A8A' }, headerTintColor: '#fff' }} 
+       />
+     </>
+   ) : (
         // Fluxo Logado (Abas + Telas Modais/Pilhas como Admin)
         <>
           <RootStack.Screen name="Main" component={MainTabs} />
@@ -69,3 +77,4 @@ export const AppNavigator = () => {
     </RootStack.Navigator>
   );
 };
+

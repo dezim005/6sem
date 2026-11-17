@@ -7,9 +7,11 @@ export const userService = {
     return response.data;
   },
 
-  async listPendingUsers(condominiumId?: string): Promise<User[]> {
-    const params = condominiumId ? { condominiumId, status: 'pending' } : { status: 'pending' };
-    const response = await api.get('/api/v1/users', { params });
+  async listPendingUsers(): Promise<User[]> {
+    // Busca todos os usuários com status 'pending' de qualquer condomínio
+    const response = await api.get('/api/v1/users', { 
+      params: { status: 'pending' } 
+    });
     return response.data;
   },
 
