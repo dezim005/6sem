@@ -10,6 +10,7 @@ interface AuthContextData {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (userData: any) => Promise<void>;
   signOut: () => Promise<void>;
+  updateProfile: (data: Partial<User>) => Promise<{ success: boolean; message: string }>;
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
@@ -33,8 +34,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           // Validação em segundo plano no endpoint /auth/me
           try {
             const response = await api.get('/api/v1/auth/me');
-            setUser(response.data);
-            await AsyncStorage.setItem('@vagalivre_user', JSON.stringify(response.data));
+            const refreshedUser = response.data?.data || response.data;
+            setUser(refreshedUser);
+            await AsyncStorage.setItem('@vagalivre_user', JSON.stringify(refreshedUser));
           } catch (err) {
             console.warn('Sessão expirada ou falha ao validar /auth/me');
             await signOut();
@@ -107,8 +109,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await AsyncStorage.removeItem('@vagalivre_user');
   }
 
+  async function updateProfile(data: Partial<User>) {
+    if (!user) {
+      return { success: false, message: 'Usuário não autenticado.' };
+    }
+    try {
+      const response = await api.patch(`/api/v1/users/${encodeURIComponent(user.id)}`, data);
+      const updatedUser = response.data?.data || response.data;
+      if (!updatedUser) {
+        return { success: false, message: 'Erro ao atualizar perfil.' };
+      }
+      const mergedUser = { ...user, ...updatedUser };
+      setUser(mergedUser);
+      await AsyncStorage.setItem('@vagalivre_user', JSON.stringify(mergedUser));
+      return { success: true, message: response.data?.message || 'Perfil atualizado com sucesso!' };
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Erro ao salvar perfil.',
+      };
+    }
+  }
+
   return (
-    <AuthContext.Provider value={{ user, token, isLoading, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user, token, isLoading, signIn, signUp, signOut, updateProfile }}>
       {children}
     </AuthContext.Provider>
   );

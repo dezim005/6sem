@@ -12,6 +12,11 @@ export interface User {
   apartment?: string;
   block?: string;
   createdAt?: string;
+  registrationDate?: string;
+  dateOfBirth?: string;
+  cpf?: string;
+  phone?: string;
+  description?: string;
 }
 
 export interface Condominium {
@@ -31,6 +36,13 @@ export interface Spot {
   status: SpotStatus;
   condominiumId: string;
   ownerId?: string;
+  number?: string;
+  type?: SpotCategory;
+  isAvailable?: boolean;
+  ownerName?: string;
+  description?: string;
+  availability?: AvailabilitySlot[];
+  reservations?: Reservation[];
 }
 
 export interface Reservation {
@@ -38,11 +50,20 @@ export interface Reservation {
   spotId: string;
   spotNumber?: string;
   userId: string;
-  vehiclePlate: string;
+  vehiclePlate?: string | null;
   startTime: string;
   endTime: string;
-  status: 'active' | 'completed' | 'cancelled';
+  status?: 'active' | 'completed' | 'cancelled';
   createdAt?: string;
+}
+
+export interface AvailabilitySlot {
+  id: string;
+  spotId: string;
+  startTime: string;
+  endTime: string;
+  isRecurring: boolean;
+  recurrencePattern?: 'daily' | 'weekly' | 'monthly';
 }
 
 export interface NotificationItem {

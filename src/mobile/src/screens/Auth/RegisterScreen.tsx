@@ -12,6 +12,7 @@ import {
 import { useAuth } from '../../contexts/AuthContext';
 import { condominiumService } from '../../services/condominiumService';
 import { Condominium } from '../../types';
+import { BrandLogo } from '../../components/BrandLogo';
 
 export const RegisterScreen = ({ navigation }: any) => {
   const { signUp, isLoading } = useAuth();
@@ -79,8 +80,11 @@ export const RegisterScreen = ({ navigation }: any) => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Criar Conta</Text>
-      <Text style={styles.subtitle}>Junte-se ao VagaLivre no seu condomínio</Text>
+      <View style={styles.card}>
+        <BrandLogo size={58} />
+        <View style={styles.divider} />
+        <Text style={styles.title}>Criar Conta</Text>
+        <Text style={styles.subtitle}>Junte-se ao Vaga Livre no seu condomínio</Text>
 
       <TextInput
         style={styles.input}
@@ -171,14 +175,17 @@ export const RegisterScreen = ({ navigation }: any) => {
       >
         <Text style={styles.linkText}>Já tem uma conta? Entrar</Text>
       </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { padding: 24, backgroundColor: '#F8FAFC', flexGrow: 1, justifyContent: 'center' },
-  title: { fontSize: 28, fontWeight: 'bold', color: '#1E3A8A', textAlign: 'center' },
-  subtitle: { fontSize: 14, color: '#64748B', textAlign: 'center', marginBottom: 24 },
+  container: { padding: 18, backgroundColor: '#F8FAFC', flexGrow: 1, justifyContent: 'center' },
+  card: { backgroundColor: '#fff', borderRadius: 12, borderWidth: 1, borderColor: '#EDF2F7', padding: 20 },
+  divider: { height: 1, backgroundColor: '#E2E8F0', marginVertical: 16 },
+  title: { fontSize: 24, fontWeight: '800', color: '#111827', textAlign: 'center' },
+  subtitle: { fontSize: 14, color: '#64748B', textAlign: 'center', marginTop: 6, marginBottom: 20 },
   input: {
     backgroundColor: '#fff',
     padding: 14,
@@ -198,11 +205,11 @@ const styles = StyleSheet.create({
     marginRight: 8,
     marginBottom: 8,
   },
-  condoChipActive: { backgroundColor: '#2563EB' },
+  condoChipActive: { backgroundColor: '#0CA789' },
   condoChipText: { fontSize: 13, color: '#334155', fontWeight: '500' },
   condoChipTextActive: { color: '#fff', fontWeight: 'bold' },
   button: {
-    backgroundColor: '#2563EB',
+    backgroundColor: '#0CA789',
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',

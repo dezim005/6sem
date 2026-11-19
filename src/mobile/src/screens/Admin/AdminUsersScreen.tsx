@@ -52,7 +52,7 @@ export const AdminUsersScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Solicitações de Acesso</Text>
+        <Text style={styles.title}>Aprovações de Cadastro</Text>
         <Text style={styles.subtitle}>Exibindo pendências de todos os condomínios</Text>
       </View>
 

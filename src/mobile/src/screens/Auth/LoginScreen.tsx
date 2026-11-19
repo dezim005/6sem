@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Alert, ScrollView } from 'react-native';
 import { useAuth } from '../../contexts/AuthContext';
+import { BrandLogo } from '../../components/BrandLogo';
+import { colors } from '../../theme';
 
 export const LoginScreen = ({ navigation }: any) => {
   const { signIn, isLoading } = useAuth();
@@ -45,21 +47,26 @@ export const LoginScreen = ({ navigation }: any) => {
 
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>VagaLivre</Text>
-      <Text style={styles.subtitle}>Gestão Inteligente de Vagas</Text>
+    <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+      <View style={styles.card}>
+        <BrandLogo size={68} />
+        <View style={styles.divider} />
+        <Text style={styles.title}>Bem-vindo(a) de volta!</Text>
+        <Text style={styles.subtitle}>Insira suas credenciais para acessar o Vaga Livre.</Text>
 
-      <TextInput
+        <Text style={styles.label}>Email</Text>
+        <TextInput
         style={styles.input}
-        placeholder="Seu e-mail"
+        placeholder="usuario@exemplo.com"
         value={email}
         onChangeText={setEmail}
         autoCapitalize="none"
         keyboardType="email-address"
       />
-      <TextInput
+        <Text style={styles.label}>Senha</Text>
+        <TextInput
         style={styles.input}
-        placeholder="Sua senha"
+        placeholder="********"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
@@ -70,18 +77,37 @@ export const LoginScreen = ({ navigation }: any) => {
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => navigation.navigate('Register')} style={{ marginTop: 16 }}>
-        <Text style={styles.linkText}>Não possui conta? Cadastre-se</Text>
+        <Text style={styles.linkText}>Não tem uma conta? <Text style={styles.linkStrong}>Cadastre-se</Text></Text>
       </TouchableOpacity>
-    </View>
+      </View>
+      <Text style={styles.footer}>© 2026 Vaga Livre. Todos os direitos reservados.</Text>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', padding: 24, backgroundColor: '#F8FAFC' },
-  title: { fontSize: 32, fontWeight: 'bold', color: '#1E3A8A', textAlign: 'center' },
-  subtitle: { fontSize: 16, color: '#64748B', textAlign: 'center', marginBottom: 32 },
-  input: { backgroundColor: '#fff', padding: 14, borderRadius: 8, borderWidth: 1, borderColor: '#CBD5E1', marginBottom: 16 },
-  button: { backgroundColor: '#2563EB', padding: 16, borderRadius: 8, alignItems: 'center' },
+  container: { flexGrow: 1, justifyContent: 'center', padding: 18, backgroundColor: '#F8FAFC' },
+  card: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    paddingHorizontal: 20,
+    paddingTop: 26,
+    paddingBottom: 24,
+    borderWidth: 1,
+    borderColor: '#EDF2F7',
+    shadowColor: '#0F172A',
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    elevation: 3,
+  },
+  divider: { height: 1, backgroundColor: '#E2E8F0', marginTop: 18, marginBottom: 20 },
+  title: { fontSize: 24, fontWeight: '800', color: '#111827', textAlign: 'center' },
+  subtitle: { fontSize: 14, color: '#64748B', textAlign: 'center', marginTop: 8, marginBottom: 22 },
+  label: { color: '#334155', fontWeight: '600', fontSize: 13, marginBottom: 7 },
+  input: { backgroundColor: '#fff', paddingHorizontal: 12, paddingVertical: 12, borderRadius: 7, borderWidth: 1, borderColor: '#CBD5E1', marginBottom: 16, color: '#0F172A' },
+  button: { backgroundColor: '#0CA789', padding: 15, borderRadius: 7, alignItems: 'center' },
   buttonText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
-  linkText: { color: '#2563EB', textAlign: 'center', fontWeight: '500' }
+  linkText: { color: '#475569', textAlign: 'center', fontWeight: '500' },
+  linkStrong: { color: '#0CA789', fontWeight: '700' },
+  footer: { textAlign: 'center', color: '#64748B', fontSize: 12, marginTop: 18 },
 });
