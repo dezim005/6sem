@@ -7,12 +7,12 @@ import {
   StyleSheet,
   ActivityIndicator,
   Alert,
-  TextInput,
 } from 'react-native';
 import { spotService } from '../../services/spotService';
 import { reservationService } from '../../services/reservationService';
 import { useAuth } from '../../contexts/AuthContext';
 import { Reservation, Spot } from '../../types';
+import { AppTextInput as TextInput } from '../../components/AppTextInput';
 
 function hasAvailability(spot: Spot): boolean {
   return spot.isAvailable !== false && Array.isArray(spot.availability) && spot.availability.length > 0;

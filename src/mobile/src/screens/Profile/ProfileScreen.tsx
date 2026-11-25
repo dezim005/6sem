@@ -4,13 +4,13 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  TextInput,
   ScrollView,
   ActivityIndicator,
   Alert,
 } from 'react-native';
 import { useAuth } from '../../contexts/AuthContext';
 import { condominiumService } from '../../services/condominiumService';
+import { AppTextInput as TextInput } from '../../components/AppTextInput';
 
 export const ProfileScreen = ({ navigation }: any) => {
   const { user, signOut, updateProfile } = useAuth();

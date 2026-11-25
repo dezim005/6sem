@@ -7,7 +7,6 @@ import {
   StyleSheet,
   ActivityIndicator,
   Modal,
-  TextInput,
   Alert,
   ScrollView,
 } from 'react-native';
@@ -16,6 +15,7 @@ import { reservationService } from '../../services/reservationService';
 import { notificationService } from '../../services/notificationService';
 import { useAuth } from '../../contexts/AuthContext';
 import { Spot } from '../../types';
+import { AppTextInput as TextInput } from '../../components/AppTextInput';
 
 // ============================================================================
 // 1. HELPER: CATEGORIA / TIPO DA VAGA

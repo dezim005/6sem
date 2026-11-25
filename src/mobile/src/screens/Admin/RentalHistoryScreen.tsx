@@ -3,7 +3,6 @@ import {
   View,
   Text,
   FlatList,
-  TextInput,
   TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
@@ -16,6 +15,7 @@ import { reservationService } from '../../services/reservationService';
 import { userService } from '../../services/userService';
 import { spotService } from '../../services/spotService';
 import { Reservation, Spot, User } from '../../types';
+import { AppTextInput as TextInput } from '../../components/AppTextInput';
 
 interface DetailedReservation extends Reservation {
   userName: string;

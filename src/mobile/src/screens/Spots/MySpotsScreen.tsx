@@ -8,12 +8,12 @@ import {
   ActivityIndicator,
   Alert,
   Modal,
-  TextInput,
   ScrollView,
 } from 'react-native';
 import { spotService } from '../../services/spotService';
 import { useAuth } from '../../contexts/AuthContext';
 import { Spot } from '../../types';
+import { AppTextInput as TextInput } from '../../components/AppTextInput';
 
 export const MySpotsScreen = () => {
   const { user } = useAuth();

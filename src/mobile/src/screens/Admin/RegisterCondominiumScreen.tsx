@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
@@ -11,6 +10,7 @@ import {
 } from 'react-native';
 import { useAuth } from '../../contexts/AuthContext';
 import { condominiumService } from '../../services/condominiumService';
+import { AppTextInput as TextInput } from '../../components/AppTextInput';
 
 export const RegisterCondominiumScreen = () => {
   const { user } = useAuth();

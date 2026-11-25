@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Alert, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Alert, ScrollView } from 'react-native';
 import { useAuth } from '../../contexts/AuthContext';
 import { BrandLogo } from '../../components/BrandLogo';
-import { colors } from '../../theme';
+import { AppTextInput as TextInput } from '../../components/AppTextInput';
 
 export const LoginScreen = ({ navigation }: any) => {
   const { signIn, isLoading } = useAuth();

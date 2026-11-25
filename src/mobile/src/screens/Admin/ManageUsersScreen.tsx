@@ -8,7 +8,6 @@ import {
   ActivityIndicator,
   Alert,
   Modal,
-  TextInput,
   ScrollView,
   Switch,
 } from 'react-native';
@@ -17,6 +16,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { userService } from '../../services/userService';
 import { condominiumService } from '../../services/condominiumService';
 import { Condominium, User } from '../../types';
+import { AppTextInput as TextInput } from '../../components/AppTextInput';
 
 export const ManageUsersScreen = () => {
   const { user: currentUser, signOut } = useAuth();

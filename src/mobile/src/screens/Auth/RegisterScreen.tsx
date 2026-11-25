@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
@@ -13,6 +12,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { condominiumService } from '../../services/condominiumService';
 import { Condominium } from '../../types';
 import { BrandLogo } from '../../components/BrandLogo';
+import { AppTextInput as TextInput } from '../../components/AppTextInput';
 
 export const RegisterScreen = ({ navigation }: any) => {
   const { signUp, isLoading } = useAuth();
