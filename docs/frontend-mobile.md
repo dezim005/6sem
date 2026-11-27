@@ -30,7 +30,7 @@ Ao final desta Etapa, cada aluno será avaliado individualmente nestas 6 compet�
 
 | Rubrica Curricular | ID Tarefa | Atividade Semanal | Descrição Detalhada da Tarefa | Estudante Responsável | GitHub Username | Status de Entrega | Evidência/Seção Temática | Autoria Git |
 | :---: | :---: | :---: | :--- | :--- | :---: | :---: | :--- | :---: |
-| **H38b** | `T4.1` | `ATV4.1` | Configuração Inicial e Estrutura do App (Expo, Flutter CLI, etc.) | Pedro Henrique Correia Cassimiro | `pedroh-corr` | `✔️ Entregue` | [Instalação/README](../src/mobile/README.md) | [x] |
+| **H38b** | `T4.1` | `ATV4.1` | Configuração Inicial e Estrutura do App (Expo, Flutter CLI, etc.) | Pedro Henrique Correia Cassimiro | `pedroh-corr` | `📝 Em Progresso` | [Instalação/README](../src/mobile/README.md) | [x] |
 | **H38b** | `T4.2` | `ATV4.1` | Desenvolvimento da Navegação Nativa (Tabs, Drawer, Stack) | Pedro Henrique Correia Cassimiro | `pedroh-corr` | `✔️ Entregue` | [Seção 2.1](#21-telas-desenvolvidas-e-fluxos-de-gestos) | [x] |
 | **H38b** | `T4.3` | `ATV4.1` | Implementação das Interfaces de Usuário Principais do App | Roberta Alves Lima | `RobertaAlvesLima` | `✔️ Entregue` | [Seção 2.1](#21-telas-desenvolvidas-e-fluxos-de-gestos) | [x] |
 | **H38b** | `T4.4` | `ATV4.1` | Integração com Recursos Físicos (GPS, Câmera, Local Storage) | Roberta Alves Lima | `RobertaAlvesLima` | `✔️ Entregue` | [Seção 2.2](#22-integracao-de-hardware-e-recursos-nativos) | [x] |
